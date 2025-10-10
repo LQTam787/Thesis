@@ -36,7 +36,6 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final RecipeRepository recipeRepository;
-    private final FoodItemRepository foodItemRepository;
     private final GoalRepository goalRepository;
     private final NutritionPlanRepository nutritionPlanRepository;
     private final ModelMapper modelMapper;
@@ -98,7 +97,6 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public RecipeDto createRecipe(RecipeRequestDto recipeRequestDto) {
-        // Create and save FoodItem first
         FoodItem foodItem = new FoodItem();
         foodItem.setName(recipeRequestDto.getName());
         foodItem.setCalories(recipeRequestDto.getCalories());
@@ -106,13 +104,12 @@ public class AdminServiceImpl implements AdminService {
         foodItem.setCarbs(recipeRequestDto.getCarbs());
         foodItem.setFats(recipeRequestDto.getFats());
         foodItem.setServingSize(recipeRequestDto.getServingSize());
-        FoodItem savedFoodItem = foodItemRepository.save(foodItem);
 
-        // Create and save Recipe
         Recipe recipe = new Recipe();
-        recipe.setFoodItem(savedFoodItem);
+        recipe.setFoodItem(foodItem);
         recipe.setInstructions(recipeRequestDto.getInstructions());
         recipe.setPreparationTime(recipeRequestDto.getPreparationTime());
+
         Recipe savedRecipe = recipeRepository.save(recipe);
 
         return modelMapper.map(savedRecipe, RecipeDto.class);
@@ -143,8 +140,7 @@ public class AdminServiceImpl implements AdminService {
         if (!recipeRepository.existsById(recipeId)) {
             throw new ResourceNotFoundException("Recipe", "id", recipeId);
         }
-        // Deleting the FoodItem will also delete the Recipe due to CascadeType.ALL
-        foodItemRepository.deleteById(recipeId);
+        recipeRepository.deleteById(recipeId);
     }
 
     // Goal Management Implementation

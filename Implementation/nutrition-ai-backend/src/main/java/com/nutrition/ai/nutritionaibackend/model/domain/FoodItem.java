@@ -29,7 +29,7 @@ public class FoodItem {
 
     private String servingSize;
 
-    @OneToOne(mappedBy = "foodItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "foodItem", fetch = FetchType.LAZY)
     private Recipe recipe;
 
     @OneToMany(mappedBy = "foodItem")

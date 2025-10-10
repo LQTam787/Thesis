@@ -1,6 +1,10 @@
 package com.nutrition.ai.nutritionaibackend.service;
 
 import com.nutrition.ai.nutritionaibackend.dto.UpdateUserRequestDto;
+import com.nutrition.ai.nutritionaibackend.dto.GoalDto;
+import com.nutrition.ai.nutritionaibackend.dto.NutritionPlanDto;
+import com.nutrition.ai.nutritionaibackend.dto.RecipeDto;
+import com.nutrition.ai.nutritionaibackend.dto.RecipeRequestDto;
 import com.nutrition.ai.nutritionaibackend.dto.UserResponseDto;
 
 import java.util.List;

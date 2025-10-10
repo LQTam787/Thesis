@@ -29,7 +29,7 @@ public class TrackingServiceImpl implements TrackingService {
 
     @Override
     public FoodLogDto logFood(String userId, FoodLogDto foodLogDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new RuntimeException("User not found"));
         FoodLog foodLog = modelMapper.map(foodLogDto, FoodLog.class);
         foodLog.setUser(user);
         foodLog.setLogDate(LocalDateTime.now());
@@ -39,7 +39,7 @@ public class TrackingServiceImpl implements TrackingService {
 
     @Override
     public ActivityLogDto logActivity(String userId, ActivityLogDto activityLogDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new RuntimeException("User not found"));
         ActivityLog activityLog = modelMapper.map(activityLogDto, ActivityLog.class);
         activityLog.setUser(user);
         activityLog.setLogDate(LocalDateTime.now());
@@ -49,7 +49,7 @@ public class TrackingServiceImpl implements TrackingService {
 
     @Override
     public ProgressReportDto generateProgressReport(String userId, String reportType) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = userRepository.findById(Long.parseLong(userId)).orElseThrow(() -> new RuntimeException("User not found"));
         LocalDateTime endDate = LocalDateTime.now();
         LocalDateTime startDate = reportType.equalsIgnoreCase("weekly") ? endDate.minusWeeks(1) : endDate.minusMonths(1);
 
