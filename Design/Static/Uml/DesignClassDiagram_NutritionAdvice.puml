@@ -1,0 +1,78 @@
+@startuml DesignClassDiagram_NutritionAdvice
+
+!theme vibrant
+
+' hide empty members
+hide empty members
+
+' Package cho các lớp giao diện (Boundary)
+package "Boundary" <<Rectangle>> {
+    class NutritionAdviceUI {
+        + displaySuggestions(suggestions: List<String>)
+        + displayError(message: String)
+        + getUserInput(): String
+    }
+}
+
+' Package cho các lớp điều khiển và dịch vụ (Control)
+package "Control" <<Cloud>> {
+    class NutritionAdviceController {
+        - nutritionAdviceService: NutritionAdviceService
+        + askAI(userId: Long, query: String): ResponseEntity<SuggestionDto>
+    }
+
+    class NutritionAdviceService {
+        - userRepository: UserRepository
+        - goalRepository: GoalRepository
+        - nutritionPlanRepository: NutritionPlanRepository
+        - foodItemRepository: FoodItemRepository
+        - aiServiceClient: AIServiceClient 'Client để gọi đến AI Service'
+
+        + generateSuggestion(userId: Long, query: String): Suggestion
+    }
+    
+    interface AIServiceClient {
+        + getCompletion(prompt: String): String
+    }
+}
+
+' Package cho các lớp thực thể (Entity)
+package "Entity" <<Database>> {
+    class User
+    class Goal
+    class NutritionPlan
+    class FoodItem
+    class Suggestion {
+      + suggestionText: String
+      + createdDate: Date
+      + category: String
+    }
+}
+
+' Package cho các lớp truy cập dữ liệu (DAO/Repository)
+package "Repository (DAO)" <<Folder>> {
+    interface UserRepository extends JpaRepository<User, Long> {}
+    interface GoalRepository extends JpaRepository<Goal, Long> {}
+    interface NutritionPlanRepository extends JpaRepository<NutritionPlan, Long> {}
+    interface FoodItemRepository extends JpaRepository<FoodItem, Long> {}
+}
+
+' Định nghĩa các mối quan hệ
+NutritionAdviceUI ..> NutritionAdviceController : sends request
+
+NutritionAdviceController --> NutritionAdviceService : uses
+
+NutritionAdviceService --> UserRepository : uses
+NutritionAdviceService --> GoalRepository : uses
+NutritionAdviceService --> NutritionPlanRepository : uses
+NutritionAdviceService --> FoodItemRepository : uses
+NutritionAdviceService ..> AIServiceClient : calls
+
+NutritionAdviceService ..> Suggestion : creates
+
+' Quan hệ giữa các thực thể (giữ nguyên từ biểu đồ phân tích)
+User "1" -- "1..*" Goal
+User "1" -- "0..*" NutritionPlan
+User "1" -- "0..*" Suggestion
+
+@enduml

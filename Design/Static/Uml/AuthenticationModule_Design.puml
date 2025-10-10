@@ -1,0 +1,127 @@
+@startuml AuthenticationModule_Design
+
+' Bổ sung skinparam để cải thiện giao diện
+skinparam class {
+    BackgroundColor<<Boundary>> LightBlue
+    BackgroundColor<<Controller>> LightGreen
+    BackgroundColor<<Service>> LightYellow
+    BackgroundColor<<Repository>> LightCoral
+    BackgroundColor<<Entity>> LightPink
+    BackgroundColor<<DTO>> LightGray
+    BorderColor #505050
+    ArrowColor #505050
+}
+
+hide empty members
+
+' --- Lớp Giao diện (Boundary) ---
+package "Presentation Layer" {
+    class LoginPage <<Boundary>> {
+        +username: String
+        +password: String
+        +login(): void
+    }
+
+    class RegisterPage <<Boundary>> {
+        +username: String
+        +email: String
+        +password: String
+        +confirmPassword: String
+        +register(): void
+    }
+}
+
+' --- Lớp Logic Ứng dụng (Application Layer) ---
+package "Application Layer" {
+    ' --- Controller ---
+    class AuthController <<Controller>> {
+        -authService: AuthService
+        +registerUser(request: RegisterRequest): ResponseEntity<AuthResponse>
+        +loginUser(request: LoginRequest): ResponseEntity<AuthResponse>
+    }
+
+    ' --- Service ---
+    interface AuthService {
+        +register(request: RegisterRequest): AuthResponse
+        +login(request: LoginRequest): AuthResponse
+    }
+
+    class AuthServiceImpl <<Service>> implements AuthService {
+        -userRepository: UserRepository
+        -passwordEncoder: PasswordEncoder
+        -jwtTokenProvider: JwtTokenProvider
+        +register(request: RegisterRequest): AuthResponse
+        +login(request: LoginRequest): AuthResponse
+    }
+
+    ' --- DTOs ---
+    class RegisterRequest <<DTO>> {
+        +username: String
+        +email: String
+        +password: String
+    }
+
+    class LoginRequest <<DTO>> {
+        +username: String
+        +password: String
+    }
+
+    class AuthResponse <<DTO>> {
+        +accessToken: String
+        +tokenType: String
+    }
+}
+
+' --- Lớp Dữ liệu (Data Layer) ---
+package "Data Layer" {
+    ' --- Repository (DAO) ---
+    interface UserRepository <<Repository>> extends JpaRepository<User, Long> {
+        +findByUsername(username: String): Optional<User>
+        +existsByUsername(username: String): Boolean
+        +existsByEmail(email: String): Boolean
+    }
+
+    ' --- Entity ---
+    class User <<Entity>> {
+        +id: Long
+        +username: String
+        +email: String
+        +password: String
+        +role: String
+    }
+}
+
+' --- Lớp phụ trợ (Utility) ---
+package "Security" {
+    class JwtTokenProvider {
+        +generateToken(authentication: Authentication): String
+        +validateToken(token: String): boolean
+        +getUsernameFromToken(token: String): String
+    }
+
+    interface PasswordEncoder {
+        +encode(password: CharSequence): String
+        +matches(raw: CharSequence, encoded: String): boolean
+    }
+}
+
+' --- Mối quan hệ giữa các lớp ---
+LoginPage --> AuthController : sends HTTP request
+RegisterPage --> AuthController : sends HTTP request
+
+AuthController --> AuthService : calls
+AuthServiceImpl --> UserRepository : uses
+AuthServiceImpl --> JwtTokenProvider : uses
+AuthServiceImpl --> PasswordEncoder : uses
+
+AuthService <.. AuthServiceImpl : implements
+
+' Quan hệ với DTOs
+AuthController ..> RegisterRequest
+AuthController ..> LoginRequest
+AuthController ..> AuthResponse
+
+' Quan hệ với Entity
+UserRepository ..> User
+
+@enduml

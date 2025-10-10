@@ -1,0 +1,5 @@
+# IDE-specific files
+.vscode/
+
+# Windsurf-specific files
+.windsurf/

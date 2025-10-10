@@ -1,0 +1,46 @@
+@startuml ShareSequence
+' title: Biểu đồ Tuần tự - Chức năng Chia sẻ Kế hoạch Dinh dưỡng
+
+actor "Người dùng" as User
+participant ":ShareBoundary" as Boundary
+participant ":ShareControl" as Control
+participant ":Plan" as PlanEntity
+participant ":SharedContent" as SharedEntity
+participant ":AIRecommender" as AI
+
+autonumber
+
+User -> Boundary: 1. Nhấn nút "Chia sẻ" trên một kế hoạch
+activate Boundary
+
+Boundary -> User: 2. Hiển thị tùy chọn (Công khai / Bạn bè)
+deactivate Boundary
+
+User -> Boundary: 3. Chọn chế độ "Công khai"
+activate Boundary
+
+Boundary -> Control: 4. sharePlan(planId, "Công khai")
+activate Control
+
+Control -> PlanEntity: 5. findById(planId)
+activate PlanEntity
+PlanEntity --> Control: 6. Trả về đối tượng Kế hoạch
+deactivate PlanEntity
+
+Control -> SharedEntity: 7. create(plan, visibility)
+activate SharedEntity
+SharedEntity --> Control: 8. Trả về đối tượng SharedContent đã lưu
+deactivate SharedEntity
+
+Control -> AI: 9. findSimilarUsers(userProfile)
+activate AI
+AI --> Control: 10. Trả về danh sách người dùng gợi ý
+deactivate AI
+
+Control --> Boundary: 11. Trả về kết quả (thành công, danh sách gợi ý)
+deactivate Control
+
+Boundary -> User: 12. Hiển thị thông báo "Chia sẻ thành công" và các gợi ý kết nối
+deactivate Boundary
+
+@enduml

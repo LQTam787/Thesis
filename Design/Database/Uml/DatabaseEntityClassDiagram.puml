@@ -1,0 +1,145 @@
+@startuml DatabaseEntityClassDiagram
+
+hide empty members
+skinparam linetype ortho
+
+' Enum definitions are conceptual and not directly represented as tables
+' They will be mapped to VARCHAR or ENUM types in the database columns
+
+' Table Definitions
+entity tblUser {
+  + **id: BIGINT (PK)**
+  + username: VARCHAR
+  + password: VARCHAR
+  + email: VARCHAR
+  + role: VARCHAR
+  -- Profile Attributes --
+  + fullName: VARCHAR
+  + dateOfBirth: DATE
+  + gender: VARCHAR
+  + height: DOUBLE
+  + weight: DOUBLE
+  + activityLevel: VARCHAR
+  + allergies: TEXT
+  + medicalConditions: TEXT
+}
+
+entity tblGoal {
+  + **id: BIGINT (PK)**
+  + targetWeight: DOUBLE
+  + targetDate: DATE
+  + goalType: VARCHAR
+  + status: VARCHAR
+  -- Foreign Keys --
+  + **userId: BIGINT (FK)**
+}
+
+entity tblNutritionPlan {
+  + **id: BIGINT (PK)**
+  + planName: VARCHAR
+  + startDate: DATE
+  + endDate: DATE
+  + totalCaloriesGoal: INTEGER
+  -- Foreign Keys --
+  + **userId: BIGINT (FK)**
+}
+
+entity tblDailyMenu {
+  + **id: BIGINT (PK)**
+  + date: DATE
+  -- Foreign Keys --
+  + **nutritionPlanId: BIGINT (FK)**
+}
+
+entity tblMeal {
+  + **id: BIGINT (PK)**
+  + mealType: VARCHAR
+  + time: TIME
+  -- Foreign Keys --
+  + **dailyMenuId: BIGINT (FK)**
+}
+
+entity tblFoodItem {
+  + **id: BIGINT (PK)**
+  + name: VARCHAR
+  + calories: DOUBLE
+  + protein: DOUBLE
+  + carbs: DOUBLE
+  + fats: DOUBLE
+  + servingSize: VARCHAR
+  -- Recipe Attributes --
+  + instructions: TEXT
+  + preparationTime: INTEGER
+}
+
+entity tblMealFoodItem {
+  + **id: BIGINT (PK)**
+  + quantity: DOUBLE
+  + unit: VARCHAR
+  -- Foreign Keys --
+  + **mealId: BIGINT (FK)**
+  + **foodItemId: BIGINT (FK)**
+}
+
+entity tblFoodLog {
+  + **id: BIGINT (PK)**
+  + logDate: DATETIME
+  + quantity: DOUBLE
+  + unit: VARCHAR
+  -- Foreign Keys --
+  + **userId: BIGINT (FK)**
+  + **foodItemId: BIGINT (FK)**
+}
+
+entity tblActivity {
+  + **id: BIGINT (PK)**
+  + name: VARCHAR
+  + caloriesBurnedPerHour: DOUBLE
+}
+
+entity tblActivityLog {
+  + **id: BIGINT (PK)**
+  + logDate: DATETIME
+  + durationInMinutes: INTEGER
+  ' caloriesBurned is a derived attribute and has been removed
+  -- Foreign Keys --
+  + **userId: BIGINT (FK)**
+  + **activityId: BIGINT (FK)**
+}
+
+entity tblReport {
+  + **id: BIGINT (PK)**
+  + reportType: VARCHAR
+  + generatedDate: DATETIME
+  + content: TEXT
+  -- Foreign Keys --
+  + **userId: BIGINT (FK)**
+}
+
+entity tblSuggestion {
+  + **id: BIGINT (PK)**
+  + suggestionText: TEXT
+  + createdDate: DATETIME
+  + category: VARCHAR
+  -- Foreign Keys --
+  + **userId: BIGINT (FK)**
+}
+
+' Relationships
+tblUser "1" -- "N" tblGoal
+tblUser "1" -- "N" tblNutritionPlan
+tblUser "1" -- "N" tblReport
+tblUser "1" -- "N" tblSuggestion
+tblUser "1" -- "N" tblFoodLog
+tblUser "1" -- "N" tblActivityLog
+
+tblNutritionPlan "1" -- "N" tblDailyMenu
+tblDailyMenu "1" -- "N" tblMeal
+tblMeal "1" -- "N" tblMealFoodItem
+
+tblFoodItem "1" -- "N" tblMealFoodItem
+tblFoodItem "1" -- "N" tblFoodLog
+
+tblActivity "1" -- "N" tblActivityLog
+
+@enduml

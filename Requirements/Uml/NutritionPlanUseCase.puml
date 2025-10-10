@@ -1,0 +1,37 @@
+@startuml NutritionPlanUseCase
+
+' Sơ đồ Use Case chi tiết cho chức năng "Quản lý Kế hoạch Dinh dưỡng"
+
+left to right direction
+
+' --- Định nghĩa Actors ---
+actor User
+
+' --- Định nghĩa Use Cases ---
+rectangle "Manage Nutrition Plan" {
+    usecase UC_Plan as "Manage Nutrition Plan"
+
+    ' Use cases con (phân rã)
+    usecase UC_CreatePlan as "Create New Plan"
+    usecase UC_SelectSample as "Select Sample Plan"
+    usecase UC_DefineDetails as "Define Plan Details"
+    usecase UC_ViewSummary as "View Plan Summary"
+    usecase UC_GenerateList as "Generate Shopping List"
+
+    ' Use case trừu tượng
+    usecase UC_ChoosePlan as "Choose Plan" <<abstract>>
+
+    ' Mối quan hệ
+    User -- UC_Plan
+
+    UC_Plan .> UC_ChoosePlan : <<include>>
+    UC_ChoosePlan <|-- UC_CreatePlan
+    UC_ChoosePlan <|-- UC_SelectSample
+
+    UC_CreatePlan .> UC_DefineDetails : <<include>>
+
+    UC_Plan .> UC_ViewSummary : <<include>>
+    UC_Plan .> UC_GenerateList : <<include>>
+}
+
+@enduml

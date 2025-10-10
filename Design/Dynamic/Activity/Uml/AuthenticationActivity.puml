@@ -1,0 +1,50 @@
+@startuml AuthenticationActivity
+' Authentication Activity Diagram
+
+title Biểu đồ Hoạt động cho Module Xác thực
+
+start
+
+:Người dùng truy cập hệ thống;
+
+if (Đã có tài khoản?) then (chưa)
+    :Hiển thị trang đăng ký;
+    :Người dùng nhập thông tin (tên, email, mật khẩu);
+    :Người dùng nhấn nút "Đăng ký";
+    :Hệ thống nhận yêu cầu;
+    :validateRegistration(dto): boolean;
+    if (Thông tin hợp lệ?) then (hợp lệ)
+        :checkUserExists(email): boolean;
+        if (Tài khoản chưa tồn tại?) then (chưa)
+            :createUser(dto): User;
+            :saveUser(user): void;
+            :Đăng ký thành công;
+            :Chuyển hướng đến trang chính;
+            stop
+        else (đã tồn tại)
+            :Hiển thị lỗi "Email đã tồn tại";
+            :Hiển thị lại trang đăng ký;
+        endif
+    else (không hợp lệ)
+        :Hiển thị lỗi xác thực;
+        :Hiển thị lại trang đăng ký;
+    endif
+else (rồi)
+    :Hiển thị trang đăng nhập;
+    :Người dùng nhập thông tin (email, mật khẩu);
+    :Người dùng nhấn nút "Đăng nhập";
+    :Hệ thống nhận yêu cầu;
+    :authenticateUser(dto): boolean;
+    if (Xác thực thành công?) then (thành công)
+        :Tạo phiên làm việc (session);
+        :Chuyển hướng đến trang chính;
+        stop
+    else (thất bại)
+        :Hiển thị lỗi "Sai thông tin đăng nhập";
+        :Hiển thị lại trang đăng nhập;
+    endif
+endif
+
+end
+
+@enduml

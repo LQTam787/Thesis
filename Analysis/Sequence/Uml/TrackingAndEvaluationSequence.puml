@@ -1,0 +1,54 @@
+@startuml TrackingAndEvaluationSequence
+' Tracking and Evaluation Sequence Diagram
+
+title Biểu đồ tuần tự: Theo dõi và Đánh giá Kế hoạch Dinh dưỡng
+
+actor NgườiDùng as User
+participant "Giao diện Theo dõi" as UI
+participant "Bộ điều khiển Theo dõi" as Controller
+participant "AI Engine" as AIEngine
+entity "Nhật ký Ăn uống" as LogEntry
+entity "Hoạt động Thể chất" as Activity
+entity "Kế hoạch Dinh dưỡng" as Plan
+
+User -> UI: 1. Chọn chức năng "Theo dõi và Đánh giá"
+activate UI
+
+UI -> Controller: 2. Yêu cầu hiển thị giao diện theo dõi
+activate Controller
+Controller -> UI: 3. Trả về giao diện
+deactivate Controller
+
+User -> UI: 4. Nhập dữ liệu (ăn uống, hoạt động)
+UI -> Controller: 5. Gửi dữ liệu theo dõi
+activate Controller
+
+Controller -> AIEngine: 6. Gửi dữ liệu để phân tích (hình ảnh, văn bản)
+activate AIEngine
+AIEngine --> Controller: 7. Trả về kết quả nhận dạng và ước tính dinh dưỡng
+deactivate AIEngine
+
+Controller -> LogEntry: 8. Lưu nhật ký ăn uống
+activate LogEntry
+LogEntry --> Controller: 9. Xác nhận lưu
+deactivate LogEntry
+
+Controller -> Activity: 10. Lưu hoạt động thể chất
+activate Activity
+Activity --> Controller: 11. Xác nhận lưu
+deactivate Activity
+
+Controller -> Plan: 12. Lấy dữ liệu kế hoạch
+activate Plan
+Plan --> Controller: 13. Trả về dữ liệu kế hoạch
+deactivate Plan
+
+Controller -> Controller: 14. So sánh dữ liệu thực tế và kế hoạch
+Controller -> Controller: 15. Tạo báo cáo, biểu đồ và gợi ý
+
+Controller -> UI: 16. Gửi kết quả phân tích
+UI -> User: 17. Hiển thị báo cáo và gợi ý
+deactivate Controller
+deactivate UI
+
+@enduml

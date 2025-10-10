@@ -1,0 +1,34 @@
+@startuml ObjectManagementState
+' Generic Object Management State Diagram
+
+title Biểu đồ Trạng thái - Quản lý Đối tượng (Tổng quát)
+
+[*] --> XemDanhSach
+
+state XemDanhSach : "Xem Danh sách Đối tượng"
+state HienThiFormThem : "Hiển thị Form Thêm mới"
+state DangXuLyThem : "Đang xử lý Thêm mới"
+state HienThiFormSua : "Hiển thị Form Sửa"
+state DangXuLySua : "Đang xử lý Cập nhật"
+state XacNhanXoa : "Hiển thị Xác nhận Xóa"
+state DangXuLyXoa : "Đang xử lý Xóa"
+
+XemDanhSach --> HienThiFormThem : Nhấn nút 'Thêm mới'
+HienThiFormThem --> DangXuLyThem : Gửi form
+HienThiFormThem --> XemDanhSach : Hủy bỏ
+DangXuLyThem --> XemDanhSach : Thêm thành công
+DangXuLyThem --> HienThiFormThem : Thêm thất bại (hiển thị lỗi)
+
+XemDanhSach --> HienThiFormSua : Chọn 'Sửa' một đối tượng
+HienThiFormSua --> DangXuLySua : Gửi form
+HienThiFormSua --> XemDanhSach : Hủy bỏ
+DangXuLySua --> XemDanhSach : Cập nhật thành công
+DangXuLySua --> HienThiFormSua : Cập nhật thất bại (hiển thị lỗi)
+
+XemDanhSach --> XacNhanXoa : Chọn 'Xóa' một đối tượng
+XacNhanXoa --> DangXuLyXoa : Xác nhận
+XacNhanXoa --> XemDanhSach : Hủy bỏ
+DangXuLyXoa --> XemDanhSach : Xóa thành công
+DangXuLyXoa --> XemDanhSach : Xóa thất bại (hiển thị lỗi)
+
+@enduml

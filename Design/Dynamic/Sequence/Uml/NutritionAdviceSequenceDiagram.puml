@@ -1,0 +1,61 @@
+@startuml NutritionAdviceSequenceDiagram
+
+!theme vibrant
+
+title Biểu đồ Tuần tự cho Chức năng Tư vấn Dinh dưỡng
+
+actor User
+
+participant NutritionAdviceUI as UI <<Boundary>>
+participant NutritionAdviceController as Controller <<Control>>
+participant NutritionAdviceService as Service <<Control>>
+participant AIServiceClient as AIClient <<Control>>
+database Database
+
+User -> UI: getUserInput("Tôi muốn giảm 5kg...")
+activate UI
+
+UI -> Controller: askAI(userId, query)
+activate Controller
+
+Controller -> Service: generateSuggestion(userId, query)
+activate Service
+
+Service -> Database: findUserById(userId)
+activate Database
+Database --> Service: User
+deactivate Database
+
+Service -> Database: findGoalByUser(user)
+activate Database
+Database --> Service: Goal
+deactivate Database
+
+Service -> AIClient: getCompletion(prompt)
+activate AIClient
+
+' Giả lập cuộc gọi đến một dịch vụ AI bên ngoài
+AIClient --> AIClient: Gửi yêu cầu đến AI Service
+AIClient <-- AIClient: Nhận kết quả
+
+deactivate AIClient
+
+Service <-- AIClient: suggestionText
+
+Service -> Database: save(new Suggestion(suggestionText))
+activate Database
+Database --> Service: savedSuggestion
+deactivate Database
+
+Controller <-- Service: savedSuggestion
+deactivate Service
+
+UI <-- Controller: ResponseEntity<SuggestionDto>
+deactivate Controller
+
+UI -> UI: displaySuggestions(suggestions)
+
+User <-- UI: Hiển thị gợi ý
+deactivate UI
+
+@enduml

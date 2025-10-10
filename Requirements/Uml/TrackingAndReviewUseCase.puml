@@ -1,0 +1,45 @@
+@startuml TrackingAndReviewUseCase
+
+' Sơ đồ Use Case chi tiết cho chức năng "Theo dõi và Đánh giá"
+
+left to right direction
+
+' --- Định nghĩa Actors ---
+actor User
+rectangle "AI Nutrition System" {
+    actor "AI/NLP System" as AISystem
+}
+
+' --- Định nghĩa Use Cases ---
+rectangle "Track & Review Progress" {
+    usecase UC_Track as "Track & Review Progress"
+
+    ' Use cases con (phân rã)
+    usecase UC_LogMeals as "Log Meals"
+    usecase UC_LogActivity as "Log Physical Activity"
+    usecase UC_ViewReports as "View Progress Reports"
+
+    ' Use cases con của Log Meals
+    usecase UC_LogText as "Log by Text"
+    usecase UC_LogPhoto as "Log by Photo"
+    usecase UC_LogVoice as "Log by Voice"
+
+    ' Mối quan hệ
+    User -- UC_Track
+
+    UC_Track .> UC_LogMeals : <<include>>
+    UC_Track .> UC_LogActivity : <<include>>
+    UC_Track .> UC_ViewReports : <<include>>
+
+    ' Tổng quát hóa cho Log Meals
+    UC_LogMeals <|-- UC_LogText
+    UC_LogMeals <|-- UC_LogPhoto
+    UC_LogMeals <|-- UC_LogVoice
+
+    ' Tương tác với hệ thống AI
+    UC_LogPhoto ..> AISystem : <<invoke>>
+    UC_LogVoice ..> AISystem : <<invoke>>
+    UC_ViewReports ..> AISystem : <<invoke>>
+}
+
+@enduml

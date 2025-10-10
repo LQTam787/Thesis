@@ -1,0 +1,50 @@
+@startuml AdminAddObjectSequence
+' Sequence Diagram for Admin Adding a New Object
+
+title Biểu đồ Tuần tự - Quản trị viên Thêm Đối tượng mới
+
+actor Admin
+participant ":AdminDashboardUI" as DashboardUI
+participant ":ObjectManagementUI" as ObjectUI
+participant ":ObjectController" as Controller
+participant ":ObjectService" as Service
+participant ":ObjectRepository" as Repository
+participant ":AI_NLP_Service" as AIService
+
+Admin -> DashboardUI: 1. Chọn loại đối tượng để quản lý
+activate DashboardUI
+DashboardUI -> ObjectUI: 2. Yêu cầu hiển thị giao diện quản lý
+activate ObjectUI
+ObjectUI --> Admin: 3. Hiển thị danh sách đối tượng và tùy chọn 'Thêm mới'
+
+Admin -> ObjectUI: 4. Nhấn nút 'Thêm mới'
+ObjectUI --> Admin: 5. Hiển thị form nhập thông tin đối tượng
+
+Admin -> ObjectUI: 6. Nhập thông tin và nhấn 'Lưu'
+ObjectUI -> Controller: 7. createObject(objectData)
+activate Controller
+
+Controller -> Service: 8. saveObject(objectData)
+activate Service
+
+Service -> Repository: 9. save(objectEntity)
+activate Repository
+Repository --> Service: 10. return savedObject
+deactivate Repository
+
+Service -> AIService: 11. notifyDataChanged(savedObject)
+activate AIService
+AIService --> Service: 12. ack
+deactivate AIService
+
+Service --> Controller: 13. return result
+deactivate Service
+
+Controller --> ObjectUI: 14. return success status
+deactivate Controller
+
+ObjectUI --> Admin: 15. Hiển thị thông báo thành công và cập nhật danh sách
+deactivate ObjectUI
+deactivate DashboardUI
+
+@enduml

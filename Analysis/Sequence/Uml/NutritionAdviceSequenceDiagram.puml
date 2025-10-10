@@ -1,0 +1,78 @@
+@startuml NutritionAdviceSequenceDiagram
+
+title Biểu đồ Tuần tự Phân tích - Chức năng Tư vấn Dinh dưỡng AI
+
+actor "Người dùng" as User
+participant "NutritionAdviceUI" as UI <<Boundary>>
+participant "NutritionAdviceController" as Controller <<Control>>
+participant "AIEngine" as AI <<Control>>
+participant "User" as UserEntity <<Entity>>
+participant "FoodDatabase" as DB <<Entity>>
+participant "NutritionPlan" as PlanEntity <<Entity>>
+
+autonumber
+
+User -> UI: 1. chọnChứcNăngTưVấn()
+activate UI
+
+UI -> Controller: 2. yêuCầuTưVấn()
+activate Controller
+
+Controller -> UI: 3. hiểnThịGiaoDiệnChat()
+deactivate Controller
+
+User -> UI: 4. nhậpThôngTin(mục tiêu, đặc điểm cá nhân)
+
+UI -> Controller: 5. gửiYêuCầuTưVấn(dữ liệu)
+activate Controller
+
+Controller -> UserEntity: 6. lấyThôngTinHồSơ(userId)
+activate UserEntity
+UserEntity --> Controller: 7. trảVềThôngTinHồSơ()
+deactivate UserEntity
+
+Controller -> AI: 8. xửLýYêuCầu(dữ liệu, hồ sơ)
+activate AI
+
+AI -> AI: 9. phânTíchNLP(dữ liệu)
+AI -> AI: 10. tínhToánNhuCầuDinhDưỡng()
+
+AI -> DB: 11. truyVấnThựcPhẩmPhùHợp()
+activate DB
+DB --> AI: 12. trảVềDanhSáchThựcPhẩm()
+deactivate DB
+
+AI -> PlanEntity: 13. tạoKếHoạchDinhDưỡng()
+activate PlanEntity
+PlanEntity --> AI: 14. trảVềKếHoạch()
+deactivate PlanEntity
+
+AI --> Controller: 15. trảVềKếHoạchDinhDưỡng()
+deactivate AI
+
+Controller -> UI: 16. hiểnThịKếHoạch(kế hoạch)
+
+User -> UI: 17. yêuCầuChỉnhSửa(thay đổi)
+
+UI -> Controller: 18. gửiYêuCầuChỉnhSửa(thay đổi)
+Controller -> AI: 19. xửLýChỉnhSửa(kế hoạch, thay đổi)
+... Lặp lại các bước xử lý và tạo kế hoạch mới ...
+AI --> Controller: 20. trảVềKếHoạchĐãChỉnhSửa()
+Controller -> UI: 21. hiểnThịKếHoạchMới()
+
+User -> UI: 22. chấpNhậnKếHoạch()
+
+UI -> Controller: 23. lưuKếHoạch()
+activate Controller
+
+Controller -> PlanEntity: 24. lưu(kế hoạch)
+activate PlanEntity
+PlanEntity --> Controller: 25. xácNhậnLưu()
+deactivate PlanEntity
+
+Controller -> UI: 26. thôngBáoLưuThànhCông()
+deactivate Controller
+
+deactivate UI
+
+@enduml
