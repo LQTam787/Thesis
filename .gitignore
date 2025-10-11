@@ -6,3 +6,6 @@
 
 # Copilot-specific files
 .github/
+
+# Cursor-specific files
+.cursor/
