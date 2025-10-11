@@ -3,3 +3,6 @@
 
 # Windsurf-specific files
 .windsurf/
+
+# Copilot-specific files
+.github/instructions/
