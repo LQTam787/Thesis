@@ -9,3 +9,6 @@
 
 # Cursor-specific files
 .cursor/
+
+# Trae-specific files
+.trae/
