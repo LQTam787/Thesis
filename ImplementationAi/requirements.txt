@@ -1,7 +1,0 @@
-tensorflow
-flask
-transformers
-torch
-Pillow
-pandas
-scikit-learn
