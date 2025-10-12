@@ -1,4 +1,4 @@
-### **I. Giai đoạn Phân tích và Thiết kế (Analysis & Design)**
+# **I. Giai đoạn Phân tích và Thiết kế (Analysis & Design)**
 
 - [x] **Thiết kế Biểu đồ Use Case (Use Case Diagram)**
 - [x] **Thiết kế Biểu đồ Lớp Thực thể (Entity Class Diagram - Analysis & Design)**
@@ -15,7 +15,7 @@
 
 - [x] **Khởi tạo dự án Backend**: Thiết lập dự án Spring Boot với Maven, cấu trúc thư mục và dependencies.
 - [x] **Cấu hình Cơ sở dữ liệu**: Cấu hình kết nối MySQL và khởi tạo schema.
-- [ ] **Thiết lập Module/Interface AI**: Chuẩn bị giao diện để tích hợp với dịch vụ AI/NLP (hiện tại là mock service).
+- [x] **Thiết lập Module/Interface AI**: Chuẩn bị giao diện để tích hợp với dịch vụ AI/NLP (hiện tại là mock service).
 
 ### **III. Giai đoạn Phát triển (Implementation)**
 
@@ -42,7 +42,7 @@
 - [x] **Phân quyền (Authorization)**: Triển khai phân quyền chi tiết cho các vai trò (USER, ADMIN).
 - [x] **Hoàn thiện xử lý ngoại lệ bảo mật**: Tùy chỉnh các response cho lỗi 401 (Unauthorized) và 403 (Forbidden).
 
-### **VI. Chức năng Quản trị viên (Admin Functions)**
+### **V. Chức năng Quản trị viên (Admin Functions)**
 
 - [x] **Xây dựng cơ sở hạ tầng cho Admin**:
     - [x] Tạo `AdminController`, `AdminService`, và `AdminServiceImpl`.
@@ -72,17 +72,29 @@
     - [x] API cập nhật mục tiêu.
     - [x] API xóa mục tiêu.
 
-### **V. Giai đoạn Kiểm thử (Testing)**
+### **VI. Giai đoạn Phát triển Module AI (AI Module Development)**
 
-- [ ] **Unit Tests**:
-    - [ ] Viết Unit Test cho tầng `Service`.
-    - [ ] Viết Unit Test cho tầng `Controller`.
+- [x] **Thiết kế API cho AI Service**: Định nghĩa các endpoint REST/gRPC cho việc tương tác với các mô hình AI/ML.
+- [x] **Triển khai Mô hình NLP**: Phát triển và tích hợp mô hình xử lý ngôn ngữ tự nhiên để phân tích yêu cầu người dùng.
+- [x] **Triển khai Mô hình Vision**: Phát triển và tích hợp mô hình thị giác máy tính để nhận dạng thực phẩm từ hình ảnh.
+- [x] **Triển khai Mô hình Recommendation**: Phát triển và tích hợp mô hình gợi ý để tạo thực đơn và lời khuyên dinh dưỡng.
+- [x] **Tích hợp Backend Java với AI Service**: Gọi các API của AI Service từ Backend Spring Boot.
+- [x] **Cấu hình Môi trường AI/ML**: Cập nhật `requirements.txt` và thiết lập môi trường chạy cho các mô hình AI.
+- [x] **Tạo và quản lý Dataset cho AI**: Xây dựng các script để thu thập, tiền xử lý và quản lý dữ liệu cho việc huấn luyện và đánh giá mô hình AI.
+
+### **VII. Giai đoạn Kiểm thử (Testing)**
+
+- [x] **Unit Tests**:
+    - [x] Viết Unit Test cho tầng `Service`.
+    - [x] Viết Unit Test cho tầng `Controller`.
+    - [x] Viết Unit Test cho các thành phần của module AI.
 - [ ] **Integration Tests**:
     - [ ] Viết Integration Test cho luồng xác thực (Authentication Flow).
     - [ ] Viết Integration Test cho các luồng nghiệp vụ chính (VD: tạo và quản lý kế hoạch dinh dưỡng).
+    - [ ] Viết Integration Test cho các luồng tương tác với module AI.
 
-### **VI. Giai đoạn Hoàn thiện (Finalization)**
+### **VIII. Giai đoạn Hoàn thiện (Finalization)**
 
-- [ ] **Tài liệu hóa API**: Sử dụng Swagger/OpenAPI để tạo tài liệu cho các endpoint.
-- [ ] **Cập nhật README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API.
+- [ ] **Tài liệu hóa API**: Sử dụng Swagger/OpenAPI để tạo tài liệu cho các endpoint, bao gồm cả các API của AI Service.
+- [ ] **Cập nhật README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API, đặc biệt là hướng dẫn cài đặt và chạy module AI.
 - [ ] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.

@@ -1,28 +1,19 @@
 package com.nutrition.ai.nutritionaibackend.service;
 
-import com.nutrition.ai.nutritionaibackend.model.domain.Suggestion;
+import com.nutrition.ai.nutritionaibackend.dto.SuggestionDto;
 import com.nutrition.ai.nutritionaibackend.model.domain.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
- * Service Interface for managing {@link Suggestion}.
+ * Service Interface for managing {@link com.nutrition.ai.nutritionaibackend.model.domain.Suggestion}.
  */
 public interface SuggestionService {
 
-    /**
-     * Save a suggestion.
-     *
-     * @param suggestion the entity to save.
-     * @return the persisted entity.
-     */
-    Suggestion save(Suggestion suggestion);
+    SuggestionDto save(SuggestionDto suggestionDto);
 
-    /**
-     * Find all suggestions for a specific user.
-     *
-     * @param user the user to find suggestions for.
-     * @return a list of suggestions.
-     */
-    List<Suggestion> findAllByUser(User user);
+    List<SuggestionDto> findAllByUser(User user);
+
+    Map<String, Object> getAiRecommendations(Map<String, Object> userProfile, Map<String, Object> dietaryPreferences, Map<String, Object> healthGoals);
 }

@@ -25,9 +25,11 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodItem save(FoodItem foodItem) {
-        // If the food item has a recipe, ensure the bidirectional relationship is set
+        // If the food item has a recipe, ensure the bidirectional relationship is set and the recipe is saved
         if (foodItem.getRecipe() != null) {
             foodItem.getRecipe().setFoodItem(foodItem);
+            // Save the recipe first if it's new or updated
+            recipeRepository.save(foodItem.getRecipe());
         }
         return foodItemRepository.save(foodItem);
     }

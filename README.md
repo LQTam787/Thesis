@@ -157,3 +157,47 @@ Hệ thống Tư vấn Dinh dưỡng AI là một ứng dụng web giúp ngườ
     - Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
     - Chạy lệnh sau: `mvn spring-boot:run`.
     - Backend sẽ khởi động và chạy tại `http://localhost:8080`.
+
+### AI/ML (Python, TensorFlow)
+
+1.  **Yêu cầu**:
+    - Python 3.8 hoặc mới hơn.
+
+2.  **Cấu hình và Cài đặt**:
+    - Điều hướng đến thư mục `ImplementationAi`.
+    - Tạo môi trường ảo: `python -m venv venv`.
+    - Kích hoạt môi trường ảo (trên Windows): `.\venv\Scripts\activate`.
+    - Kích hoạt môi trường ảo (trên Linux/macOS): `source venv/bin/activate`.
+    - Cài đặt các thư viện cần thiết: `pip install -r requirements.txt`.
+
+3.  **Chạy ứng dụng AI**:
+    - Điều hướng đến thư mục `ImplementationAi/src`.
+    - Chạy lệnh sau: `python app.py`.
+    - AI Service sẽ khởi động và chạy tại `http://localhost:5000`.
+
+### Quản lý Dữ liệu AI/ML
+
+1.  **Thu thập dữ liệu giả lập**: Để tạo các tệp dữ liệu giả lập (mock data) cho NLP, Vision và Recommendation, hãy điều hướng đến thư mục `ImplementationAi/src` và chạy:
+    `python data_collector.py`
+
+2.  **Tiền xử lý dữ liệu**: Sau khi thu thập dữ liệu, để tiền xử lý chúng, hãy điều hướng đến thư mục `ImplementationAi/src` và chạy:
+    `python data_preprocessor.py`
+
+3.  **Tải dữ liệu**: Các mô hình AI trong `nlp_service.py`, `vision_service.py` và `recommendation_service.py` sẽ sử dụng `dataset_manager.py` để tải dữ liệu đã được tiền xử lý. Bạn có thể kiểm tra chức năng tải dữ liệu bằng cách chạy:
+    `python dataset_manager.py`
+
+### Kiểm thử (Testing)
+
+#### Backend (Spring Boot)
+
+1.  **Chạy Unit Tests**:
+    - Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
+    - Chạy lệnh sau: `mvn test`.
+    - Maven sẽ tự động tìm và chạy tất cả các Unit Tests trong thư mục `src/test/java`.
+
+#### AI/ML (Python)
+
+1.  **Chạy Unit Tests**:
+    - Điều hướng đến thư mục `ImplementationAi/test`.
+    - Chạy lệnh sau: `python -m unittest discover`.
+    - Python unittest runner sẽ tự động tìm và chạy tất cả các tệp kiểm thử bắt đầu bằng `test_`.

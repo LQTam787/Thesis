@@ -3,6 +3,7 @@ package com.nutrition.ai.nutritionaibackend.config;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestTemplate;
 
 /**
  * Application configuration class.
@@ -19,5 +20,15 @@ public class AppConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
+    }
+
+    /**
+     * Creates a RestTemplate bean for making synchronous HTTP requests.
+     *
+     * @return A new instance of RestTemplate.
+     */
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
     }
 }

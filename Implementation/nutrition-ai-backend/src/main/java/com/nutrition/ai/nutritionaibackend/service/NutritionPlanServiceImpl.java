@@ -26,6 +26,10 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
 
     @Override
     public NutritionPlan save(NutritionPlan nutritionPlan) {
+        // Ensure the user associated with the nutrition plan exists
+        User user = userRepository.findById(nutritionPlan.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + nutritionPlan.getUser().getId()));
+        nutritionPlan.setUser(user); // Re-associate managed user entity
         return nutritionPlanRepository.save(nutritionPlan);
     }
 

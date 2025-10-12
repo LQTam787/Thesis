@@ -10,7 +10,6 @@ import com.nutrition.ai.nutritionaibackend.dto.RecipeDto;
 import com.nutrition.ai.nutritionaibackend.dto.RecipeRequestDto;
 import com.nutrition.ai.nutritionaibackend.model.domain.FoodItem;
 import com.nutrition.ai.nutritionaibackend.model.domain.Recipe;
-import com.nutrition.ai.nutritionaibackend.repository.FoodItemRepository;
 import com.nutrition.ai.nutritionaibackend.dto.GoalDto;
 import com.nutrition.ai.nutritionaibackend.model.domain.Goal;
 import com.nutrition.ai.nutritionaibackend.dto.NutritionPlanDto;

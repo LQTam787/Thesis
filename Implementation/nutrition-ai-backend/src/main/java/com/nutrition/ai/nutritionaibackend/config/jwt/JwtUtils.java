@@ -1,12 +1,12 @@
 package com.nutrition.ai.nutritionaibackend.config.jwt;
 
+import com.nutrition.ai.nutritionaibackend.config.ApplicationProperties;
 import com.nutrition.ai.nutritionaibackend.service.impl.UserDetailsImpl;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
@@ -17,11 +17,11 @@ import java.util.Date;
 public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
-    @Value("${nutrition.ai.jwtSecret}")
-    private String jwtSecret;
+    private final ApplicationProperties applicationProperties;
 
-    @Value("${nutrition.ai.jwtExpirationMs}")
-    private int jwtExpirationMs;
+    public JwtUtils(ApplicationProperties applicationProperties) {
+        this.applicationProperties = applicationProperties;
+    }
 
     public String generateJwtToken(Authentication authentication) {
         UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
@@ -29,13 +29,13 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject((userPrincipal.getUsername()))
                 .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+                .setExpiration(new Date((new Date()).getTime() + applicationProperties.getJwt().getJwtExpirationMs()))
                 .signWith(key(), SignatureAlgorithm.HS256)
                 .compact();
     }
 
     private Key key() {
-        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
+        return Keys.hmacShaKeyFor(Decoders.BASE64.decode(applicationProperties.getJwt().getJwtSecret()));
     }
 
     public String getUserNameFromJwtToken(String token) {
