@@ -1,0 +1,25 @@
+@startuml ProfileUseCase
+
+' Sơ đồ Use Case chi tiết cho chức năng "Quản lý Hồ sơ"
+
+left to right direction
+
+' --- Định nghĩa Actors ---
+actor User
+
+' --- Định nghĩa Use Cases ---
+rectangle "Profile Functions" {
+    usecase UC_Profile as "Manage Profile"
+    usecase UC_UpdateInfo as "Update Biometric Info"
+    usecase UC_UpdateGoals as "Update Goals"
+    usecase UC_UpdatePrefs as "Update Food Preferences"
+
+    ' Mối quan hệ
+    User -- UC_Profile
+
+    UC_Profile .> UC_UpdateInfo : <<include>>
+    UC_Profile .> UC_UpdateGoals : <<include>>
+    UC_Profile .> UC_UpdatePrefs : <<include>>
+}
+
+@enduml

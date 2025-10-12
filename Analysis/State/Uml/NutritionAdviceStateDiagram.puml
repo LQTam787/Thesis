@@ -1,0 +1,32 @@
+@startuml NutritionAdviceStateDiagram
+
+title Biểu đồ Trạng thái cho Module Tư vấn Dinh dưỡng AI
+
+[*] --> LoggedIn
+
+state LoggedIn {
+    [*] --> MainScreen : User logs in successfully
+    MainScreen : Chờ người dùng chọn chức năng
+}
+
+MainScreen --> WaitingForInput : selectNutritionAdvice()
+
+state WaitingForInput : Hiển thị giao diện chat, chờ người dùng nhập thông tin
+WaitingForInput --> ProcessingRequest : submitUserInfo(details)
+
+state ProcessingRequest : Xử lý yêu cầu (NLP, tính toán AI, truy vấn DB)
+ProcessingRequest --> DisplayingPlan : planGenerated()
+ProcessingRequest --> InputError : processingFailed()
+
+InputError : Báo lỗi và quay lại chờ nhập liệu
+InputError --> WaitingForInput : acknowledgeError()
+
+state DisplayingPlan : Hiển thị kế hoạch dinh dưỡng, chờ phản hồi
+DisplayingPlan --> ProcessingRequest : requestModification(changes)
+DisplayingPlan --> PlanFinalized : acceptPlan()
+DisplayingPlan --> MainScreen : cancel()
+
+state PlanFinalized : Kế hoạch đã được chấp nhận
+PlanFinalized --> [*]
+
+@enduml

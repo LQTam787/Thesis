@@ -1,0 +1,19 @@
+@startuml ShareStateDiagram
+' title: Biểu đồ Trạng thái - Chức năng Chia sẻ
+
+skinparam state {
+  BackgroundColor<<waiting>> #LightYellow
+  BorderColor #666
+}
+
+state "Chờ chọn nội dung" as WaitingForSelection <<waiting>>
+state "Chờ chọn chế độ chia sẻ" as WaitingForVisibility <<waiting>>
+
+[*] --> WaitingForSelection
+
+WaitingForSelection --> WaitingForVisibility : người dùng chọn một mục (kế hoạch/công thức) và nhấn "Chia sẻ"
+WaitingForVisibility --> WaitingForSelection : người dùng hủy bỏ
+
+WaitingForVisibility --> [*] : người dùng chọn chế độ (Công khai/Bạn bè) và xác nhận
+
+@enduml

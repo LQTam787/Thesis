@@ -1,0 +1,232 @@
+@startuml AdminModuleStaticClassDiagram
+
+' Hide empty members
+hide empty members
+
+' Define colors for different layer
+skinparam class {
+    BorderColor #333333
+    ArrowColor #333333
+}
+skinparam package {
+    BorderColor #333333
+}
+
+package "Giao diện người dùng (Boundary)" <<Frame>> {
+    class AdminDashboardForm {
+        + showDashboard()
+        + navigateToUserManagement()
+        + navigateToFoodManagement()
+        + navigateToActivityManagement()
+        + navigateToPostManagement()
+        + onLogoutClick()
+    }
+
+    class UserManagementForm {
+        - searchKeyword: String
+        + displayUsers(users: List<User>)
+        + onAddUserClick()
+        + onEditUserClick(userId: int)
+        + onDeleteUserClick(userId: int)
+        + onViewUserClick(userId: int)
+    }
+
+    class ViewUserForm {
+        + displayUserDetails(user: User, profile: Profile)
+        + onClose()
+    }
+
+    class EditUserForm {
+        - currentUser: User
+        - currentProfile: Profile
+        + displayUserData(user: User, profile: Profile)
+        + onSaveClick()
+        + onCancelClick()
+    }
+
+    class AddUserForm {
+        + getUserInput(): User
+        + onSubmitClick()
+        + onCancelClick()
+    }
+
+    class EditFoodForm {
+        - currentFood: FoodItem
+        + displayFoodData(food: FoodItem)
+        + onSaveClick()
+        + onCancelClick()
+    }
+
+    class AddFoodForm {
+        + getFoodInput(): FoodItem
+        + onSubmitClick()
+        + onCancelClick()
+    }
+
+    class EditActivityForm {
+        - currentActivity: Activity
+        + displayActivityData(activity: Activity)
+        + onSaveClick()
+        + onCancelClick()
+    }
+
+    class AddActivityForm {
+        + getActivityInput(): Activity
+        + onSubmitClick()
+        + onCancelClick()
+    }
+
+    class FoodManagementForm {
+        - searchKeyword: String
+        + displayFoodItems(foods: List<FoodItem>)
+        + onAddFoodClick()
+        + onEditFoodClick(foodId: int)
+        + onDeleteFoodClick(foodId: int)
+    }
+
+    class ActivityManagementForm {
+        - searchKeyword: String
+        + displayActivities(activities: List<Activity>)
+        + onAddActivityClick()
+        + onEditActivityClick(activityId: int)
+        + onDeleteActivityClick(activityId: int)
+    }
+
+    class PostManagementForm {
+        - searchKeyword: String
+        + displayPosts(posts: List<Recipe>)
+        + onAddPostClick()
+        + onEditPostClick(postId: int)
+        + onDeletePostClick(postId: int)
+        + onViewPostClick(postId: int)
+    }
+
+    class ViewPostForm {
+        + displayPostDetails(post: Recipe)
+        + onClose()
+    }
+
+    class EditPostForm {
+        - currentPost: Recipe
+        + displayPostData(post: Recipe)
+        + onSaveClick()
+        + onCancelClick()
+    }
+
+    class AddPostForm {
+        + getPostInput(): Recipe
+        + onSubmitClick()
+        + onCancelClick()
+    }
+    
+    AdminDashboardForm --> UserManagementForm
+    AdminDashboardForm --> FoodManagementForm
+    AdminDashboardForm --> ActivityManagementForm
+    AdminDashboardForm --> PostManagementForm
+    PostManagementForm --> ViewPostForm
+    PostManagementForm --> EditPostForm
+    PostManagementForm --> AddPostForm
+    ActivityManagementForm --> EditActivityForm
+    ActivityManagementForm --> AddActivityForm
+    FoodManagementForm --> EditFoodForm
+    FoodManagementForm --> AddFoodForm
+    UserManagementForm --> ViewUserForm
+    UserManagementForm --> EditUserForm
+    UserManagementForm --> AddUserForm
+}
+
+package "Truy xuất dữ liệu (DAO)" <<Database>> {
+    interface UserDAO {
+        + findById(id: int): User
+        + findAll(): List<User>
+        + save(user: User): boolean
+        + update(user: User): boolean
+        + delete(id: int): boolean
+    }
+
+    interface FoodItemDAO {
+        + findById(id: int): FoodItem
+        + findAll(): List<FoodItem>
+        + findByName(name: String): List<FoodItem>
+        + save(foodItem: FoodItem): boolean
+        + update(foodItem: FoodItem): boolean
+        + delete(id: int): boolean
+    }
+
+    interface ActivityDAO {
+        + findById(id: int): Activity
+        + findAll(): List<Activity>
+        + save(activity: Activity): boolean
+        + update(activity: Activity): boolean
+        + delete(id: int): boolean
+    }
+
+    interface RecipeDAO {
+        + findById(id: int): Recipe
+        + findAll(): List<Recipe>
+        + save(recipe: Recipe): boolean
+        + update(recipe: Recipe): boolean
+        + delete(id: int): boolean
+    }
+}
+
+package "Thực thể (Entity)" <<Folder>> {
+    class User {
+      username: String
+      password: String
+      email: String
+      role: String
+    }
+
+    class Profile {
+      fullName: String
+      dateOfBirth: Date
+      gender: String
+      height: float
+      weight: float
+      activityLevel: String
+      allergies: String
+      medicalConditions: String
+    }
+
+    User "1" -- "1" Profile : has
+
+    class FoodItem {
+      name: String
+      calories: float
+      protein: float
+      carbs: float
+      fats: float
+      servingSize: String
+    }
+
+    class Recipe {
+      title: String
+      author: String
+      publishDate: Date
+      status: String
+      content: String
+      instructions: String
+      preparationTime: int
+    }
+
+    class Activity {
+      name: String
+      caloriesBurnedPerHour: float
+    }
+    
+    FoodItem "1" -- "1" Recipe : has
+}
+
+' Relationships between layers
+UserManagementForm ..> UserDAO : uses
+FoodManagementForm ..> FoodItemDAO : uses
+ActivityManagementForm ..> ActivityDAO : uses
+PostManagementForm ..> RecipeDAO : uses
+
+UserDAO ..> User : manages
+FoodItemDAO ..> FoodItem : manages
+ActivityDAO ..> Activity : manages
+RecipeDAO ..> Recipe : manages
+
+@enduml

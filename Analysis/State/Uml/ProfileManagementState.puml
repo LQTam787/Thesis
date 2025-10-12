@@ -1,0 +1,17 @@
+@startuml ProfileManagementStateDiagram
+title Biểu đồ trạng thái cho chức năng Quản lý hồ sơ cá nhân
+
+state "Đang ở màn hình chính" as MainScreen
+state "Đang xem hồ sơ" as ViewingProfile
+state "Đang chỉnh sửa hồ sơ" as EditingProfile
+
+[*] --> MainScreen
+MainScreen --> ViewingProfile : Người dùng chọn "Xem hồ sơ"
+ViewingProfile --> MainScreen : Người dùng chọn "Quay lại"
+ViewingProfile --> EditingProfile : Người dùng chọn "Chỉnh sửa"
+
+EditingProfile --> ViewingProfile : Người dùng chọn "Hủy"
+EditingProfile --> EditingProfile : Người dùng chọn "Lưu" [Dữ liệu không hợp lệ] / Hiển thị lỗi
+EditingProfile --> ViewingProfile : Người dùng chọn "Lưu" [Dữ liệu hợp lệ] / Lưu thành công
+
+@enduml

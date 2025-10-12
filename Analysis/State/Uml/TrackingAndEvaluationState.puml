@@ -1,0 +1,25 @@
+@startuml TrackingAndEvaluationState
+' Tracking and Evaluation State Diagram
+
+title Biểu đồ trạng thái: Theo dõi và Đánh giá Kế hoạch Dinh dưỡng
+
+[*] --> LoggedIn
+
+state LoggedIn {
+    [*] --> MainDashboard
+
+    state MainDashboard : Chờ chọn chức năng
+    state TrackingInterface : Chờ nhập liệu theo dõi
+    state ProcessingData : Xử lý dữ liệu
+    state DisplayingResults : Hiển thị kết quả và gợi ý
+
+    MainDashboard --> TrackingInterface : Người dùng chọn "Theo dõi và Đánh giá"
+    TrackingInterface --> ProcessingData : Người dùng nhập và gửi dữ liệu (văn bản, hình ảnh, giọng nói)
+    ProcessingData --> DisplayingResults : AI xử lý và hệ thống tạo báo cáo
+    DisplayingResults --> MainDashboard : Người dùng quay lại trang chính
+    DisplayingResults --> TrackingInterface : Người dùng chọn tiếp tục nhập liệu
+}
+
+LoggedIn --> [*] : Người dùng đăng xuất
+
+@enduml

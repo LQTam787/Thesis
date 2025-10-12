@@ -1,0 +1,123 @@
+@startuml NutritionPlanAnalysisClass
+
+' Lớp biên (Boundary Classes)
+class NutritionAdviceUI {
+  +in_userQuery
+  +out_aiResponse
+  +sub_sendQuery
+  +sub_editPlanRequest
+}
+
+class SelectPlanUI {
+  +out_planList
+  +sub_selectSamplePlan
+  +sub_createNewPlan
+}
+
+class CreatePlanUI {
+  +in_planName
+  +in_planDescription
+  +in_mealDetails
+  +out_totalCalories
+  +out_totalMacros
+  +out_warnings
+  +out_shoppingList
+  +out_reminders
+  +sub_savePlan
+}
+
+class TrackingUI {
+  +in_logEntry
+  +in_activityLog
+  +out_progressChart
+  +out_nutritionReport
+  +out_adjustmentSuggestions
+  +sub_submitLog
+}
+
+' Lớp thực thể (Entity Classes)
+entity User {
+  +tenDangNhap
+  +email
+  +matKhau
+  +tenThat
+  +ngaySinh
+  +gioiTinh
+  +chieuCao
+  +canNang
+  +mucDoVanDong
+  +benhLyDiUng
+  +soThichAnUong
+}
+
+entity Goal {
+  +loaiMucTieu
+  +canNangMucTieu
+  +thoiGianBatDau
+  +thoiGianKetThuc
+  +trangThai
+  +nhuCauCaloMacroDeXuat
+}
+
+entity Plan {
+  +tenKeHoach
+  +moTa
+  +ngayBatDau
+  +ngayKetThuc
+  +tongCaloMucTieu
+  +macroMucTieu
+  +trangThai
+  +mucDoCongKhai
+  +createSamplePlanFromGoal(goal)
+  +calculateNutritionInfo()
+  +generateShoppingList()
+}
+
+entity RecipeFoodItem {
+  +ten
+  +moTa
+  +nguyenLieu
+  +huongDanCheBien
+  +thongTinDinhDuong
+  +nguon
+  +findSubstituteFood(originalFood, userRequest)
+}
+
+entity LogEntry {
+  +ngay
+  +thoiGian
+  +loaiBuaAn
+  +khoiLuong
+  +caloThucTe
+  +macroThucTe
+  +generateNutritionReport(logEntries)
+  +generateProgressChart(logEntries)
+  +generateAdjustmentSuggestion(plan, logEntries)
+}
+
+entity Activity {
+  +ngay
+  +loaiHoatDong
+  +thoiGian
+  +cuongDo
+  +caloTieuHaoUocTinh
+}
+
+' Quan hệ giữa các lớp
+User "1" -- "0..*" Goal : co
+User "1" -- "0..*" Plan : tao
+User "1" -- "0..*" LogEntry : ghi
+User "1" -- "0..*" Activity : thuc hien
+
+Plan "1" -- "1..*" RecipeFoodItem : bao gom
+LogEntry "1" -- "1..*" RecipeFoodItem : chi tiet
+
+' Quan hệ giữa Lớp biên và Lớp thực thể
+NutritionAdviceUI .> Plan
+NutritionAdviceUI .> RecipeFoodItem
+SelectPlanUI .> Plan
+CreatePlanUI .> Plan
+TrackingUI .> LogEntry
+TrackingUI .> Plan
+
+@enduml

@@ -1,0 +1,39 @@
+@startuml LoginSequenceDiagram
+' Sequence Diagram for User Login
+
+title Biểu đồ Tuần tự cho chức năng Đăng nhập
+
+actor "Người dùng" as User
+participant "Giao diện Đăng nhập" as LoginUI
+participant "Controller Xác thực" as AuthController
+participant "Cơ sở dữ liệu" as DB
+
+User -> LoginUI: 1. Yêu cầu đăng nhập
+activate LoginUI
+
+LoginUI -> User: 2. Hiển thị form đăng nhập
+
+User -> LoginUI: 3. Nhập thông tin (username, password)
+User -> LoginUI: 4. Xác nhận đăng nhập
+
+LoginUI -> AuthController: 5. login(username, password)
+activate AuthController
+
+AuthController -> DB: 6. findUserByUsername(username)
+activate DB
+DB --> AuthController: 7. userRecord
+deactivate DB
+
+alt Người dùng tồn tại và mật khẩu chính xác
+    AuthController -> AuthController: 8. verifyPassword(password, userRecord.hash)
+    AuthController --> LoginUI: 9. loginSuccess(userSession)
+    LoginUI --> User: 10. Thông báo đăng nhập thành công và chuyển hướng
+else Người dùng không tồn tại hoặc mật khẩu sai
+    AuthController --> LoginUI: 9a. loginFailed(error)
+    LoginUI --> User: 10a. Hiển thị thông báo lỗi
+end
+
+deactivate AuthController
+deactivate LoginUI
+
+@enduml

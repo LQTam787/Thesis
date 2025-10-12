@@ -1,0 +1,36 @@
+@startuml TrackingAndReviewActivityDiagram
+
+!theme vibrant
+title Biểu đồ Hoạt động - Theo dõi và Đánh giá Kế hoạch Dinh dưỡng
+
+start
+
+:Người dùng chọn chức năng "Theo dõi và Đánh giá";
+
+if (Người dùng muốn ghi lại hoạt động?) then (Ghi lại hoạt động)
+    :Hệ thống hiển thị giao diện ghi lại hoạt động;
+    :Người dùng nhập thông tin (chụp ảnh, gõ, nói);
+    if (Dữ liệu là hình ảnh?) then (Có)
+        :AI Vision nhận dạng thực phẩm và ước tính dinh dưỡng;
+    else (Không)
+        :AI NLP phân tích văn bản/giọng nói;
+    endif
+    :Hệ thống gọi handleLogFood() hoặc handleLogActivity();
+    :Controller gọi logFood() hoặc logActivity() từ Service;
+    :Service lưu thông tin vào CSDL qua FoodLogDAO/ActivityLogDAO;
+    :Hệ thống xác nhận đã lưu;
+else (Xem báo cáo)
+    :Người dùng yêu cầu xem báo cáo tiến độ;
+    :Hệ thống gọi handleGenerateReport();
+    :Controller gọi generateProgressReport() từ Service;
+    :Service truy xuất dữ liệu từ các DAO (FoodLog, ActivityLog);
+    :Hệ thống so sánh dữ liệu thực tế với kế hoạch;
+    :Tạo Báo cáo và Biểu đồ Tiến độ;
+    :Controller gọi getAISuggestions() để lấy gợi ý;
+    :Service lấy gợi ý từ AI;
+    :Hệ thống hiển thị Báo cáo, Biểu đồ và Gợi ý cho người dùng;
+endif
+
+stop
+
+@enduml

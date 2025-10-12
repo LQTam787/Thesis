@@ -1,0 +1,57 @@
+@startuml ProfileManagementAnalysis
+' Profile Management Analysis Class Diagram
+
+title Biểu đồ lớp phân tích cho Module Quản lý Hồ sơ
+
+' Boundary Class: Represents the user interface for profile management.
+class ProfilePageUI <<Boundary>> {
+  + out_fullName
+  + out_email
+  + out_dateOfBirth
+  + out_gender
+  + out_goalsList
+  + in_height
+  + in_currentWeight
+  + in_activityLevel
+  + in_medicalConditions
+  + in_foodPreferences
+  + sub_saveChanges
+}
+
+' Control Class: Handles the business logic for profile updates.
+class ProfileController <<Control>> {
+  + handleProfileUpdate(userInfo)
+}
+
+' Entity Class: Represents the User.
+class User <<Entity>> {
+  - username
+  - email
+  - password
+  - fullName
+  - dateOfBirth
+  - gender
+  - height
+  - currentWeight
+  - activityLevel
+  - medicalConditions
+  - foodPreferences
+  + updateProfile(details): boolean
+  + getProfileDetails(): UserInfo
+}
+
+' Entity Class: Represents a User's Goal.
+class Goal <<Entity>> {
+  - goalType
+  - targetWeight
+  - startDate
+  - endDate
+  - status
+}
+
+' Relationships
+ProfilePageUI .down.> ProfileController : submits
+ProfileController .down.> User : updates
+User "1" *-- "0..*" Goal : has
+
+@enduml

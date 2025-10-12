@@ -1,0 +1,41 @@
+@startuml ProfileManagementSequenceDiagram
+title Biểu đồ tuần tự cho chức năng Cập nhật hồ sơ cá nhân
+
+actor "Người dùng" as User
+participant "Giao diện Hồ sơ" as ProfileUI
+participant "Lớp điều khiển Hồ sơ" as ProfileController
+participant "Thực thể Người dùng" as UserEntity
+
+User -> ProfileUI: 1. Yêu cầu xem hồ sơ
+activate ProfileUI
+ProfileUI -> ProfileController: 2. Lấy thông tin hồ sơ
+activate ProfileController
+ProfileController -> UserEntity: 3. Lấy dữ liệu người dùng
+activate UserEntity
+UserEntity --> ProfileController: 4. Trả về dữ liệu người dùng
+deactivate UserEntity
+ProfileController --> ProfileUI: 5. Trả về thông tin hồ sơ
+deactivate ProfileController
+ProfileUI --> User: 6. Hiển thị thông tin hồ sơ
+deactivate ProfileUI
+
+User -> ProfileUI: 7. Chọn chỉnh sửa hồ sơ
+activate ProfileUI
+ProfileUI --> User: 8. Hiển thị giao diện chỉnh sửa
+deactivate ProfileUI
+
+User -> ProfileUI: 9. Nhập thông tin mới và lưu
+activate ProfileUI
+ProfileUI -> ProfileController: 10. Gửi dữ liệu cập nhật
+activate ProfileController
+ProfileController -> ProfileController: 11. Xác thực dữ liệu
+ProfileController -> UserEntity: 12. Cập nhật thông tin
+activate UserEntity
+UserEntity --> ProfileController: 13. Xác nhận cập nhật thành công
+deactivate UserEntity
+ProfileController --> ProfileUI: 14. Thông báo thành công
+deactivate ProfileController
+ProfileUI --> User: 15. Hiển thị hồ sơ đã cập nhật và thông báo
+deactivate ProfileUI
+
+@enduml

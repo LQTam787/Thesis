@@ -1,0 +1,5 @@
+com\nutrition\ai\nutritionaibackend\controller\AuthControllerTest.class
+com\nutrition\ai\nutritionaibackend\controller\FoodControllerTest.class
+com\nutrition\ai\nutritionaibackend\controller\ShareControllerTest.class
+com\nutrition\ai\nutritionaibackend\controller\NutritionPlanControllerTest.class
+com\nutrition\ai\nutritionaibackend\controller\AdminControllerTest.class

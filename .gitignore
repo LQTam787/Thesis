@@ -1,0 +1,14 @@
+# IDE-specific files
+.vscode/
+
+# Windsurf-specific files
+.windsurf/
+
+# Copilot-specific files
+.github/
+
+# Cursor-specific files
+.cursor/
+
+# Trae-specific files
+.trae/

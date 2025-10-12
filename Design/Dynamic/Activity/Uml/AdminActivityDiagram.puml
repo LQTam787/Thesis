@@ -1,0 +1,80 @@
+@startuml AdminActivityDiagram
+
+' Title
+title Biểu đồ hoạt động cho chức năng quản trị viên
+
+' Start
+start
+
+' Partition for Admin
+partition "Quản trị viên" {
+    :Truy cập giao diện quản trị;
+    :Đăng nhập vào hệ thống;
+
+    if (Xác thực thành công?) then (yes)
+        :Chọn loại đối tượng cần quản lý
+        (ví dụ: Người dùng, Thực phẩm, Bài tập);
+
+        repeat
+            :Hiển thị danh sách các đối tượng;
+            :Chọn một hành động
+            (Thêm mới, Sửa, Xóa, Xem chi tiết);
+
+            switch (Hành động đã chọn?)
+            case (Thêm mới)
+                :Nhập thông tin cho đối tượng mới;
+                :Xác nhận thêm;
+            case (Sửa)
+                :Chọn một đối tượng từ danh sách;
+                :Chỉnh sửa thông tin của đối tượng;
+                :Xác nhận lưu thay đổi;
+            case (Xóa)
+                :Chọn một đối tượng từ danh sách;
+                :Xác nhận xóa;
+            case (Xem chi tiết)
+                :Chọn một đối tượng từ danh sách;
+                :Hiển thị thông tin chi tiết;
+            endswitch
+
+        repeat while (Tiếp tục quản lý đối tượng này?) is (yes)
+
+    else (no)
+        :Hiển thị thông báo lỗi đăng nhập;
+        stop
+    endif
+}
+
+' Partition for System
+partition "Hệ thống" {
+
+    if (Xác thực thành công?) then (yes)
+        switch (Hành động đã chọn?)
+        case (Thêm mới)
+            :Lưu đối tượng mới vào cơ sở dữ liệu;
+            :Gửi dữ liệu đến hệ thống AI/NLP;
+        case (Sửa)
+            :Cập nhật thông tin đối tượng trong cơ sở dữ liệu;
+            :Gửi dữ liệu đến hệ thống AI/NLP;
+        case (Xóa)
+            :Xóa đối tượng khỏi cơ sở dữ liệu;
+            :Gửi dữ liệu đến hệ thống AI/NLP;
+        case (Xem chi tiết)
+            :Truy xuất và hiển thị dữ liệu;
+        endswitch
+
+        partition "Hệ thống AI/NLP" {
+            :Tiếp nhận dữ liệu mới;
+            :Thực hiện huấn luyện lại mô hình;
+        }
+
+        :Hiển thị thông báo thành công;
+
+    else (no)
+        stop
+    endif
+}
+
+' End
+stop
+
+@enduml

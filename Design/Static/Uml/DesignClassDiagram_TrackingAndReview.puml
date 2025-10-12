@@ -1,0 +1,132 @@
+@startuml DesignClassDiagram_TrackingAndReview
+
+hide empty members
+skinparam classAttributeIconSize 0
+
+' Lớp Giao diện (Boundary)
+package "Giao diện (Boundary)" {
+    class TrackingAndReviewUI {
+        - currentUserId: String
+        + displayLogs(logs: List<Log>)
+        + displayReport(report: Report)
+        + displaySuggestions(suggestions: List<Suggestion>)
+        + showLogCreationForm()
+        + submitFoodLog(): FoodLog
+        + submitActivityLog(): ActivityLog
+        + requestReport(reportType: String): Report
+    }
+}
+
+' Lớp Điều khiển (Control)
+package "Điều khiển (Control)" {
+    class TrackingController {
+        - trackingService: TrackingService
+        + handleLogFood(userId: String, logData: Object)
+        + handleLogActivity(userId: String, logData: Object)
+        + handleGetDailyLogs(userId: String, date: Date)
+        + handleGenerateReport(userId: String, reportType: String)
+        + handleGetSuggestions(userId: String)
+    }
+}
+
+' Lớp Dịch vụ (Service)
+package "Dịch vụ (Service)" {
+    interface TrackingService {
+        + logFood(userId: String, foodLog: FoodLog): FoodLog
+        + logActivity(userId: String, activityLog: ActivityLog): ActivityLog
+        + getLogsForUserByDate(userId: String, date: Date): Map<String, List<Object>>
+        + generateProgressReport(userId: String, type: String): Report
+        + getAISuggestions(userId: String): List<Suggestion>
+    }
+}
+
+' Lớp Truy cập Dữ liệu (DAO)
+package "Truy cập Dữ liệu (DAO)" {
+    interface FoodLogDAO {
+        + findByUserAndDate(userId: String, date: Date): List<FoodLog>
+        + save(log: FoodLog): FoodLog
+    }
+    interface ActivityLogDAO {
+        + findByUserAndDate(userId: String, date: Date): List<ActivityLog>
+        + save(log: ActivityLog): ActivityLog
+    }
+    interface ReportDAO {
+        + findByUserAndType(userId: String, type: String): List<Report>
+        + save(report: Report): Report
+    }
+    interface SuggestionDAO {
+        + findByUser(userId: String): List<Suggestion>
+        + save(suggestion: Suggestion): Suggestion
+    }
+}
+
+' Lớp Thực thể (Entity)
+package "Thực thể (Entity)" {
+    class User {
+      username: String
+    }
+
+    class FoodLog {
+      logId: String
+      logDate: Date
+      quantity: Float
+      unit: String
+    }
+
+    class ActivityLog {
+      logId: String
+      logDate: Date
+      durationInMinutes: Integer
+      caloriesBurned: Integer
+    }
+
+    class Activity {
+      activityId: String
+      name: String
+    }
+
+    class FoodItem {
+      foodId: String
+      name: String
+    }
+
+    class Report {
+      reportId: String
+      reportType: String
+      generatedDate: Date
+      content: String
+    }
+
+    class Suggestion {
+      suggestionId: String
+      suggestionText: String
+      createdDate: Date
+      category: String
+    }
+}
+
+' Định nghĩa các mối quan hệ
+TrackingAndReviewUI ..> TrackingController : uses
+
+TrackingController ..> TrackingService : uses
+
+TrackingService ..> FoodLogDAO : uses
+TrackingService ..> ActivityLogDAO : uses
+TrackingService ..> ReportDAO : uses
+TrackingService ..> SuggestionDAO : uses
+
+FoodLogDAO ..> FoodLog : manages
+ActivityLogDAO ..> ActivityLog : manages
+ReportDAO ..> Report : manages
+SuggestionDAO ..> Suggestion : manages
+
+User "1" -- "0..*" FoodLog : logs
+FoodItem "1" -- "0..*" FoodLog : is logged in
+
+User "1" -- "0..*" ActivityLog : logs
+Activity "1" -- "0..*" ActivityLog : is logged in
+
+User "1" -- "0..*" Report : generates
+User "1" -- "0..*" Suggestion : receives
+
+@enduml

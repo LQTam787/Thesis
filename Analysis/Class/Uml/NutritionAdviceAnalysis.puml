@@ -1,0 +1,69 @@
+@startuml NutritionAdviceAnalysis
+
+!theme vibrant
+
+' Boundary Class
+class NutritionAdviceInterface {
+  +in_userMessage
+  +out_chatHistory
+  +out_mealPlanDisplay
+  +sub_sendMessage
+}
+
+' Entity Classes
+class User {
+  +tenDangNhap
+  +email
+  +matKhau
+  +tenThat
+  +ngaySinh
+  +gioiTinh
+  +chieuCao
+  +canNangHienTai
+  +mucDoVanDong
+  +benhLyDiUng
+}
+
+class Goal {
+  +loaiMucTieu
+  +canNangMucTieu
+  +thoiGianBatDau
+  +thoiGianKetThuc
+  +trangThai
+  +nhuCauCaloDeXuat
+  +nhuCauMacroDeXuat
+  --
+  +createNutritionGoal(userInput)
+  +calculateNutritionalNeeds()
+}
+
+class Plan {
+  +tenKeHoach
+  +moTa
+  +ngayBatDau
+  +ngayKetThuc
+  +trangThai
+  --
+  +generateMealPlan()
+  +modifyMealPlan(modificationRequest)
+}
+
+class RecipeFoodItem {
+  +ten
+  +moTa
+  +nguyenLieu
+  +huongDanCheBien
+  +thongTinDinhDuong
+}
+
+' Relationships
+NutritionAdviceInterface ..> Goal : <<use>>
+NutritionAdviceInterface ..> Plan : <<use>>
+
+User "1" -- "0..*" Goal : has
+User "1" -- "0..*" Plan : creates
+
+Goal "1" -- "1" Plan : leads to
+Plan "1" -- "0..*" RecipeFoodItem : contains
+
+@enduml

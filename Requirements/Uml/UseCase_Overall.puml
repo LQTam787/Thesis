@@ -1,0 +1,62 @@
+@startuml UseCase_Overall
+
+' Sơ đồ Use Case tổng quan cho Hệ thống Tư vấn Dinh dưỡng AI
+
+left to right direction
+
+' --- Định nghĩa Actors ---
+actor Guest
+actor User
+actor Admin
+
+rectangle "AI Nutrition System" {
+    actor "AI/NLP System" as AISystem
+}
+
+' --- Định nghĩa Use Cases ---
+rectangle "User Functions" {
+    usecase "Manage Profile" as UC_Profile
+    usecase "Get AI Nutrition Advice" as UC_Advice
+    usecase "Manage Nutrition Plan" as UC_Plan
+    usecase "Track & Review Progress" as UC_Track
+    usecase "Share Content" as UC_Share
+}
+
+rectangle "Authentication" {
+    usecase "Register" as UC_Register
+    usecase "Login" as UC_Login
+    usecase "Logout" as UC_Logout
+}
+
+rectangle "Admin Functions" {
+    usecase "Manage Users" as UC_ManageUsers
+    usecase "Manage Data" as UC_ManageData
+}
+
+' --- Mối quan hệ giữa Actors và Use Cases ---
+
+' Guest
+Guest -- UC_Register
+Guest -- UC_Login
+
+' User (và Admin kế thừa)
+User -- UC_Login
+User -- UC_Logout
+User -- UC_Profile
+User -- UC_Advice
+User -- UC_Plan
+User -- UC_Track
+User -- UC_Share
+
+' Admin
+Admin -- UC_ManageUsers
+Admin -- UC_ManageData
+
+' Mối quan hệ kế thừa
+Admin -|> User
+
+' Mối quan hệ với hệ thống AI
+UC_Advice ..> AISystem : <<invoke>>
+UC_Track ..> AISystem : <<invoke>>
+
+@enduml

@@ -1,0 +1,146 @@
+@startuml EntityClassDiagram
+
+' Sembunyikan field và method global
+hide empty members
+
+' Định nghĩa các lớp thực thể
+class User {
+  username
+  password
+  email
+  role
+}
+
+class Profile {
+  fullName
+  dateOfBirth
+  gender
+  height
+  weight
+  activityLevel
+  allergies
+  medicalConditions
+}
+
+class Goal {
+  targetWeight
+  targetDate
+  goalType 'e.g., weight_loss, muscle_gain'
+  status
+}
+
+class NutritionPlan {
+  planName
+  startDate
+  endDate
+  totalCaloriesGoal
+}
+
+class DailyMenu {
+  date
+}
+
+class Meal {
+  mealType 'e.g., breakfast, lunch, dinner'
+  time
+}
+
+' Lớp trung gian cho quan hệ n-n giữa Meal và FoodItem
+class MealFoodItem {
+  quantity
+  unit 'e.g., gram, ml'
+}
+
+class FoodItem {
+  name
+  calories
+  protein
+  carbs
+  fats
+  servingSize
+}
+
+class Recipe {
+  instructions
+  preparationTime
+}
+
+class FoodLog {
+  logDate
+  quantity
+  unit
+}
+
+class Activity {
+  name
+  caloriesBurnedPerHour
+}
+
+class ActivityLog {
+  logDate
+  durationInMinutes
+  caloriesBurned
+}
+
+class Report {
+  reportType 'e.g., weekly_progress, nutrition_summary'
+  generatedDate
+  content
+}
+
+class Suggestion {
+  suggestionText
+  createdDate
+  category 'e.g., diet_adjustment, activity_increase'
+}
+
+class SharedContent {
+  sharedDate
+  visibility 'e.g., public, friends'
+  contentType 'e.g., plan, activity_log'
+}
+
+class Comment {
+  commentText
+  commentDate
+}
+
+class Like {
+  likeDate
+}
+
+' Định nghĩa các mối quan hệ
+User "1" -- "1" Profile : has
+User "1" -- "1..*" Goal : sets
+User "1" -- "0..*" NutritionPlan : creates
+User "1" -- "0..*" Report : generates
+User "1" -- "0..*" Suggestion : receives
+
+NutritionPlan "1" *-- "1..*" DailyMenu : contains
+DailyMenu "1" *-- "1..*" Meal : includes
+
+Meal "1" -- "1..*" MealFoodItem : consists of
+FoodItem "1" -- "1..*" MealFoodItem : is part of
+
+FoodItem "1" -- "1" Recipe : has
+
+' Quan hệ ghi log
+User "1" -- "0..*" FoodLog : logs
+FoodItem "1" -- "0..*" FoodLog : is logged in
+
+User "1" -- "0..*" ActivityLog : logs
+Activity "1" -- "0..*" ActivityLog : is logged in
+
+' Quan hệ chia sẻ và tương tác
+User "1" -- "0..*" SharedContent : shares
+' Một nội dung chia sẻ có thể là 1 Kế hoạch hoặc 1 Nhật ký hoạt động
+NutritionPlan ..|> SharedContent
+ActivityLog ..|> SharedContent
+
+User "1" -- "0..*" Comment : writes
+SharedContent "1" -- "0..*" Comment : has
+
+User "1" -- "0..*\" Like : gives
+SharedContent "1" -- "0..*" Like : has
+
+@enduml

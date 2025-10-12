@@ -1,0 +1,30 @@
+@startuml NutritionAdviceActivityDiagram
+
+!theme vibrant
+
+title Biểu đồ Hoạt động cho Chức năng Tư vấn Dinh dưỡng
+
+start
+
+:Người dùng nhập yêu cầu tư vấn (ví dụ: "tôi muốn giảm 5kg") vào NutritionAdviceUI; 
+
+if (Yêu cầu hợp lệ?) then (yes)
+  :NutritionAdviceUI.getUserInput();
+  :NutritionAdviceController.askAI(userId, query);
+  :NutritionAdviceService.generateSuggestion(userId, query);
+  
+  partition "AI Service" {
+    :AIServiceClient.getCompletion(prompt);
+    :AI Model xử lý và trả về kết quả;
+  }
+
+  :NutritionAdviceService tạo đối tượng Suggestion;
+  :Lưu Suggestion vào cơ sở dữ liệu;
+  :NutritionAdviceUI.displaySuggestions(suggestions);
+else (no)
+  :NutritionAdviceUI.displayError("Yêu cầu không hợp lệ");
+endif
+
+stop
+
+@enduml

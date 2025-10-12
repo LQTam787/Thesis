@@ -1,0 +1,35 @@
+@startuml UserProfileManagementActivity
+
+!theme vibrant
+title Biểu đồ hoạt động cho chức năng Quản lý hồ sơ người dùng
+
+start
+
+:Người dùng đăng nhập thành công;
+
+if (Người dùng đã có hồ sơ?) then (yes)
+  :Hiển thị thông tin hồ sơ hiện tại;
+else (no)
+  :Hiển thị form tạo hồ sơ mới;
+endif
+
+:Người dùng chọn cập nhật/tạo hồ sơ;
+:Hiển thị form chỉnh sửa/nhập thông tin;
+:Người dùng nhập dữ liệu (chiều cao, cân nặng, mục tiêu, v.v.);
+:Người dùng gửi thông tin;
+
+:Hệ thống nhận và xác thực dữ liệu;
+
+if (Dữ liệu hợp lệ?) then (yes)
+  :Lưu thông tin hồ sơ vào CSDL;
+  :Hiển thị thông báo cập nhật thành công;
+  :Hiển thị lại thông tin hồ sơ đã cập nhật;
+else (no)
+  :Hiển thị thông báo lỗi;
+  :Yêu cầu người dùng nhập lại;
+  --> :Người dùng nhập dữ liệu (chiều cao, cân nặng, mục tiêu, v.v.);
+endif
+
+stop
+
+@enduml

@@ -1,0 +1,1318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Hệ thống Tư vấn Dinh dưỡng</title>
+    <style>
+        :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #f1f1f1;
+            --text-color: #333;
+            --light-gray: #e0e0e0;
+            --white: #fff;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --info-color: #2196F3;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #333;
+            color: var(--white);
+            display: flex;
+            flex-direction: column;
+            padding-top: 20px;
+            transition: width 0.3s;
+        }
+
+        .sidebar-header {
+            padding: 0 20px 20px 20px;
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            border-bottom: 1px solid #555;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            flex-grow: 1;
+        }
+
+        .sidebar-nav li a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: var(--white);
+            text-decoration: none;
+            transition: background-color 0.3s, padding-left 0.3s;
+        }
+
+        .sidebar-nav li a:hover, .sidebar-nav li a.active {
+            background-color: var(--primary-color);
+            padding-left: 25px;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            text-align: center;
+            border-top: 1px solid #555;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .top-bar {
+            background-color: var(--white);
+            padding: 15px 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .top-bar h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        .content {
+            padding: 30px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+        
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-header {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        th {
+            background-color: #f9f9f9;
+            font-weight: 600;
+        }
+
+        tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: var(--white);
+            text-decoration: none;
+            font-size: 0.9em;
+            margin: 0 2px;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+        }
+
+        .btn-info {
+            background-color: var(--info-color);
+        }
+
+        .btn-warning {
+            background-color: var(--warning-color);
+        }
+
+        .btn-danger {
+            background-color: var(--danger-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            color: #555;
+        }
+
+        .stat-card p {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; 
+            position: fixed; 
+            z-index: 1000; 
+            left: 0;
+            top: 0;
+            width: 100%; 
+            height: 100%; 
+            overflow: auto; 
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto; 
+            padding: 20px;
+            border: 1px solid #888;
+            width: 60%; 
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .modal-header {
+            padding: 10px 15px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+        }
+
+        .close-button {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: black;
+        }
+
+        .modal-body {
+            padding: 15px;
+        }
+
+        .user-details-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .user-details-grid div {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        .user-details-grid strong {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--primary-color);
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+
+        .modal-footer {
+            padding: 10px 15px;
+            text-align: right;
+            border-top: 1px solid #eee;
+        }
+
+        .post-content {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <div class="sidebar-header">
+        AI Nutrition
+    </div>
+    <ul class="sidebar-nav">
+        <li><a href="#dashboard" class="nav-link active">Bảng điều khiển</a></li>
+        <li><a href="#user-management" class="nav-link">Quản lý Người dùng</a></li>
+        <li><a href="#food-management" class="nav-link">Quản lý Thực phẩm</a></li>
+        <li><a href="#activity-management" class="nav-link">Quản lý Hoạt động</a></li>
+        <li><a href="#post-management" class="nav-link">Quản lý Bài viết</a></li>
+    </ul>
+    <div class="sidebar-footer">
+        <a href="#" id="logout-link">Đăng xuất</a>
+    </div>
+</div>
+
+<div class="main-content">
+    <div class="top-bar">
+        <h1 id="page-title">Bảng điều khiển</h1>
+        <div>
+            <span>Xin chào, <strong>Admin</strong></span>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="content-section active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Người dùng</h3>
+                    <p>1,250</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Thực phẩm</h3>
+                    <p>5,800</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Bài viết</h3>
+                    <p>340</p>
+                </div>
+                <div class="stat-card">
+                    <h3>Báo cáo mới</h3>
+                    <p>25</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Section -->
+        <div id="user-management" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <span>Danh sách Người dùng</span>
+                    <button class="btn btn-primary" data-action="add-user">Thêm Người dùng</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên người dùng</th>
+                            <th>Email</th>
+                            <th>Vai trò</th>
+                            <th>Ngày tham gia</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1</td>
+                            <td>nguyenvana</td>
+                            <td>nguyenvana@email.com</td>
+                            <td>User</td>
+                            <td>2023-01-15</td>
+                            <td>
+                                <button class="btn btn-info" data-action="view-user">Xem</button>
+                                <button class="btn btn-warning" data-action="edit-user">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-user">Xóa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>tranvanb</td>
+                            <td>tranvanb@email.com</td>
+                            <td>User</td>
+                            <td>2023-02-20</td>
+                            <td>
+                                <button class="btn btn-info" data-action="view-user">Xem</button>
+                                <button class="btn btn-warning" data-action="edit-user">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-user">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Food Management Section -->
+        <div id="food-management" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <span>Danh sách Thực phẩm</span>
+                    <button class="btn btn-primary" data-action="add-food">Thêm Thực phẩm</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên thực phẩm</th>
+                            <th>Calories</th>
+                            <th>Protein (g)</th>
+                            <th>Carbs (g)</th>
+                            <th>Fat (g)</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>101</td>
+                            <td>Ức gà</td>
+                            <td>165</td>
+                            <td>31</td>
+                            <td>0</td>
+                            <td>3.6</td>
+                            <td>
+                                <button class="btn btn-warning" data-action="edit-food">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-food">Xóa</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>102</td>
+                            <td>Gạo lứt</td>
+                            <td>111</td>
+                            <td>2.6</td>
+                            <td>23</td>
+                            <td>0.9</td>
+                            <td>
+                                <button class="btn btn-warning" data-action="edit-food">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-food">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Activity Management Section -->
+        <div id="activity-management" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <span>Danh sách Hoạt động</span>
+                    <button class="btn btn-primary" data-action="add-activity">Thêm Hoạt động</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên hoạt động</th>
+                            <th>Calories tiêu thụ / giờ</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>201</td>
+                            <td>Chạy bộ</td>
+                            <td>600</td>
+                            <td>
+                                <button class="btn btn-warning" data-action="edit-activity">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-activity">Xóa</button>
+                            </td>
+                        </tr>
+                         <tr>
+                            <td>202</td>
+                            <td>Đạp xe</td>
+                            <td>450</td>
+                            <td>
+                                <button class="btn btn-warning" data-action="edit-activity">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-activity">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Post Management Section -->
+        <div id="post-management" class="content-section">
+            <div class="card">
+                <div class="card-header">
+                    <span>Danh sách Bài viết / Công thức</span>
+                    <button class="btn btn-primary" data-action="add-post">Thêm Bài viết</button>
+                </div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tiêu đề</th>
+                            <th>Tác giả</th>
+                            <th>Ngày đăng</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>301</td>
+                            <td>Lợi ích của việc ăn uống lành mạnh</td>
+                            <td>Admin</td>
+                            <td>2023-05-10</td>
+                            <td>Đã xuất bản</td>
+                            <td>
+                                <button class="btn btn-info" data-action="view-post">Xem</button>
+                                <button class="btn btn-warning" data-action="edit-post">Sửa</button>
+                                <button class="btn btn-danger" data-action="delete-post">Xóa</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- The Modal for Viewing User Details -->
+<div id="viewUserModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Thông tin chi tiết Người dùng</h2>
+            <span class="close-button">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="user-details-grid">
+                <div><strong>Họ và tên:</strong> <span id="modal-fullName"></span></div>
+                <div><strong>Tên người dùng:</strong> <span id="modal-username"></span></div>
+                <div><strong>Email:</strong> <span id="modal-email"></span></div>
+                <div><strong>Ngày sinh:</strong> <span id="modal-dob"></span></div>
+                <div><strong>Giới tính:</strong> <span id="modal-gender"></span></div>
+                <div><strong>Chiều cao:</strong> <span id="modal-height"></span> cm</div>
+                <div><strong>Cân nặng:</strong> <span id="modal-weight"></span> kg</div>
+                <div><strong>Cấp độ hoạt động:</strong> <span id="modal-activityLevel"></span></div>
+                <div><strong>Dị ứng:</strong> <span id="modal-allergies"></span></div>
+                <div><strong>Tình trạng y tế:</strong> <span id="modal-medicalConditions"></span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Editing User Details -->
+<div id="editUserModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Chỉnh sửa thông tin Người dùng</h2>
+            <span class="close-button edit-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editUserForm">
+                <div class="user-details-grid">
+                    <div class="form-group">
+                        <label for="edit-fullName">Họ và tên</label>
+                        <input type="text" id="edit-fullName" value="Nguyễn Văn A">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-username">Tên người dùng</label>
+                        <input type="text" id="edit-username" value="nguyenvana" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-email">Email</label>
+                        <input type="email" id="edit-email" value="nguyenvana@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-dob">Ngày sinh</label>
+                        <input type="date" id="edit-dob" value="1990-01-15">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-gender">Giới tính</label>
+                        <select id="edit-gender">
+                            <option value="Nam" selected>Nam</option>
+                            <option value="Nữ">Nữ</option>
+                            <option value="Khác">Khác</option>
+                        </select>
+                    </div>
+                     <div class="form-group">
+                        <label for="edit-role">Vai trò</label>
+                        <select id="edit-role">
+                            <option value="User" selected>User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align: right;">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Deleting User Confirmation -->
+<div id="deleteUserModal" class="modal">
+    <div class="modal-content" style="width: 400px;">
+        <div class="modal-header">
+            <h2>Xác nhận Xóa</h2>
+            <span class="close-button delete-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa người dùng này không? Hành động này không thể hoàn tác.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="confirmDeleteBtn">Xóa</button>
+            <button class="btn" style="background-color: #ccc;" id="cancelDeleteBtn">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Adding a New User -->
+<div id="addUserModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Thêm Người dùng mới</h2>
+            <span class="close-button add-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addUserForm">
+                <div class="user-details-grid">
+                    <div class="form-group">
+                        <label for="add-username">Tên người dùng</label>
+                        <input type="text" id="add-username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-email">Email</label>
+                        <input type="email" id="add-email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-password">Mật khẩu</label>
+                        <input type="password" id="add-password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-role">Vai trò</label>
+                        <select id="add-role">
+                            <option value="User" selected>User</option>
+                            <option value="Admin">Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Editing Food Details -->
+<div id="editFoodModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Chỉnh sửa thông tin Thực phẩm</h2>
+            <span class="close-button edit-food-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editFoodForm">
+                <div class="user-details-grid">
+                    <div class="form-group">
+                        <label for="edit-foodName">Tên thực phẩm</label>
+                        <input type="text" id="edit-foodName" value="Ức gà" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-calories">Calories</label>
+                        <input type="number" id="edit-calories" value="165" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-protein">Protein (g)</label>
+                        <input type="number" step="0.1" id="edit-protein" value="31" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-carbs">Carbs (g)</label>
+                        <input type="number" step="0.1" id="edit-carbs" value="0" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-fats">Fat (g)</label>
+                        <input type="number" step="0.1" id="edit-fats" value="3.6" required>
+                    </div>
+                     <div class="form-group">
+                        <label for="edit-servingSize">Khẩu phần</label>
+                        <input type="text" id="edit-servingSize" value="100g">
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Deleting Food Confirmation -->
+<div id="deleteFoodModal" class="modal">
+    <div class="modal-content" style="width: 400px;">
+        <div class="modal-header">
+            <h2>Xác nhận Xóa Thực phẩm</h2>
+            <span class="close-button delete-food-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa thực phẩm này không? Hành động này không thể hoàn tác.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="confirmDeleteFoodBtn">Xóa</button>
+            <button class="btn" style="background-color: #ccc;" id="cancelDeleteFoodBtn">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Adding a New Food Item -->
+<div id="addFoodModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Thêm Thực phẩm mới</h2>
+            <span class="close-button add-food-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addFoodForm">
+                <div class="user-details-grid">
+                    <div class="form-group">
+                        <label for="add-foodName">Tên thực phẩm</label>
+                        <input type="text" id="add-foodName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-calories">Calories</label>
+                        <input type="number" id="add-calories" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-protein">Protein (g)</label>
+                        <input type="number" step="0.1" id="add-protein" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-carbs">Carbs (g)</label>
+                        <input type="number" step="0.1" id="add-carbs" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-fats">Fat (g)</label>
+                        <input type="number" step="0.1" id="add-fats" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-servingSize">Khẩu phần</label>
+                        <input type="text" id="add-servingSize">
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Editing Activity Details -->
+<div id="editActivityModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Chỉnh sửa thông tin Hoạt động</h2>
+            <span class="close-button edit-activity-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editActivityForm">
+                <div class="user-details-grid">
+                    <div class="form-group">
+                        <label for="edit-activityName">Tên hoạt động</label>
+                        <input type="text" id="edit-activityName" value="Chạy bộ" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-caloriesBurned">Calories tiêu thụ / giờ</label>
+                        <input type="number" id="edit-caloriesBurned" value="600" required>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Deleting Activity Confirmation -->
+<div id="deleteActivityModal" class="modal">
+    <div class="modal-content" style="width: 400px;">
+        <div class="modal-header">
+            <h2>Xác nhận Xóa Hoạt động</h2>
+            <span class="close-button delete-activity-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa hoạt động này không? Hành động này không thể hoàn tác.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="confirmDeleteActivityBtn">Xóa</button>
+            <button class="btn" style="background-color: #ccc;" id="cancelDeleteActivityBtn">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Adding a New Activity -->
+<div id="addActivityModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Thêm Hoạt động mới</h2>
+            <span class="close-button add-activity-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addActivityForm">
+                <div class="user-details-grid">
+                    <div class="form-group">
+                        <label for="add-activityName">Tên hoạt động</label>
+                        <input type="text" id="add-activityName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-caloriesBurned">Calories tiêu thụ / giờ</label>
+                        <input type="number" id="add-caloriesBurned" required>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Viewing Post Details -->
+<div id="viewPostModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="post-modal-title">Lợi ích của việc ăn uống lành mạnh</h2>
+            <span class="close-button view-post-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <div class="user-details-grid">
+                <div><strong>Tác giả:</strong> <span id="post-modal-author">Admin</span></div>
+                <div><strong>Ngày đăng:</strong> <span id="post-modal-date">2023-05-10</span></div>
+                <div><strong>Trạng thái:</strong> <span id="post-modal-status">Đã xuất bản</span></div>
+            </div>
+            <div class="post-content">
+                <h3>Nội dung</h3>
+                <p id="post-modal-content">Nội dung chi tiết của bài viết sẽ được hiển thị ở đây. Ăn uống lành mạnh mang lại nhiều lợi ích cho sức khỏe thể chất và tinh thần...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Editing Post Details -->
+<div id="editPostModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Chỉnh sửa Bài viết</h2>
+            <span class="close-button edit-post-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="editPostForm">
+                <div class="form-group">
+                    <label for="edit-postTitle">Tiêu đề</label>
+                    <input type="text" id="edit-postTitle" value="Lợi ích của việc ăn uống lành mạnh" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-postStatus">Trạng thái</label>
+                    <select id="edit-postStatus">
+                        <option value="Draft">Bản nháp</option>
+                        <option value="Published" selected>Đã xuất bản</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-postContent">Nội dung</label>
+                    <textarea id="edit-postContent" rows="10" required>Nội dung chi tiết của bài viết sẽ được hiển thị ở đây. Ăn uống lành mạnh mang lại nhiều lợi ích cho sức khỏe thể chất và tinh thần...</textarea>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Deleting Post Confirmation -->
+<div id="deletePostModal" class="modal">
+    <div class="modal-content" style="width: 400px;">
+        <div class="modal-header">
+            <h2>Xác nhận Xóa Bài viết</h2>
+            <span class="close-button delete-post-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <p>Bạn có chắc chắn muốn xóa bài viết này không? Hành động này không thể hoàn tác.</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-danger" id="confirmDeletePostBtn">Xóa</button>
+            <button class="btn" style="background-color: #ccc;" id="cancelDeletePostBtn">Hủy</button>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal for Adding a New Post -->
+<div id="addPostModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Thêm Bài viết mới</h2>
+            <span class="close-button add-post-close">&times;</span>
+        </div>
+        <div class="modal-body">
+            <form id="addPostForm">
+                <div class="form-group">
+                    <label for="add-postTitle">Tiêu đề</label>
+                    <input type="text" id="add-postTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="add-postStatus">Trạng thái</label>
+                    <select id="add-postStatus">
+                        <option value="Draft" selected>Bản nháp</option>
+                        <option value="Published">Đã xuất bản</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="add-postContent">Nội dung</label>
+                    <textarea id="add-postContent" rows="10" required></textarea>
+                </div>
+                <div style="text-align: right; margin-top: 15px;">
+                    <button type="submit" class="btn btn-primary">Thêm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const navLinks = document.querySelectorAll('.nav-link');
+        const contentSections = document.querySelectorAll('.content-section');
+        const pageTitle = document.getElementById('page-title');
+        const modal = document.getElementById('viewUserModal');
+        const closeButton = document.querySelector('.close-button');
+        const viewUserButtons = document.querySelectorAll('.btn-info[data-action="view-user"]');
+        const editUserModal = document.getElementById('editUserModal');
+        const editCloseButton = document.querySelector('.edit-close');
+        const editUserButtons = document.querySelectorAll('.btn-warning[data-action="edit-user"]');
+        const deleteUserModal = document.getElementById('deleteUserModal');
+        const deleteUserButtons = document.querySelectorAll('.btn-danger[data-action="delete-user"]');
+        const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+        const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+        const deleteCloseButton = document.querySelector('.delete-close');
+        const addUserModal = document.getElementById('addUserModal');
+        const addUserButton = document.querySelector('.btn-primary[data-action="add-user"]');
+        const addCloseButton = document.querySelector('.add-close');
+        const editFoodModal = document.getElementById('editFoodModal');
+        const editFoodButtons = document.querySelectorAll('#food-management .btn-warning[data-action="edit-food"]');
+        const editFoodCloseButton = document.querySelector('.edit-food-close');
+        const deleteFoodModal = document.getElementById('deleteFoodModal');
+        const deleteFoodButtons = document.querySelectorAll('#food-management .btn-danger[data-action="delete-food"]');
+        const confirmDeleteFoodBtn = document.getElementById('confirmDeleteFoodBtn');
+        const cancelDeleteFoodBtn = document.getElementById('cancelDeleteFoodBtn');
+        const deleteFoodCloseButton = document.querySelector('.delete-food-close');
+        const addFoodModal = document.getElementById('addFoodModal');
+        const addFoodButton = document.querySelector('.btn-primary[data-action="add-food"]');
+        const addFoodCloseButton = document.querySelector('.add-food-close');
+        const editActivityModal = document.getElementById('editActivityModal');
+        const editActivityButtons = document.querySelectorAll('#activity-management .btn-warning[data-action="edit-activity"]');
+        const editActivityCloseButton = document.querySelector('.edit-activity-close');
+        const deleteActivityModal = document.getElementById('deleteActivityModal');
+        const deleteActivityButtons = document.querySelectorAll('#activity-management .btn-danger[data-action="delete-activity"]');
+        const confirmDeleteActivityBtn = document.getElementById('confirmDeleteActivityBtn');
+        const cancelDeleteActivityBtn = document.getElementById('cancelDeleteActivityBtn');
+        const deleteActivityCloseButton = document.querySelector('.delete-activity-close');
+        const addActivityModal = document.getElementById('addActivityModal');
+        const addActivityButton = document.querySelector('.btn-primary[data-action="add-activity"]');
+        const addActivityCloseButton = document.querySelector('.add-activity-close');
+        const viewPostModal = document.getElementById('viewPostModal');
+        const viewPostButtons = document.querySelectorAll('.btn-info[data-action="view-post"]');
+        const viewPostCloseButton = document.querySelector('.view-post-close');
+        const editPostModal = document.getElementById('editPostModal');
+        const editPostButtons = document.querySelectorAll('.btn-warning[data-action="edit-post"]');
+        const editPostCloseButton = document.querySelector('.edit-post-close');
+        const deletePostModal = document.getElementById('deletePostModal');
+        const deletePostButtons = document.querySelectorAll('.btn-danger[data-action="delete-post"]');
+        const confirmDeletePostBtn = document.getElementById('confirmDeletePostBtn');
+        const cancelDeletePostBtn = document.getElementById('cancelDeletePostBtn');
+        const deletePostCloseButton = document.querySelector('.delete-post-close');
+        const addPostModal = document.getElementById('addPostModal');
+        const addPostButton = document.querySelector('.btn-primary[data-action="add-post"]');
+        const addPostCloseButton = document.querySelector('.add-post-close');
+        const logoutLink = document.getElementById('logout-link');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+
+                // Remove active class from all links and sections
+                navLinks.forEach(l => l.classList.remove('active'));
+                contentSections.forEach(s => s.classList.remove('active'));
+
+                // Add active class to the clicked link
+                this.classList.add('active');
+
+                // Show the corresponding content section
+                const targetId = this.getAttribute('href').substring(1);
+                document.getElementById(targetId).classList.add('active');
+                
+                // Update page title
+                pageTitle.textContent = this.textContent;
+            });
+        });
+
+        // Modal logic
+        viewUserButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Dummy data for static demonstration
+                document.getElementById('modal-fullName').textContent = 'Nguyễn Văn A';
+                document.getElementById('modal-username').textContent = 'nguyenvana';
+                document.getElementById('modal-email').textContent = 'nguyenvana@email.com';
+                document.getElementById('modal-dob').textContent = '1990-01-15';
+                document.getElementById('modal-gender').textContent = 'Nam';
+                document.getElementById('modal-height').textContent = '175';
+                document.getElementById('modal-weight').textContent = '70';
+                document.getElementById('modal-activityLevel').textContent = 'Ít vận động';
+                document.getElementById('modal-allergies').textContent = 'Không có';
+                document.getElementById('modal-medicalConditions').textContent = 'Không có';
+
+                modal.style.display = 'block';
+            });
+        });
+
+        closeButton.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+            if (event.target == editUserModal) {
+                editUserModal.style.display = 'none';
+            }
+            if (event.target == deleteUserModal) {
+                deleteUserModal.style.display = 'none';
+            }
+            if (event.target == addUserModal) {
+                addUserModal.style.display = 'none';
+            }
+            if (event.target == editFoodModal) {
+                editFoodModal.style.display = 'none';
+            }
+            if (event.target == deleteFoodModal) {
+                deleteFoodModal.style.display = 'none';
+            }
+            if (event.target == addFoodModal) {
+                addFoodModal.style.display = 'none';
+            }
+            if (event.target == editActivityModal) {
+                editActivityModal.style.display = 'none';
+            }
+            if (event.target == deleteActivityModal) {
+                deleteActivityModal.style.display = 'none';
+            }
+            if (event.target == addActivityModal) {
+                addActivityModal.style.display = 'none';
+            }
+            if (event.target == viewPostModal) {
+                viewPostModal.style.display = 'none';
+            }
+            if (event.target == editPostModal) {
+                editPostModal.style.display = 'none';
+            }
+            if (event.target == deletePostModal) {
+                deletePostModal.style.display = 'none';
+            }
+            if (event.target == addPostModal) {
+                addPostModal.style.display = 'none';
+            }
+        });
+
+        // Edit Modal Logic
+        editUserButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // In a real app, you would fetch user data and populate the form
+                editUserModal.style.display = 'block';
+            });
+        });
+
+        editCloseButton.addEventListener('click', () => {
+            editUserModal.style.display = 'none';
+        });
+
+        document.getElementById('editUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thông tin người dùng đã được cập nhật!');
+            editUserModal.style.display = 'none';
+        });
+
+        // Delete Modal Logic
+        deleteUserButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // In a real app, you would pass the user ID to the modal
+                deleteUserModal.style.display = 'block';
+            });
+        });
+
+        deleteCloseButton.addEventListener('click', () => {
+            deleteUserModal.style.display = 'none';
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteUserModal.style.display = 'none';
+        });
+
+        confirmDeleteBtn.addEventListener('click', () => {
+            alert('Người dùng đã được xóa.');
+            deleteUserModal.style.display = 'none';
+            // Here you would typically make an API call to delete the user
+        });
+
+        // Add User Modal Logic
+        addUserButton.addEventListener('click', () => {
+            addUserModal.style.display = 'block';
+        });
+
+        addCloseButton.addEventListener('click', () => {
+            addUserModal.style.display = 'none';
+        });
+
+        document.getElementById('addUserForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Người dùng mới đã được thêm!');
+            addUserModal.style.display = 'none';
+            this.reset(); // Clear form fields
+        });
+
+        // Edit Food Modal Logic
+        editFoodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // In a real app, you would fetch food data and populate the form
+                editFoodModal.style.display = 'block';
+            });
+        });
+
+        editFoodCloseButton.addEventListener('click', () => {
+            editFoodModal.style.display = 'none';
+        });
+
+        document.getElementById('editFoodForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thông tin thực phẩm đã được cập nhật!');
+            editFoodModal.style.display = 'none';
+        });
+
+        // Delete Food Modal Logic
+        deleteFoodButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                deleteFoodModal.style.display = 'block';
+            });
+        });
+
+        deleteFoodCloseButton.addEventListener('click', () => {
+            deleteFoodModal.style.display = 'none';
+        });
+
+        cancelDeleteFoodBtn.addEventListener('click', () => {
+            deleteFoodModal.style.display = 'none';
+        });
+
+        confirmDeleteFoodBtn.addEventListener('click', () => {
+            alert('Thực phẩm đã được xóa.');
+            deleteFoodModal.style.display = 'none';
+        });
+
+        // Add Food Modal Logic
+        addFoodButton.addEventListener('click', () => {
+            addFoodModal.style.display = 'block';
+        });
+
+        addFoodCloseButton.addEventListener('click', () => {
+            addFoodModal.style.display = 'none';
+        });
+
+        document.getElementById('addFoodForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thực phẩm mới đã được thêm!');
+            addFoodModal.style.display = 'none';
+            this.reset();
+        });
+
+        // Edit Activity Modal Logic
+        editActivityButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                editActivityModal.style.display = 'block';
+            });
+        });
+
+        editActivityCloseButton.addEventListener('click', () => {
+            editActivityModal.style.display = 'none';
+        });
+
+        document.getElementById('editActivityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thông tin hoạt động đã được cập nhật!');
+            editActivityModal.style.display = 'none';
+        });
+
+        // Delete Activity Modal Logic
+        deleteActivityButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                deleteActivityModal.style.display = 'block';
+            });
+        });
+
+        deleteActivityCloseButton.addEventListener('click', () => {
+            deleteActivityModal.style.display = 'none';
+        });
+
+        cancelDeleteActivityBtn.addEventListener('click', () => {
+            deleteActivityModal.style.display = 'none';
+        });
+
+        confirmDeleteActivityBtn.addEventListener('click', () => {
+            alert('Hoạt động đã được xóa.');
+            deleteActivityModal.style.display = 'none';
+        });
+
+        // Add Activity Modal Logic
+        addActivityButton.addEventListener('click', () => {
+            addActivityModal.style.display = 'block';
+        });
+
+        addActivityCloseButton.addEventListener('click', () => {
+            addActivityModal.style.display = 'none';
+        });
+
+        document.getElementById('addActivityForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Hoạt động mới đã được thêm!');
+            addActivityModal.style.display = 'none';
+            this.reset();
+        });
+
+        // View Post Modal Logic
+        viewPostButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // In a real app, you would fetch post data and populate the modal
+                viewPostModal.style.display = 'block';
+            });
+        });
+
+        viewPostCloseButton.addEventListener('click', () => {
+            viewPostModal.style.display = 'none';
+        });
+
+        // Edit Post Modal Logic
+        editPostButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // In a real app, you would fetch post data and populate the form
+                editPostModal.style.display = 'block';
+            });
+        });
+
+        editPostCloseButton.addEventListener('click', () => {
+            editPostModal.style.display = 'none';
+        });
+
+        document.getElementById('editPostForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Bài viết đã được cập nhật!');
+            editPostModal.style.display = 'none';
+        });
+
+        // Delete Post Modal Logic
+        deletePostButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                deletePostModal.style.display = 'block';
+            });
+        });
+
+        deletePostCloseButton.addEventListener('click', () => {
+            deletePostModal.style.display = 'none';
+        });
+
+        cancelDeletePostBtn.addEventListener('click', () => {
+            deletePostModal.style.display = 'none';
+        });
+
+        confirmDeletePostBtn.addEventListener('click', () => {
+            alert('Bài viết đã được xóa.');
+            deletePostModal.style.display = 'none';
+        });
+
+        // Add Post Modal Logic
+        addPostButton.addEventListener('click', () => {
+            addPostModal.style.display = 'block';
+        });
+
+        addPostCloseButton.addEventListener('click', () => {
+            addPostModal.style.display = 'none';
+        });
+
+        document.getElementById('addPostForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Bài viết mới đã được thêm!');
+            addPostModal.style.display = 'none';
+            this.reset();
+        });
+
+        // Logout Logic
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            alert('Bạn đã đăng xuất thành công.');
+            // In a real application, this would redirect to a login page.
+            // window.location.href = 'login.html';
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+@startuml AdminEditDeleteObjectSequence
+' Sequence Diagram for Admin Editing or Deleting an Object
+
+title Biểu đồ Tuần tự - Quản trị viên Sửa/Xóa Đối tượng
+
+actor Admin
+participant ":AdminDashboardUI" as DashboardUI
+participant ":ObjectManagementUI" as ObjectUI
+participant ":ObjectController" as Controller
+participant ":ObjectService" as Service
+participant ":ObjectRepository" as Repository
+participant ":AI_NLP_Service" as AIService
+
+Admin -> DashboardUI: 1. Chọn loại đối tượng để quản lý
+activate DashboardUI
+DashboardUI -> ObjectUI: 2. Yêu cầu hiển thị giao diện quản lý
+activate ObjectUI
+ObjectUI --> Admin: 3. Hiển thị danh sách đối tượng
+
+Admin -> ObjectUI: 4. Chọn một đối tượng và nhấn 'Sửa'
+ObjectUI --> Admin: 5. Hiển thị form với thông tin đối tượng hiện tại
+
+Admin -> ObjectUI: 6. Chỉnh sửa thông tin và nhấn 'Lưu'
+ObjectUI -> Controller: 7. updateObject(objectId, objectData)
+activate Controller
+Controller -> Service: 8. updateObject(objectId, objectData)
+activate Service
+Service -> Repository: 9. findById(objectId)
+activate Repository
+Repository --> Service: 10. return objectEntity
+deactivate Repository
+Service -> Repository: 11. save(updatedEntity)
+activate Repository
+Repository --> Service: 12. return savedObject
+deactivate Repository
+Service -> AIService: 13. notifyDataChanged(savedObject)
+activate AIService
+AIService --> Service: 14. ack
+deactivate AIService
+Service --> Controller: 15. return result
+deactivate Service
+Controller --> ObjectUI: 16. return success status
+deactivate Controller
+ObjectUI --> Admin: 17. Hiển thị thông báo thành công
+
+alt Xóa đối tượng
+    Admin -> ObjectUI: 4a. Chọn một đối tượng và nhấn 'Xóa'
+    ObjectUI --> Admin: 5a. Hiển thị hộp thoại xác nhận xóa
+
+    Admin -> ObjectUI: 6a. Xác nhận xóa
+    ObjectUI -> Controller: 7a. deleteObject(objectId)
+    activate Controller
+    Controller -> Service: 8a. deleteObject(objectId)
+    activate Service
+    Service -> Repository: 9a. deleteById(objectId)
+    activate Repository
+    Repository --> Service: 10a. void
+    deactivate Repository
+    Service -> AIService: 11a. notifyDataChanged(deletedObjectId)
+    activate AIService
+    AIService --> Service: 12a. ack
+    deactivate AIService
+    Service --> Controller: 13a. return result
+    deactivate Service
+    Controller --> ObjectUI: 14a. return success status
+    deactivate Controller
+    ObjectUI --> Admin: 15a. Hiển thị thông báo thành công và cập nhật danh sách
+end
+
+deactivate ObjectUI
+deactivate DashboardUI
+
+@enduml

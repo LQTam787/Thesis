@@ -1,0 +1,53 @@
+@startuml NutritionPlanSequenceDiagram
+' Nutrition Plan Sequence Diagram (Analysis Phase)
+
+title Biểu đồ Tuần tự Phân tích - Lập Kế hoạch Dinh dưỡng
+
+actor "Người dùng" as User
+participant "NutritionPlanUI" as UI <<boundary>>
+participant "NutritionPlanControl" as Control <<control>>
+participant "Plan" as PlanEntity <<entity>>
+participant "Goal" as GoalEntity <<entity>>
+
+autonumber
+
+User -> UI: Yêu cầu tạo kế hoạch dinh dưỡng mới
+activate UI
+
+UI -> Control: initiateNewPlanCreation()
+activate Control
+
+Control --> UI: Yêu cầu hiển thị form tạo kế hoạch
+deactivate Control
+
+UI --> User: Hiển thị giao diện lập kế hoạch
+deactivate UI
+
+User -> UI: Nhập chi tiết kế hoạch (bữa ăn, món ăn, thời gian)
+activate UI
+
+User -> UI: Gửi yêu cầu lưu kế hoạch
+UI -> Control: processNewPlan(planDetails)
+activate Control
+
+Control -> PlanEntity**: create(planDetails)
+
+Control -> GoalEntity: getCurrentGoal()
+activate GoalEntity
+GoalEntity --> Control: Trả về thông tin mục tiêu (calo, macro)
+deactivate GoalEntity
+
+Control -> Control: calculateTotalNutrition(planDetails)
+Control -> Control: compareWithGoal(planNutrition, goalNutrition)
+
+Control -> PlanEntity: save()
+
+Control -> Control: generateShoppingList(planDetails)
+
+Control --> UI: displayPlanAnalysis(analysisResult, shoppingList)
+deactivate Control
+
+UI --> User: Hiển thị kế hoạch chi tiết, phân tích và checklist
+deactivate UI
+
+@enduml

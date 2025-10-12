@@ -1,0 +1,79 @@
+@startuml UserProfileManagementSequence
+
+!theme vibrant
+title Biểu đồ tuần tự cho chức năng Cập nhật hồ sơ người dùng
+
+actor "Người dùng" as User
+participant "UserProfileView" as View
+participant "UserProfileController" as Controller
+participant "UserProfileService" as Service
+participant "UserRepository" as Repository
+database "Database" as DB
+
+autonumber
+
+User -> Controller: GET /profile
+activate Controller
+
+Controller -> Service: getUserProfile()
+activate Service
+
+Service -> Repository: findCurrentUser()
+activate Repository
+
+Repository -> DB: SELECT * FROM users WHERE ...
+activate DB
+DB --> Repository: User Data
+deactivate DB
+
+Repository --> Service: User
+deactivate Repository
+
+Service --> Controller: UserProfileDTO
+deactivate Service
+
+Controller --> View: displayProfile(UserProfileDTO)
+activate View
+
+View --> User: Hiển thị trang hồ sơ
+deactivate View
+
+== Người dùng cập nhật thông tin ==
+
+User -> Controller: POST /profile/update (UpdateProfileDTO)
+activate Controller
+
+Controller -> Service: updateUserProfile(UpdateProfileDTO)
+activate Service
+
+Service -> Service: validate(UpdateProfileDTO)
+
+Service -> Repository: findCurrentUser()
+activate Repository
+
+Repository -> DB: SELECT * FROM users WHERE ...
+activate DB
+DB --> Repository: User Data
+deactivate DB
+
+Repository --> Service: User
+deactivate Repository
+
+Service -> Repository: save(updatedUser)
+activate Repository
+
+Repository -> DB: UPDATE users SET ...
+activate DB
+DB --> Repository: Success
+deactivate DB
+
+Repository --> Service: Saved User
+deactivate Repository
+
+Service --> Controller: void
+deactivate Service
+
+Controller --> User: Redirect to /profile (Success message)
+deactivate Controller
+
+@enduml

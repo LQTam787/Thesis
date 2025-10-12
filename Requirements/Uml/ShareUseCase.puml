@@ -1,0 +1,27 @@
+@startuml ShareUseCase
+
+' Sơ đồ Use Case chi tiết cho chức năng "Quản lý Hồ sơ" và "Chia sẻ"
+
+left to right direction
+
+' --- Định nghĩa Actors ---
+actor User
+
+' --- Định nghĩa Use Cases ---
+rectangle "Share Functions" {
+    usecase UC_Share as "Share Content"
+    usecase UC_SharePlan as "Share Plan"
+    usecase UC_ShareRecipe as "Share Recipe"
+    usecase UC_ShareAchievement as "Share Achievement"
+    usecase UC_Interact as "Interact with Shared Content"
+
+    ' Mối quan hệ
+    User -- UC_Share
+
+    UC_Share .> UC_SharePlan : <<include>>
+    UC_Share .> UC_ShareRecipe : <<include>>
+    UC_Share .> UC_ShareAchievement : <<include>>
+    UC_Share .> UC_Interact : <<include>>
+}
+
+@enduml
