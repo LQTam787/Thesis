@@ -1,9 +1,0 @@
-com\nutrition\ai\nutritionaibackend\controller\FoodControllerTest.class
-com\nutrition\ai\nutritionaibackend\controller\TrackingControllerTest.class
-com\nutrition\ai\nutritionaibackend\service\UserServiceTest.class
-com\nutrition\ai\nutritionaibackend\controller\NutritionPlanControllerTest.class
-com\nutrition\ai\nutritionaibackend\controller\UserControllerTest.class
-com\nutrition\ai\nutritionaibackend\controller\AuthControllerTest.class
-com\nutrition\ai\nutritionaibackend\controller\ShareControllerTest.class
-com\nutrition\ai\nutritionaibackend\service\impl\UserDetailsServiceImplTest.class
-com\nutrition\ai\nutritionaibackend\controller\AdminControllerTest.class
