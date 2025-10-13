@@ -1,15 +1,36 @@
-import pandas as pd
+"""This module provides functions to load the processed datasets."""
 import os
+import pandas as pd
 
-def load_nlp_dataset(file_path: str = "ImplementationAi/data/processed_nlp_data.csv") -> pd.DataFrame:
+def load_nlp_dataset(
+    file_path: str = "ImplementationAi/data/processed_nlp_data.csv",
+) -> pd.DataFrame:
+    """Loads the processed NLP dataset.
+
+    Args:
+        file_path (str): The path to the processed NLP data CSV file.
+
+    Returns:
+        pd.DataFrame: The loaded NLP data as a DataFrame.
+    """
     print(f"Loading NLP dataset from {file_path}")
     if os.path.exists(file_path):
         return pd.read_csv(file_path)
-    else:
-        print(f"Warning: NLP dataset not found at {file_path}. Please run data_preprocessor.py first.")
-        return pd.DataFrame()
+    print(
+        f"Warning: NLP dataset not found at {file_path}. "
+        f"Please run data_preprocessor.py first."
+    )
+    return pd.DataFrame()
 
 def load_vision_dataset(dir_path: str = "ImplementationAi/data/processed_vision_data") -> list:
+    """Loads the processed vision dataset file paths.
+
+    Args:
+        dir_path (str): The path to the directory with processed vision data.
+
+    Returns:
+        list: A list of file paths for the processed images.
+    """
     print(f"Loading Vision dataset from {dir_path}")
     images = []
     if os.path.exists(dir_path):
@@ -17,24 +38,39 @@ def load_vision_dataset(dir_path: str = "ImplementationAi/data/processed_vision_
             if filename.startswith("processed_"):
                 images.append(os.path.join(dir_path, filename))
     else:
-        print(f"Warning: Vision dataset not found at {dir_path}. Please run data_preprocessor.py first.")
+        print(
+            f"Warning: Vision dataset not found at {dir_path}. "
+            f"Please run data_preprocessor.py first."
+        )
     return images
 
-def load_recommendation_dataset(file_path: str = "ImplementationAi/data/processed_recommendation_data.csv") -> pd.DataFrame:
+def load_recommendation_dataset(
+    file_path: str = "ImplementationAi/data/processed_recommendation_data.csv",
+) -> pd.DataFrame:
+    """Loads the processed recommendation dataset.
+
+    Args:
+        file_path (str): The path to the processed recommendation data CSV file.
+
+    Returns:
+        pd.DataFrame: The loaded recommendation data as a DataFrame.
+    """
     print(f"Loading Recommendation dataset from {file_path}")
     if os.path.exists(file_path):
         return pd.read_csv(file_path)
-    else:
-        print(f"Warning: Recommendation dataset not found at {file_path}. Please run data_preprocessor.py first.")
-        return pd.DataFrame()
+    print(
+        f"Warning: Recommendation dataset not found at {file_path}. "
+        f"Please run data_preprocessor.py first."
+    )
+    return pd.DataFrame()
 
 if __name__ == "__main__":
     # Example usage
-    nlp_df = load_nlp_dataset()
-    print(f"NLP data head:\n{nlp_df.head()}")
+    nlp_data = load_nlp_dataset()
+    print(f"NLP data head:\n{nlp_data.head()}")
 
-    vision_files = load_vision_dataset()
-    print(f"Vision files: {vision_files[:2]}")
+    vision_data = load_vision_dataset()
+    print(f"Vision files: {vision_data[:2]}")
 
-    rec_df = load_recommendation_dataset()
-    print(f"Recommendation data head:\n{rec_df.head()}")
+    recommendation_data = load_recommendation_dataset()
+    print(f"Recommendation data head:\n{recommendation_data.head()}")

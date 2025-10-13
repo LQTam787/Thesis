@@ -1,5 +1,5 @@
 import pandas as pd
-from typing import List, Dict, Any
+from typing import Dict, Any
 
 def load_food_data() -> pd.DataFrame:
     # In a real application, this would load data from a database or a more complex source.

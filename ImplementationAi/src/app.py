@@ -1,11 +1,12 @@
+"""Main Flask application for the AI services."""
 from flask import Flask, jsonify
 from flasgger import Swagger
 from flask_pydantic import validate
 
-from .nlp_service import process_text_for_nutrition_analysis
-from .vision_service import analyze_image_for_food_recognition
-from .recommendation_service import generate_nutrition_recommendations
-from .schemas import NlpRequest, VisionRequest, RecommendationRequest
+from nlp_service import process_text_for_nutrition_analysis
+from vision_service import analyze_image_for_food_recognition
+from recommendation_service import generate_nutrition_recommendations
+from schemas import NlpRequest, VisionRequest, RecommendationRequest
 
 app = Flask(__name__)
 swagger = Swagger(app)
