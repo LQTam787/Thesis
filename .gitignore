@@ -2,7 +2,7 @@
 .vscode/
 
 # Windsurf-specific files
-.windsurf/
+# .windsurf/
 
 # Copilot-specific files
 .github/
