@@ -1,70 +1,71 @@
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!.mvn/wrapper/maven-wrapper.properties
-!**/src/main/**/target/
-!**/src/test/**/target/
-.kotlin
-
-### IntelliJ IDEA ###
-.idea/modules.xml
-.idea/jarRepositories.xml
-.idea/compiler.xml
-.idea/libraries/
-*.iws
-*.iml
-*.ipr
-
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-### VS Code ###
-.vscode/
-
-### Mac OS ###
-.DS_Store
-
-### Windsurf ###
-.windsurf/
-
-### Copilot ###
-.github/
-
-### Cursor ###
-.cursor/
-
-### Trae ###
-.trae/
-
-### Implementation (Java) ###
-!Implementation/nutrition-ai-backend/.mvn/
-!Implementation/target/
-!Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.jar
-!Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.properties
-DB_CRED.md
-Implementation/nutrition-ai-backend/.mvn/
-Implementation/nutrition-ai-backend/.mvn/wrapper/
-Implementation/target/
+# Java/Maven specific
+Implementation/nutrition-ai-backend/target/
+Implementation/nutrition-ai-backend/pom.xml.tag
+Implementation/nutrition-ai-backend/pom.xml.releaseBackup
+Implementation/nutrition-ai-backend/pom.xml.versionsBackup
+Implementation/nutrition-ai-backend/pom.xml.next
+Implementation/nutrition-ai-backend/release.properties
+Implementation/nutrition-ai-backend/dependency-reduced-pom.xml
+Implementation/nutrition-ai-backend/buildNumber.properties
+Implementation/nutrition-ai-backend/.mvn/timing.properties
 Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.jar
-Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.properties
+Implementation/nutrition-ai-backend/.project
+Implementation/nutrition-ai-backend/.classpath
+Implementation/nutrition-ai-backend/.settings/
+Implementation/nutrition-ai-backend/.idea/
+Implementation/nutrition-ai-backend/*.iml
+Implementation/nutrition-ai-backend/*.iws
+Implementation/nutrition-ai-backend/*.ipr
+Implementation/nutrition-ai-backend/out/
 
-### Backup ###
+# Python specific
+ImplementationAi/__pycache__/
+ImplementationAi/*.pyc
+ImplementationAi/*.pyo
+ImplementationAi/*.pyd
+ImplementationAi/.Python/
+ImplementationAi/env/
+ImplementationAi/venv/
+ImplementationAi/lib/python*/site-packages/
+ImplementationAi/.env
+ImplementationAi/.venv
+ImplementationAi/pip-log.txt
+ImplementationAi/pip-delete-this-directory.txt
+ImplementationAi/htmlcov/
+ImplementationAi/.tox/
+ImplementationAi/.coverage
+ImplementationAi/.coverage.*
+ImplementationAi/.cache
+ImplementationAi/.pytest_cache/
+ImplementationAi/nosetests.xml
+ImplementationAi/coverage.xml
+ImplementationAi/.mypy_cache/
+ImplementationAi/.dmypy.json
+ImplementationAi/celerybeat-schedule
+ImplementationAi/*.egg-info/
+ImplementationAi/.installed.cfg
+ImplementationAi/*.manifest
+ImplementationAi/*.spec
+
+# Common ignores
+*/logs/
+*/*.log
+*/*.tmp
+*/*.swp
+*/*.bak
+*/*.swo
+*/*~
+*/.DS_Store
+*/Thumbs.db
+
+# Backup
 $Temp/
 
-### Implementation (Python) ###
-ImplementationAi/.venv/
+# IDE
+.idea/
+.pycharm/
+.vscode/
+.windsurf/
+.cursor/
+.trae/
+.github/

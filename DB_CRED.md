@@ -1,0 +1,11 @@
+DB_URL = jdbc:mysql://localhost:3306/nutrition_systems
+DB_USERNAME = admin
+DB_PASSWORD = 1234
+DB_HOST = localhost
+DB_PORT = 3306
+DB_NAME = nutrition_systems
+DB_DIALECT = com.mysql.cj.jdbc.Driver
+DB_DIALECT = org.hibernate.dialect.MySQLDialect
+DB_DDL_AUTO = update
+DB_SHOW_SQL = true
+DB_HIBERNATE_FORMAT = true
