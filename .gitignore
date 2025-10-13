@@ -56,5 +56,8 @@ build/
 !Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.jar
 !Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.properties
 
+Implementation/nutrition-ai-backend/.mvn/
+Implementation/nutrition-ai-backend/.mvn/wrapper/
+Implementation/target/
 Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.jar
 Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.properties
