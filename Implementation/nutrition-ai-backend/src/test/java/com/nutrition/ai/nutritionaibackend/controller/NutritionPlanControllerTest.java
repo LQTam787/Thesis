@@ -21,7 +21,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -82,9 +84,9 @@ class NutritionPlanControllerTest {
     @Test
     void testCreateNutritionPlan_Success() throws Exception {
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
-        when(modelMapper.map(any(NutritionPlanDto.class), any())).thenReturn(plan1);
+        when(modelMapper.map(any(NutritionPlanDto.class), eq(NutritionPlan.class))).thenReturn(plan1);
         when(nutritionPlanService.save(any(NutritionPlan.class))).thenReturn(plan1);
-        when(modelMapper.map(any(NutritionPlan.class), any())).thenReturn(planDto1);
+        when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
 
         mockMvc.perform(post("/api/users/testuser/nutrition-plans")
                         .with(csrf())
@@ -108,7 +110,7 @@ class NutritionPlanControllerTest {
     @Test
     void testGetNutritionPlan_Found() throws Exception {
         when(nutritionPlanService.findOne(1L)).thenReturn(Optional.of(plan1));
-        when(modelMapper.map(plan1, NutritionPlanDto.class)).thenReturn(planDto1);
+        when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
 
         mockMvc.perform(get("/api/users/testuser/nutrition-plans/1"))
                 .andExpect(status().isOk())
@@ -128,8 +130,8 @@ class NutritionPlanControllerTest {
         List<NutritionPlan> plans = Arrays.asList(plan1, plan2);
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
         when(nutritionPlanService.findAllByUser(testUser)).thenReturn(plans);
-        when(modelMapper.map(plan1, NutritionPlanDto.class)).thenReturn(planDto1);
-        when(modelMapper.map(plan2, NutritionPlanDto.class)).thenReturn(planDto2);
+        when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
+        when(modelMapper.map(eq(plan2), eq(NutritionPlanDto.class))).thenReturn(planDto2);
 
         mockMvc.perform(get("/api/users/testuser/nutrition-plans"))
                 .andExpect(status().isOk())

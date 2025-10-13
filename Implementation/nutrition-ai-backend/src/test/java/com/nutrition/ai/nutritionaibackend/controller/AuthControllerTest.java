@@ -6,6 +6,7 @@ import com.nutrition.ai.nutritionaibackend.dto.UserDto;
 import com.nutrition.ai.nutritionaibackend.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -13,12 +14,12 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(AuthController.class)
+@WebMvcTest(controllers = AuthController.class)
+@AutoConfigureMockMvc(addFilters = false)
 class AuthControllerTest {
 
     @Autowired
@@ -40,7 +41,6 @@ class AuthControllerTest {
         when(userService.registerNewUserAccount(any(UserDto.class))).thenReturn(userDto);
 
         mockMvc.perform(post("/api/auth/register")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isCreated());
@@ -55,7 +55,6 @@ class AuthControllerTest {
         when(userService.registerNewUserAccount(any(UserDto.class))).thenThrow(new RuntimeException("Username already exists"));
 
         mockMvc.perform(post("/api/auth/register")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isBadRequest());
@@ -70,7 +69,6 @@ class AuthControllerTest {
         when(userService.authenticate("testuser", "password")).thenReturn(true);
 
         mockMvc.perform(post("/api/auth/login")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isOk())
@@ -86,7 +84,6 @@ class AuthControllerTest {
         when(userService.authenticate("testuser", "wrongpassword")).thenReturn(false);
 
         mockMvc.perform(post("/api/auth/login")
-                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(loginDto)))
                 .andExpect(status().isUnauthorized())

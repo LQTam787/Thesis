@@ -2,7 +2,6 @@ package com.nutrition.ai.nutritionaibackend.controller;
 
 import com.nutrition.ai.nutritionaibackend.dto.NutritionPlanDto;
 import com.nutrition.ai.nutritionaibackend.model.domain.NutritionPlan;
-import com.nutrition.ai.nutritionaibackend.model.domain.User;
 import com.nutrition.ai.nutritionaibackend.repository.UserRepository;
 import com.nutrition.ai.nutritionaibackend.service.NutritionPlanService;
 import org.modelmapper.ModelMapper;
@@ -28,12 +27,12 @@ public class NutritionPlanController {
 
     @PostMapping
     public ResponseEntity<NutritionPlanDto> createNutritionPlan(@PathVariable String username, @RequestBody NutritionPlanDto nutritionPlanDto) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
-        NutritionPlan nutritionPlan = modelMapper.map(nutritionPlanDto, NutritionPlan.class);
-        nutritionPlan.setUser(user);
-        NutritionPlan savedPlan = nutritionPlanService.save(nutritionPlan);
-        return ResponseEntity.ok(modelMapper.map(savedPlan, NutritionPlanDto.class));
+        return userRepository.findByUsername(username).map(user -> {
+            NutritionPlan nutritionPlan = modelMapper.map(nutritionPlanDto, NutritionPlan.class);
+            nutritionPlan.setUser(user);
+            NutritionPlan savedPlan = nutritionPlanService.save(nutritionPlan);
+            return ResponseEntity.ok(modelMapper.map(savedPlan, NutritionPlanDto.class));
+        }).orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{planId}")
@@ -45,11 +44,11 @@ public class NutritionPlanController {
 
     @GetMapping
     public ResponseEntity<List<NutritionPlanDto>> getAllNutritionPlans(@PathVariable String username) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found with username: " + username));
-        List<NutritionPlanDto> nutritionPlanDtos = nutritionPlanService.findAllByUser(user).stream()
-                .map(nutritionPlan -> modelMapper.map(nutritionPlan, NutritionPlanDto.class))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(nutritionPlanDtos);
+        return userRepository.findByUsername(username).map(user -> {
+            List<NutritionPlanDto> nutritionPlanDtos = nutritionPlanService.findAllByUser(user).stream()
+                    .map(nutritionPlan -> modelMapper.map(nutritionPlan, NutritionPlanDto.class))
+                    .collect(Collectors.toList());
+            return ResponseEntity.ok(nutritionPlanDtos);
+        }).orElse(ResponseEntity.notFound().build());
     }
 }
