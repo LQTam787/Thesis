@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,14 +25,15 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping("/api/share")
+@Tag(name = "Content Sharing", description = "Endpoints for sharing, liking, and commenting on content")
+@SecurityRequirement(name = "bearerAuth")
 @RequiredArgsConstructor
 public class ShareController {
 
     private final ShareService shareService;
 
-    /**
-     * Endpoint to share a new piece of content.
-     */
+    @Operation(summary = "Share content", description = "Allows a user to share a piece of content, like a recipe or a nutrition plan.")
+    @ApiResponse(responseCode = "201", description = "Content shared successfully")
     @PostMapping
     public ResponseEntity<SharedContentDto> shareContent(@AuthenticationPrincipal UserDetails userDetails, @RequestBody Map<String, String> payload) {
         // This is a simplified way to get user ID. In a real app, you'd have a more robust way.
@@ -41,18 +46,16 @@ public class ShareController {
         return new ResponseEntity<>(sharedContent, HttpStatus.CREATED);
     }
 
-    /**
-     * Endpoint to get all public shared content.
-     */
+    @Operation(summary = "Get public content", description = "Retrieves a feed of all publicly shared content.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved public content")
     @GetMapping("/public")
     public ResponseEntity<List<SharedContentDto>> getPublicContent() {
         List<SharedContentDto> publicContent = shareService.getAllPublicContent();
         return ResponseEntity.ok(publicContent);
     }
 
-    /**
-     * Endpoint to like a piece of shared content.
-     */
+    @Operation(summary = "Like content", description = "Allows a user to like a piece of shared content.")
+    @ApiResponse(responseCode = "200", description = "Content liked successfully")
     @PostMapping("/{contentId}/like")
     public ResponseEntity<Void> likeContent(@PathVariable Long contentId, @AuthenticationPrincipal UserDetails userDetails) {
         Long userId = 1L; // Placeholder
@@ -60,9 +63,8 @@ public class ShareController {
         return ResponseEntity.ok().build();
     }
 
-    /**
-     * Endpoint to add a comment to a piece of shared content.
-     */
+    @Operation(summary = "Comment on content", description = "Allows a user to add a comment to a piece of shared content.")
+    @ApiResponse(responseCode = "201", description = "Comment added successfully")
     @PostMapping("/{contentId}/comment")
     public ResponseEntity<ContentCommentDto> commentOnContent(@PathVariable Long contentId,
                                                               @AuthenticationPrincipal UserDetails userDetails,
@@ -73,9 +75,8 @@ public class ShareController {
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
-    /**
-     * Endpoint to get all comments for a piece of shared content.
-     */
+    @Operation(summary = "Get comments for content", description = "Retrieves all comments for a specific piece of shared content.")
+    @ApiResponse(responseCode = "200", description = "Successfully retrieved comments")
     @GetMapping("/{contentId}/comments")
     public ResponseEntity<List<ContentCommentDto>> getCommentsForContent(@PathVariable Long contentId) {
         List<ContentCommentDto> comments = shareService.getCommentsForContent(contentId);

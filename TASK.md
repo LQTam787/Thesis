@@ -87,14 +87,17 @@
 - [x] **Unit Tests**:
     - [x] Viết Unit Test cho tầng `Service`.
     - [x] Viết Unit Test cho tầng `Controller`.
-    - [x] Viết Unit Test cho các thành phần của module AI.
-- [ ] **Integration Tests**:
-    - [ ] Viết Integration Test cho luồng xác thực (Authentication Flow).
-    - [ ] Viết Integration Test cho các luồng nghiệp vụ chính (VD: tạo và quản lý kế hoạch dinh dưỡng).
-    - [ ] Viết Integration Test cho các luồng tương tác với module AI.
+    - [x] Viết Unit Test cho các thành phần của module AI (đã viết lại bằng Pytest).
+- [x] **Integration Tests**:
+    - [x] Soạn thảo Kế hoạch Kiểm thử Tích hợp (Integration Test Plan).
+    - [x] Viết Integration Test cho luồng xác thực (Authentication Flow).
+    - [x] Viết Integration Test cho các luồng nghiệp vụ chính (VD: tạo và quản lý kế hoạch dinh dưỡng).
+    - [x] Viết Integration Test cho các luồng tương tác với module AI trong giai đoạn kiểm thử một hệ thống ứng dụng hỗ trợ dinh dưỡng có tích hợp AI.
 
 ### **VIII. Giai đoạn Hoàn thiện (Finalization)**
 
-- [ ] **Tài liệu hóa API**: Sử dụng Swagger/OpenAPI để tạo tài liệu cho các endpoint, bao gồm cả các API của AI Service.
-- [ ] **Cập nhật README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API, đặc biệt là hướng dẫn cài đặt và chạy module AI.
-- [ ] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.
+- [x] **Tài liệu hóa API**: Sử dụng Swagger/OpenAPI để tạo tài liệu cho các endpoint, bao gồm cả các API của AI Service.
+- [x] **Cập nhật README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API, đặc biệt là hướng dẫn cài đặt và chạy module AI.
+- [x] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.
+    - [x] **Backend**: Tối ưu hóa `NutritionPlanService` bằng cách thay thế phương thức lọc dữ liệu trong bộ nhớ bằng truy vấn trực tiếp tới CSDL (`findByUser`), giúp cải thiện hiệu suất.
+    - [x] **AI Service**: Tích hợp `Pydantic` để xác thực dữ liệu đầu vào cho các API endpoint, giúp mã nguồn an toàn, dễ đọc và dễ bảo trì hơn.

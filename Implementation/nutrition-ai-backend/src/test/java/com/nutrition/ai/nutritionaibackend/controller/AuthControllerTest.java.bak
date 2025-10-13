@@ -1,0 +1,103 @@
+package com.nutrition.ai.nutritionaibackend.controller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nutrition.ai.nutritionaibackend.dto.LoginDto;
+import com.nutrition.ai.nutritionaibackend.dto.UserDto;
+import com.nutrition.ai.nutritionaibackend.service.UserService;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import com.nutrition.ai.nutritionaibackend.config.jwt.JwtUtils;
+import com.nutrition.ai.nutritionaibackend.service.impl.UserDetailsImpl;
+import org.junit.jupiter.api.BeforeEach;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
+import java.util.Collections;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+
+@WebMvcTest(controllers = AuthController.class)
+@AutoConfigureMockMvc(addFilters = false) // Disable Spring Security filters for unit tests
+class AuthControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockBean
+    private UserService userService;
+
+    @MockBean
+    private AuthenticationManager authenticationManager;
+
+    @MockBean
+    private JwtUtils jwtUtils;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    private UserDto userDto;
+
+    @BeforeEach
+    void setUp() {
+        userDto = new UserDto();
+        userDto.setUsername("testuser");
+        userDto.setPassword("password");
+        userDto.setEmail("test@example.com");
+    }
+
+    @Test
+    void testRegisterUser_Success() throws Exception {
+        when(userService.registerNewUserAccount(any(UserDto.class))).thenReturn(userDto);
+
+        mockMvc.perform(post("/api/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.username").value("testuser"));
+    }
+
+    @Test
+    void testRegisterUser_UsernameExists() throws Exception {
+        when(userService.registerNewUserAccount(any(UserDto.class))).thenThrow(new RuntimeException("Username already exists"));
+
+        mockMvc.perform(post("/api/auth/signup")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userDto)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void testAuthenticateUser_Success() throws Exception {
+        LoginDto loginDto = new LoginDto();
+        loginDto.setUsername("testuser");
+        loginDto.setPassword("password");
+
+        UserDetailsImpl userDetails = new UserDetailsImpl(1L, "testuser", "test@example.com", "password", Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
+        when(jwtUtils.generateJwtToken(any(Authentication.class))).thenReturn("mock-jwt-token");
+
+        mockMvc.perform(post("/api/auth/signin")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(loginDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.token").value("mock-jwt-token"))
+                .andExpect(jsonPath("$.username").value("testuser"));
+    }
+}

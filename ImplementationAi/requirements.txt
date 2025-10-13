@@ -1,8 +1,12 @@
 tensorflow
-flask
+flask==2.1.2
+flasgger==0.9.5
 transformers
 torch
 Pillow
 pandas
 scikit-learn
 pytest
+pydantic
+Flask-Pydantic
+tf-keras

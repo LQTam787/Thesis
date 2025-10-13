@@ -10,7 +10,7 @@ def load_food_data() -> pd.DataFrame:
         "protein_g": [5, 30, 40, 50, 10, 8],
         "carbs_g": [25, 15, 20, 0, 40, 30],
         "fat_g": [3, 20, 25, 30, 15, 5],
-        "tags": ["breakfast", "healthy", "lunch", "dinner", "high-protein", "low-carb", "vegan"]
+        "tags": [["breakfast", "healthy"], ["lunch", "healthy"], ["dinner", "high-protein"], ["dinner", "high-protein", "low-carb"], ["lunch", "vegan"], ["breakfast", "snack"]]
     }
     return pd.DataFrame(data)
 

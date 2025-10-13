@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing {@link NutritionPlan}.
@@ -50,8 +49,6 @@ public class NutritionPlanServiceImpl implements NutritionPlanService {
 
     @Override
     public List<NutritionPlan> findAllByUser(User user) {
-        return nutritionPlanRepository.findAll().stream()
-            .filter(plan -> plan.getUser().equals(user))
-            .collect(Collectors.toList());
+        return nutritionPlanRepository.findByUser(user);
     }
 }

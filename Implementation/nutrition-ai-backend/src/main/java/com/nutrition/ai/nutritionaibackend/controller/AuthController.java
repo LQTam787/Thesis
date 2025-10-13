@@ -8,6 +8,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Endpoints for user registration and login")
 public class AuthController {
 
     private final UserService userService;
@@ -30,6 +35,11 @@ public class AuthController {
      * @return ResponseEntity with the created user or an error message.
      * @throws Exception 
      */
+    @Operation(summary = "Register a new user", description = "Creates a new user account.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "User registered successfully"),
+            @ApiResponse(responseCode = "400", description = "Invalid input data")
+    })
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) throws Exception {
         try {
@@ -48,6 +58,11 @@ public class AuthController {
      * @param loginDto DTO containing login credentials.
      * @return ResponseEntity indicating success or failure.
      */
+    @Operation(summary = "Authenticate a user", description = "Logs in a user and returns an authentication token.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Authentication successful"),
+            @ApiResponse(responseCode = "401", description = "Invalid credentials")
+    })
     @PostMapping("/login")
     public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
         boolean isAuthenticated = userService.authenticate(loginDto.getUsername(), loginDto.getPassword());
