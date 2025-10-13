@@ -49,3 +49,7 @@ build/
 
 ### Trae ###
 .trae/
+
+!Implementation/nutrition-ai-backend/.mvn/
+!Implementation/target/
+
