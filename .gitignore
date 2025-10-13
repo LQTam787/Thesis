@@ -63,3 +63,5 @@ Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.jar
 Implementation/nutrition-ai-backend/.mvn/wrapper/maven-wrapper.properties
 
 $Temp/
+
+ImplementationAi/.venv/
