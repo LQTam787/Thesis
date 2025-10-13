@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nutrition.ai.nutritionaibackend.dto.FoodItemDto;
 import com.nutrition.ai.nutritionaibackend.model.domain.FoodItem;
 import com.nutrition.ai.nutritionaibackend.service.FoodService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,8 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -42,63 +41,64 @@ class FoodControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    private FoodItem foodItem1;
+    private FoodItemDto foodItemDto1;
+    private FoodItem foodItem2;
+    private FoodItemDto foodItemDto2;
+
+    @BeforeEach
+    void setUp() {
+        foodItem1 = new FoodItem();
+        foodItem1.setId(1L);
+        foodItem1.setName("Apple");
+
+        foodItemDto1 = new FoodItemDto(1L, "Apple", 95.0, 0.5, 25.0, 0.3, "1 medium", null);
+
+        foodItem2 = new FoodItem();
+        foodItem2.setId(2L);
+        foodItem2.setName("Banana");
+
+        foodItemDto2 = new FoodItemDto(2L, "Banana", 105.0, 1.3, 27.0, 0.3, "1 large", null);
+    }
+
     @Test
     void testCreateFoodItem_Success() throws Exception {
-        FoodItemDto foodItemDto = new FoodItemDto(null, "Apple", 52, 0.2, 14.0, 0.3, "g", 100.0);
+        when(modelMapper.map(any(FoodItemDto.class), eq(FoodItem.class))).thenReturn(foodItem1);
+        when(foodService.save(any(FoodItem.class))).thenReturn(foodItem1);
+        when(modelMapper.map(any(FoodItem.class), eq(FoodItemDto.class))).thenReturn(foodItemDto1);
 
-        when(foodService.createFoodItem(any(FoodItemDto.class))).thenReturn(foodItemDto);
-
-        mockMvc.perform(post("/api/v1/foods")
+        mockMvc.perform(post("/api/foods")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(foodItemDto)))
-                .andExpect(status().isOk());
+                        .content(objectMapper.writeValueAsString(foodItemDto1)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Apple"));
     }
 
     @Test
     void testGetFoodItem_Found() throws Exception {
-        Long foodId = 1L;
-        FoodItem foodItem = new FoodItem();
-        foodItem.setId(foodId);
-        foodItem.setName("Banana");
-        FoodItemDto responseDto = new FoodItemDto(foodId, "Banana", 105.0, 1.3, 27.0, 0.3, "1 large", null);
+        when(foodService.findOne(1L)).thenReturn(Optional.of(foodItem1));
+        when(modelMapper.map(foodItem1, FoodItemDto.class)).thenReturn(foodItemDto1);
 
-        when(foodService.findOne(foodId)).thenReturn(Optional.of(foodItem));
-        when(modelMapper.map(foodItem, FoodItemDto.class)).thenReturn(responseDto);
-
-        mockMvc.perform(get("/api/foods/{id}", foodId))
+        mockMvc.perform(get("/api/foods/1"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(foodId))
-                .andExpect(jsonPath("$.name").value("Banana"));
+                .andExpect(jsonPath("$.name").value("Apple"));
     }
 
     @Test
     void testGetFoodItem_NotFound() throws Exception {
-        Long foodId = 99L;
+        when(foodService.findOne(99L)).thenReturn(Optional.empty());
 
-        when(foodService.findOne(foodId)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/foods/{id}", foodId))
+        mockMvc.perform(get("/api/foods/99"))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void testGetAllFoodItems_Success() throws Exception {
-        FoodItem foodItem1 = new FoodItem();
-        foodItem1.setId(1L);
-        foodItem1.setName("Apple");
-        FoodItem foodItem2 = new FoodItem();
-        foodItem2.setId(2L);
-        foodItem2.setName("Banana");
         List<FoodItem> foodItems = Arrays.asList(foodItem1, foodItem2);
-
-        FoodItemDto dto1 = new FoodItemDto(1L, "Apple", 95.0, 0.5, 25.0, 0.3, "1 medium", null);
-        FoodItemDto dto2 = new FoodItemDto(2L, "Banana", 105.0, 1.3, 27.0, 0.3, "1 large", null);
-        List<FoodItemDto> foodItemDtos = Arrays.asList(dto1, dto2);
-
         when(foodService.findAll()).thenReturn(foodItems);
-        when(modelMapper.map(foodItem1, FoodItemDto.class)).thenReturn(dto1);
-        when(modelMapper.map(foodItem2, FoodItemDto.class)).thenReturn(dto2);
+        when(modelMapper.map(foodItem1, FoodItemDto.class)).thenReturn(foodItemDto1);
+        when(modelMapper.map(foodItem2, FoodItemDto.class)).thenReturn(foodItemDto2);
 
         mockMvc.perform(get("/api/foods"))
                 .andExpect(status().isOk())
@@ -108,35 +108,40 @@ class FoodControllerTest {
 
     @Test
     void testUpdateFoodItem_Success() throws Exception {
-        FoodItemDto foodItemDto = new FoodItemDto(1L, "Apple", 52, 0.2, 14.0, 0.3, "g", 100.0);
+        FoodItemDto updatedDto = new FoodItemDto(1L, "Golden Apple", 100.0, 0.6, 26.0, 0.4, "1 medium", null);
+        FoodItem updatedFoodItem = new FoodItem();
+        updatedFoodItem.setId(1L);
+        updatedFoodItem.setName("Golden Apple");
 
-        when(foodService.updateFoodItem(eq(1L), any(FoodItemDto.class))).thenReturn(foodItemDto);
+        when(foodService.findOne(1L)).thenReturn(Optional.of(foodItem1));
+        when(modelMapper.map(any(FoodItemDto.class), eq(FoodItem.class))).thenReturn(updatedFoodItem);
+        when(foodService.save(any(FoodItem.class))).thenReturn(updatedFoodItem);
+        when(modelMapper.map(updatedFoodItem, FoodItemDto.class)).thenReturn(updatedDto);
 
-        mockMvc.perform(put("/api/v1/foods/1")
+        mockMvc.perform(put("/api/foods/1")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(foodItemDto)))
-                .andExpect(status().isOk());
+                        .content(objectMapper.writeValueAsString(updatedDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Golden Apple"));
     }
 
     @Test
     void testUpdateFoodItem_NotFound() throws Exception {
-        FoodItemDto foodItemDto = new FoodItemDto(1L, "Apple", 52, 0.2, 14.0, 0.3, "g", 100.0);
+        when(foodService.findOne(99L)).thenReturn(Optional.empty());
 
-        when(foodService.updateFoodItem(eq(1L), any(FoodItemDto.class))).thenReturn(null);
-
-        mockMvc.perform(put("/api/v1/foods/1")
+        mockMvc.perform(put("/api/foods/99")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(foodItemDto)))
+                        .content(objectMapper.writeValueAsString(foodItemDto1)))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     void testDeleteFoodItem_Success() throws Exception {
-        doNothing().when(foodService).deleteFoodItem(1L);
+        doNothing().when(foodService).delete(1L);
 
-        mockMvc.perform(delete("/api/v1/foods/1")
+        mockMvc.perform(delete("/api/foods/1")
                         .with(csrf()))
                 .andExpect(status().isNoContent());
     }

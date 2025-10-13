@@ -3,7 +3,6 @@ package com.nutrition.ai.nutritionaibackend.service;
 import com.nutrition.ai.nutritionaibackend.dto.UserDto;
 import com.nutrition.ai.nutritionaibackend.model.domain.User;
 import com.nutrition.ai.nutritionaibackend.repository.UserRepository;
-import com.nutrition.ai.nutritionaibackend.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

@@ -16,9 +16,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -68,10 +68,17 @@ class UserControllerTest {
 
     @Test
     void testUpdateUserProfile_Success() throws Exception {
+        String username = "testuser";
+        User user = new User();
+        user.setUsername(username);
         ProfileDto profileDto = new ProfileDto(1L, "Updated Full Name", null, null, null, null, null, null, null, 1L);
-        when(userService.updateUserProfile(eq("testuser"), any(ProfileDto.class))).thenReturn(profileDto);
 
-        mockMvc.perform(put("/api/users/testuser")
+        when(userService.findByUsername(username)).thenReturn(Optional.of(user));
+        doNothing().when(modelMapper).map(any(ProfileDto.class), any(User.class));
+        when(userService.save(any(User.class))).thenReturn(user);
+        when(modelMapper.map(user, ProfileDto.class)).thenReturn(profileDto);
+
+        mockMvc.perform(put("/api/users/{username}", username)
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(profileDto)))
@@ -81,10 +88,12 @@ class UserControllerTest {
 
     @Test
     void testUpdateUserProfile_UserNotFound() throws Exception {
-        ProfileDto profileDto = new ProfileDto(1L, "Updated Full Name", null, null, null, null, null, null, null, 1L);
-        when(userService.updateUserProfile(eq("nonexistent"), any(ProfileDto.class))).thenThrow(new RuntimeException("User not found"));
+        String username = "nonexistent";
+        ProfileDto profileDto = new ProfileDto();
 
-        mockMvc.perform(put("/api/users/nonexistent")
+        when(userService.findByUsername(username)).thenReturn(Optional.empty());
+
+        mockMvc.perform(put("/api/users/{username}", username)
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(profileDto)))

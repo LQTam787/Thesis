@@ -34,7 +34,7 @@ class UserDetailsServiceImplTest {
         user.setId(1L);
         user.setUsername("testuser");
         user.setPassword("password");
-        // You may need to set roles or other necessary fields for UserDetailsImpl.build(user)
+        user.setRoles(java.util.Collections.emptySet()); // Fix: Provide an empty set of roles
 
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(user));
 

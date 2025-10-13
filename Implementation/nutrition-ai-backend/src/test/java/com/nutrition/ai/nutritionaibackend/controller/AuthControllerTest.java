@@ -52,7 +52,7 @@ class AuthControllerTest {
         userDto.setUsername("testuser");
         userDto.setPassword("password");
 
-        when(userService.registerNewUserAccount(any(UserDto.class))).thenThrow(new Exception("Username already exists"));
+        when(userService.registerNewUserAccount(any(UserDto.class))).thenThrow(new RuntimeException("Username already exists"));
 
         mockMvc.perform(post("/api/auth/register")
                         .with(csrf())
