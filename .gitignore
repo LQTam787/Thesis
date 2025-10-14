@@ -71,3 +71,6 @@ $Temp/
 .cursor/
 .trae/
 .github/
+
+# Personal Database Info
+DB_CRED.md
