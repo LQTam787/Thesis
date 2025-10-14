@@ -20,6 +20,7 @@ Implementation/nutrition-ai-backend/out/
 
 # Python specific
 ImplementationAi/__pycache__/
+ImplementationAi/src/__pycache__/
 ImplementationAi/*.pyc
 ImplementationAi/*.pyo
 ImplementationAi/*.pyd
@@ -46,6 +47,7 @@ ImplementationAi/*.egg-info/
 ImplementationAi/.installed.cfg
 ImplementationAi/*.manifest
 ImplementationAi/*.spec
+ImplementationAi/tests/__pycache__/
 
 # Common ignores
 */logs/

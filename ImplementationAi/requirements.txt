@@ -1,6 +1,6 @@
 tensorflow
 flask==2.1.2
-flasgger==0.9.5
+flasgger
 transformers
 torch
 Pillow
@@ -10,3 +10,4 @@ pytest
 pydantic
 Flask-Pydantic
 tf-keras
+Werkzeug<3.0
