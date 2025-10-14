@@ -25,6 +25,10 @@ def collect_mock_nlp_data(
             "neutral, dietary_preference",
         ],
     }
+    output_dir = os.path.dirname(output_file)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+
     df = pd.DataFrame(data)
     df.to_csv(output_file, index=False)
     print(f"Mock NLP data collected and saved to {output_file}")
@@ -67,6 +71,10 @@ def collect_mock_recommendation_data(
             "salmon, vegetables, beef steak",
         ],
     }
+    output_dir = os.path.dirname(output_file)
+    if output_dir:
+        os.makedirs(output_dir, exist_ok=True)
+
     df = pd.DataFrame(data)
     df.to_csv(output_file, index=False)
     print(f"Mock Recommendation data collected and saved to {output_file}")

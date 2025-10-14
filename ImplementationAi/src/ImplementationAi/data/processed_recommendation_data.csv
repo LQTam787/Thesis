@@ -1,0 +1,4 @@
+user_id,age,weight,food_choices,diet_low-carb,diet_none,diet_vegan,goal_maintain,goal_muscle_gain,goal_weight_loss
+user1,30,70,"oatmeal, fruit smoothie",False,False,True,False,False,True
+user2,24,60,"chicken breast, salad",True,False,False,False,True,False
+user3,45,80,"salmon, vegetables, beef steak",False,True,False,True,False,False

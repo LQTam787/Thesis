@@ -1,0 +1,5 @@
+text,labels
+I had a delicious apple for breakfast.,"positive, fruit"
+Chicken breast is great for muscle gain.,"positive, protein"
+This meal was too high in fat and low in protein.,"negative, unhealthy"
+I need a low-carb meal plan.,"neutral, dietary_preference"

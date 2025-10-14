@@ -1,0 +1,4 @@
+user_id,age,weight,dietary_preferences,health_goals,food_choices
+user1,30,70,vegan,weight_loss,"oatmeal, fruit smoothie"
+user2,24,60,low-carb,muscle_gain,"chicken breast, salad"
+user3,45,80,none,maintain,"salmon, vegetables, beef steak"
