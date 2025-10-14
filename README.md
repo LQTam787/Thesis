@@ -177,6 +177,25 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 
 ## H. Hướng dẫn cài đặt và chạy
 
+### 0. Tải về dự án (Clone Repository)
+
+Bạn có thể tải về mã nguồn dự án bằng một trong các cách sau:
+
+**HTTPS:**
+```shell
+git clone https://github.com/LQTam787/Thesis.git
+```
+
+**SSH:**
+```shell
+git clone git@github.com:LQTam787/Thesis.git
+```
+
+**GitHub CLI:**
+```shell
+gh repo clone LQTam787/Thesis
+```
+
 ### 1. Backend (Spring Boot)
 
 a.  **Yêu cầu**:
