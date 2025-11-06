@@ -47,12 +47,8 @@ def analyze_image_for_food_recognition(image_data: str):
         decoded_predictions = decode_predictions(predictions, top=3)[0]
         
         detected_foods = []
-<<<<<<< HEAD
-        for _, label, score in decoded_predictions:
-=======
         # Luồng hoạt động: Định dạng kết quả dự đoán thành danh sách các món ăn và độ tin cậy.
         for i, (imagenet_id, label, score) in enumerate(decoded_predictions):
->>>>>>> temp
             detected_foods.append({"name": label, "confidence": float(score)})
 
         recognition_result = {
