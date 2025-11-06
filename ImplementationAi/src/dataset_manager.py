@@ -1,4 +1,11 @@
-"""This module provides functions to load the processed datasets."""
+"""This module provides functions to load the processed datasets.
+
+This script is responsible for loading the preprocessed data from the CSV files and 
+image directories into memory. It provides a centralized way to access the datasets 
+for the NLP, Vision, and Recommendation services. The functions in this module are 
+used to load the data into pandas DataFrames or lists of file paths, making it easy 
+to use them in other parts of the application.
+"""
 import os
 import pandas as pd
 

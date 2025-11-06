@@ -1,4 +1,10 @@
-"""This module contains functions to generate mock data for the AI services."""
+"""This module contains functions to generate mock data for the AI services.
+
+This script is used to create sample datasets for the NLP, Vision, and Recommendation 
+services. It generates CSV files with mock text data and user profiles, and creates 
+dummy image files to simulate a vision dataset. This is useful for testing and 
+development without requiring a real data collection pipeline.
+"""
 import os
 import pandas as pd
 
