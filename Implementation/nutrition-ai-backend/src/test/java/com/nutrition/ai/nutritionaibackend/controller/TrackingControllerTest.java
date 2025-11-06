@@ -32,29 +32,33 @@ class TrackingControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private TrackingService trackingService;
+    private TrackingService trackingService; // Service giả lập cho chức năng theo dõi
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final String userId = "123";
+    private final String userId = "123"; // ID người dùng giả lập trong đường dẫn
 
     @Test
     void testLogFood_Success() throws Exception {
+        // 1. Chuẩn bị DTO đầu vào và DTO phản hồi (có ID)
         FoodLogDto inputDto = new FoodLogDto(null, LocalDateTime.now(), 100.0, "g", 1L, 1L);
         FoodLogDto responseDto = new FoodLogDto(1L, LocalDateTime.now(), 100.0, "g", 1L, 1L);
 
+        // 2. Mocking Service: Giả lập lưu thành công và trả về DTO đã lưu
         when(trackingService.logFood(eq(userId), any(FoodLogDto.class))).thenReturn(responseDto);
 
+        // 3. Thực hiện yêu cầu POST /api/v1/tracking/food/{userId}
         mockMvc.perform(post("/api/v1/tracking/food/{userId}", userId)
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDto)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk()); // 4. Kiểm tra: Trạng thái 200 OK
     }
 
     @Test
     void testLogActivity_Success() throws Exception {
+        // Nguyên lý tương tự như testLogFood_Success, nhưng cho ActivityLog
         ActivityLogDto inputDto = new ActivityLogDto(null, LocalDateTime.now(), 60, 300.0, 1L, 1L);
         ActivityLogDto responseDto = new ActivityLogDto(1L, LocalDateTime.now(), 60, 300.0, 1L, 1L);
 
@@ -69,14 +73,17 @@ class TrackingControllerTest {
 
     @Test
     void testGetProgressReport_Success() throws Exception {
+        // 1. Chuẩn bị DTO báo cáo giả lập
         ProgressReportDto responseDto = new ProgressReportDto(1L, EReportType.WEEKLY_PROGRESS, LocalDateTime.now(), "Report for user 123 for week X", null, null, null);
 
+        // 2. Mocking Service: Giả lập tạo báo cáo thành công
         when(trackingService.generateProgressReport(eq(userId), eq("weekly"))).thenReturn(responseDto);
 
+        // 3. Thực hiện yêu cầu GET /api/v1/tracking/report/{userId} với tham số 'type'
         mockMvc.perform(get("/api/v1/tracking/report/{userId}", userId)
-                        .param("type", "weekly"))
+                        .param("type", "weekly")) // Thêm tham số truy vấn
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.reportType").value("WEEKLY_PROGRESS"))
-                .andExpect(jsonPath("$.summary").value("Report for user 123 for week X"));
+                .andExpect(jsonPath("$.summary").value("Report for user 123 for week X")); // 4. Kiểm tra nội dung
     }
 }

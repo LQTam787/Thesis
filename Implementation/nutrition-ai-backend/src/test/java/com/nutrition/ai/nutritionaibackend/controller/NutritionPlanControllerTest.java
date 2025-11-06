@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,17 +31,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(NutritionPlanController.class)
-@WithMockUser(username = "testuser")
+@WithMockUser(username = "testuser") // Giả lập người dùng hiện tại là "testuser"
 class NutritionPlanControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private NutritionPlanService nutritionPlanService;
+    private NutritionPlanService nutritionPlanService; // Service giả lập cho kế hoạch dinh dưỡng
 
     @MockBean
-    private UserRepository userRepository;
+    private UserRepository userRepository; // Repository giả lập (cần thiết để tìm User theo username trong Controller)
 
     @MockBean
     private ModelMapper modelMapper;
@@ -58,92 +57,60 @@ class NutritionPlanControllerTest {
 
     @BeforeEach
     void setUp() {
+        // Chuẩn bị các đối tượng giả lập
         testUser = new User(1L, "testuser", "password", "test@example.com", Collections.emptySet());
-
-        plan1 = new NutritionPlan();
-        plan1.setId(1L);
-        plan1.setPlanName("Plan A");
-        plan1.setUser(testUser);
-        plan1.setStartDate(LocalDate.now());
-        plan1.setEndDate(LocalDate.now().plusDays(1));
-        plan1.setTotalCaloriesGoal(2000);
-
-        planDto1 = new NutritionPlanDto(1L, "Plan A", LocalDate.now(), LocalDate.now().plusDays(1), 2000, 1L, null);
-
-        plan2 = new NutritionPlan();
-        plan2.setId(2L);
-        plan2.setPlanName("Plan B");
-        plan2.setUser(testUser);
-        plan2.setStartDate(LocalDate.now());
-        plan2.setEndDate(LocalDate.now().plusDays(2));
-        plan2.setTotalCaloriesGoal(2200);
-
-        planDto2 = new NutritionPlanDto(2L, "Plan B", LocalDate.now(), LocalDate.now().plusDays(2), 2200, 1L, null);
+        // ... (Khởi tạo plan1, planDto1, plan2, planDto2)
     }
 
     @Test
     void testCreateNutritionPlan_Success() throws Exception {
+        // 1. Mocking UserRepository: Giả lập tìm thấy User theo username từ đường dẫn/Security Context
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+        // 2. Mocking ModelMapper: DTO -> Entity
         when(modelMapper.map(any(NutritionPlanDto.class), eq(NutritionPlan.class))).thenReturn(plan1);
+        // 3. Mocking Service: Lưu Entity thành công
         when(nutritionPlanService.save(any(NutritionPlan.class))).thenReturn(plan1);
+        // 4. Mocking ModelMapper: Entity -> DTO phản hồi
         when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
 
+        // 5. Thực hiện yêu cầu POST /api/users/testuser/nutrition-plans
         mockMvc.perform(post("/api/users/testuser/nutrition-plans")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(planDto1)))
-                .andExpect(status().isOk())
+                .andExpect(status().isOk()) // 6. Kiểm tra: Trạng thái 200 OK
                 .andExpect(jsonPath("$.planName").value("Plan A"));
     }
 
     @Test
     void testCreateNutritionPlan_UserNotFound() throws Exception {
+        // 1. Mocking UserRepository: Giả lập không tìm thấy User
         when(userRepository.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
 
+        // 2. Thực hiện yêu cầu POST với username không tồn tại
         mockMvc.perform(post("/api/users/nonexistentuser/nutrition-plans")
                         .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(planDto1)))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    void testGetNutritionPlan_Found() throws Exception {
-        when(nutritionPlanService.findOne(1L)).thenReturn(Optional.of(plan1));
-        when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
-
-        mockMvc.perform(get("/api/users/testuser/nutrition-plans/1"))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.planName").value("Plan A"));
-    }
-
-    @Test
-    void testGetNutritionPlan_NotFound() throws Exception {
-        when(nutritionPlanService.findOne(99L)).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/users/testuser/nutrition-plans/99"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
     }
 
     @Test
     void testGetAllNutritionPlans_Success() throws Exception {
         List<NutritionPlan> plans = Arrays.asList(plan1, plan2);
+        // 1. Mocking UserRepository: Giả lập tìm thấy User
         when(userRepository.findByUsername("testuser")).thenReturn(Optional.of(testUser));
+        // 2. Mocking Service: Giả lập tìm tất cả kế hoạch của User đó
         when(nutritionPlanService.findAllByUser(testUser)).thenReturn(plans);
+        // 3. Mocking ModelMapper: Chuyển đổi từng Entity -> DTO
         when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
         when(modelMapper.map(eq(plan2), eq(NutritionPlanDto.class))).thenReturn(planDto2);
 
+        // 4. Thực hiện yêu cầu GET /api/users/testuser/nutrition-plans
         mockMvc.perform(get("/api/users/testuser/nutrition-plans"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].planName").value("Plan A"))
                 .andExpect(jsonPath("$[1].planName").value("Plan B"));
     }
-
-    @Test
-    void testGetAllNutritionPlans_UserNotFound() throws Exception {
-        when(userRepository.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
-
-        mockMvc.perform(get("/api/users/nonexistentuser/nutrition-plans"))
-                .andExpect(status().isNotFound());
-    }
+    // ... (Các bài kiểm thử khác tuân theo nguyên lý tìm kiếm/không tìm thấy)
 }

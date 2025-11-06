@@ -10,6 +10,14 @@ import java.util.List;
 
 /**
  * Spring Data JPA repository for the ActivityLog entity.
+ * * Luồng hoạt động & Nguyên lý hoạt động:
+ * 1. Kế thừa: Cung cấp các phương thức CRUD cơ bản từ JpaRepository.
+ * 2. Phương thức truy vấn tùy chỉnh: Phương thức findByUserAndLogDateBetween 
+ * là một ví dụ về 'Phương thức tìm kiếm theo Tên' (Query Method).
+ * 3. Tự động tạo truy vấn: Spring Data JPA phân tích tên phương thức này 
+ * để tự động tạo một truy vấn SQL/JPQL.
+ * 4. Chi tiết truy vấn: Nó tìm kiếm tất cả ActivityLog:
+ * - WHERE user = [tham số user] AND logDate BETWEEN [startDate] AND [endDate].
  */
 @Repository
 public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> {

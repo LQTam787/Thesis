@@ -9,11 +9,13 @@ import java.util.List;
 /**
  * Service interface for handling content sharing functionalities.
  * Defines methods for sharing, retrieving, liking, and commenting on content.
+ * Cho phép người dùng chia sẻ các nội dung như công thức hoặc kế hoạch dinh dưỡng.
  */
 public interface ShareService {
 
     /**
-     * Shares a new piece of content.
+     * Luồng hoạt động: Tạo một mục nội dung được chia sẻ mới.
+     * Nguyên lý hoạt động: Lấy thông tin nội dung gốc (`contentId`, `contentType`), liên kết với người dùng (`userId`) và cấp độ hiển thị (`visibility`), sau đó lưu đối tượng SharedContent mới vào cơ sở dữ liệu.
      *
      * @param userId The ID of the user sharing the content.
      * @param contentId The ID of the content being shared.
@@ -24,14 +26,16 @@ public interface ShareService {
     SharedContentDto shareContent(Long userId, Long contentId, ContentType contentType, Visibility visibility);
 
     /**
-     * Retrieves all shared content with public visibility.
+     * Luồng hoạt động: Truy xuất tất cả nội dung được chia sẻ công khai.
+     * Nguyên lý hoạt động: Truy vấn cơ sở dữ liệu tìm các bản ghi SharedContent với `visibility` là PUBLIC.
      *
      * @return A list of shared content DTOs.
      */
     List<SharedContentDto> getAllPublicContent();
 
     /**
-     * Likes a piece of shared content.
+     * Luồng hoạt động: Ghi lại hành động "Thích" (Like) của người dùng đối với nội dung được chia sẻ.
+     * Nguyên lý hoạt động: Tạo hoặc cập nhật một bản ghi Like liên kết `sharedContentId` và `userId`.
      *
      * @param sharedContentId The ID of the shared content to like.
      * @param userId The ID of the user who is liking the content.
@@ -39,7 +43,8 @@ public interface ShareService {
     void likeContent(Long sharedContentId, Long userId);
 
     /**
-     * Adds a comment to a piece of shared content.
+     * Luồng hoạt động: Thêm một bình luận vào nội dung được chia sẻ.
+     * Nguyên lý hoạt động: Tạo một bản ghi Comment mới với `sharedContentId`, `userId` và `text`, sau đó lưu vào cơ sở dữ liệu.
      *
      * @param sharedContentId The ID of the shared content to comment on.
      * @param userId The ID of the user who is commenting.
@@ -49,7 +54,8 @@ public interface ShareService {
     ContentCommentDto commentOnContent(Long sharedContentId, Long userId, String text);
 
     /**
-     * Retrieves all comments for a specific shared content.
+     * Luồng hoạt động: Truy xuất tất cả bình luận cho một nội dung được chia sẻ cụ thể.
+     * Nguyên lý hoạt động: Truy vấn các bản ghi Comment được liên kết với `sharedContentId`.
      *
      * @param sharedContentId The ID of the shared content.
      * @return A list of comment DTOs.

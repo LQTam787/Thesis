@@ -9,7 +9,14 @@ import com.nutrition.ai.nutritionaibackend.dto.UserResponseDto;
 
 import java.util.List;
 
+/**
+ * Interface Service quản lý các hoạt động dành cho quản trị viên (Admin).
+ * Nó định nghĩa các phương thức CRUD (Create, Read, Update, Delete) cho
+ * User, Recipe, Goal và Nutrition Plan, cho phép Admin kiểm soát dữ liệu hệ thống.
+ */
 public interface AdminService {
+    // Luồng User Management:
+    // Admin có thể xem, tìm, cập nhật và xóa thông tin người dùng.
     List<UserResponseDto> getAllUsers();
 
     UserResponseDto getUserById(Long userId);
@@ -18,7 +25,8 @@ public interface AdminService {
 
     void deleteUser(Long userId);
 
-    // Recipe Management
+    // Luồng Recipe Management:
+    // Admin quản lý các công thức nấu ăn, bao gồm xem, tạo, cập nhật và xóa.
     List<RecipeDto> getAllRecipes();
 
     RecipeDto getRecipeById(Long recipeId);
@@ -29,7 +37,8 @@ public interface AdminService {
 
     void deleteRecipe(Long recipeId);
 
-    // Goal Management
+    // Luồng Goal Management:
+    // Admin quản lý các mục tiêu dinh dưỡng có sẵn trong hệ thống (ví dụ: Tăng cơ, Giảm cân).
     List<GoalDto> getAllGoals();
 
     GoalDto getGoalById(Long goalId);
@@ -40,7 +49,8 @@ public interface AdminService {
 
     void deleteGoal(Long goalId);
 
-    // Nutrition Plan Management
+    // Luồng Nutrition Plan Management:
+    // Admin quản lý các kế hoạch dinh dưỡng trong hệ thống.
     List<NutritionPlanDto> getAllNutritionPlans();
 
     NutritionPlanDto getNutritionPlanById(Long planId);
@@ -51,4 +61,3 @@ public interface AdminService {
 
     void deleteNutritionPlan(Long planId);
 }
-

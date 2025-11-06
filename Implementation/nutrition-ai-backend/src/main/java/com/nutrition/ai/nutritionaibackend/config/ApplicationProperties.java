@@ -6,29 +6,42 @@ import org.springframework.context.annotation.Configuration;
 /**
  * Lớp cấu hình để liên kết các thuộc tính tùy chỉnh từ application.properties.
  * Điều này giúp cung cấp quyền truy cập an toàn kiểu vào các thuộc tính ứng dụng.
+ * Nguyên lý hoạt động: Spring Boot tự động tìm và điền các thuộc tính
+ * dựa trên tên lớp và các prefix được chỉ định.
  */
 @Configuration
+// Lớp cha này không có prefix cụ thể nhưng chứa các lớp con có prefix.
 @ConfigurationProperties
 public class ApplicationProperties {
 
+    // Khởi tạo các đối tượng con để chứa các nhóm thuộc tính
     private final Jwt jwt = new Jwt();
     private final AiService aiService = new AiService();
 
+    // Getter cho cấu hình JWT
     public Jwt getJwt() {
         return jwt;
     }
 
+    // Getter cho cấu hình AI Service
     public AiService getAiService() {
         return aiService;
     }
 
     /**
      * Các thuộc tính liên quan đến cấu hình JWT.
+     * @ConfigurationProperties(prefix = "nutrition.ai"): Spring sẽ liên kết
+     * các thuộc tính có prefix là `nutrition.ai.` (ví dụ: `nutrition.ai.jwt-secret`)
+     * vào các trường của lớp này.
      */
     @ConfigurationProperties(prefix = "nutrition.ai")
     public static class Jwt {
+        // Tương ứng với thuộc tính `nutrition.ai.jwt-secret`
         private String jwtSecret;
+        // Tương ứng với thuộc tính `nutrition.ai.jwt-expiration-ms`
         private long jwtExpirationMs;
+
+        // Getters và Setters cho các thuộc tính (bắt buộc cho ConfigurationProperties)
 
         public String getJwtSecret() {
             return jwtSecret;
@@ -49,9 +62,13 @@ public class ApplicationProperties {
 
     /**
      * Các thuộc tính liên quan đến cấu hình AI service.
+     * @ConfigurationProperties(prefix = "ai.service"): Spring sẽ liên kết
+     * các thuộc tính có prefix là `ai.service.` (ví dụ: `ai.service.base-url`)
+     * vào các trường của lớp này.
      */
     @ConfigurationProperties(prefix = "ai.service")
     public static class AiService {
+        // Tương ứng với thuộc tính `ai.service.base-url`
         private String baseUrl;
 
         public String getBaseUrl() {

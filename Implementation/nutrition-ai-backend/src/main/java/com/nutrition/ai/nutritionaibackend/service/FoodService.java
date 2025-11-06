@@ -7,11 +7,13 @@ import java.util.Optional;
 
 /**
  * Service Interface for managing {@link FoodItem}.
+ * Định nghĩa các thao tác CRUD cơ bản và tìm kiếm theo tên cho Món ăn.
  */
 public interface FoodService {
 
     /**
-     * Save a food item.
+     * Luồng hoạt động: Lưu một món ăn.
+     * Nguyên lý hoạt động: Uỷ quyền cho Repository để lưu đối tượng vào DB.
      *
      * @param foodItem the entity to save.
      * @return the persisted entity.
@@ -19,14 +21,16 @@ public interface FoodService {
     FoodItem save(FoodItem foodItem);
 
     /**
-     * Get all the food items.
+     * Luồng hoạt động: Truy xuất tất cả các món ăn.
+     * Nguyên lý hoạt động: Gọi `findAll()` của FoodItemRepository.
      *
      * @return the list of entities.
      */
     List<FoodItem> findAll();
 
     /**
-     * Get one food item by id.
+     * Luồng hoạt động: Tìm một món ăn theo ID.
+     * Nguyên lý hoạt động: Gọi `findById(id)` của FoodItemRepository.
      *
      * @param id the id of the entity.
      * @return the entity.
@@ -34,14 +38,16 @@ public interface FoodService {
     Optional<FoodItem> findOne(Long id);
 
     /**
-     * Delete the food item by id.
+     * Luồng hoạt động: Xóa một món ăn theo ID.
+     * Nguyên lý hoạt động: Gọi `deleteById(id)` của FoodItemRepository.
      *
      * @param id the id of the entity.
      */
     void delete(Long id);
 
     /**
-     * Search for food items by name.
+     * Luồng hoạt động: Tìm kiếm các món ăn có tên chứa một chuỗi cụ thể.
+     * Nguyên lý hoạt động: Thực hiện logic tìm kiếm tên.
      *
      * @param name the name to search for.
      * @return a list of matching food items.
