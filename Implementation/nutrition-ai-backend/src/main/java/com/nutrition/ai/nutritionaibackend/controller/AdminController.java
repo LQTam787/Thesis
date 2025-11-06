@@ -18,16 +18,28 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/admin")
-@Tag(name = "Admin Management", description = "Endpoints for administrative tasks")
-@SecurityRequirement(name = "bearerAuth")
-@RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+/**
+ * AdminController xử lý các yêu cầu dành cho quản trị viên đối với nhiều tài nguyên hệ thống.
+ * Nguyên lý hoạt động: Tất cả các endpoint được bảo vệ bằng @PreAuthorize("hasRole('ADMIN')")
+ * để đảm bảo chỉ những người dùng có vai trò ADMIN mới có thể truy cập. Nó sử dụng AdminService để
+ * thực hiện các hoạt động CRUD cho Người dùng, Công thức, Mục tiêu và Kế hoạch Dinh dưỡng.
+ */
+@RestController // Đánh dấu lớp này là một Spring REST Controller
+@RequestMapping("/api/admin") // Ánh xạ với đường dẫn cơ sở /api/admin
+@Tag(name = "Admin Management", description = "Endpoints for administrative tasks") // Tài liệu Swagger
+@SecurityRequirement(name = "bearerAuth") // Yêu cầu xác thực
+@RequiredArgsConstructor // Tạo constructor cho AdminService
+@PreAuthorize("hasRole('ADMIN')") // **QUAN TRỌNG:** Chỉ cho phép người dùng có vai trò ADMIN truy cập controller này
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminService adminService; // Dependency Injection cho Service
 
+    // --- User Management Endpoints ---
+
+    /**
+     * Lấy danh sách tất cả người dùng.
+     * Luồng hoạt động: Gọi adminService.getAllUsers() và trả về danh sách DTO.
+     */
     @Operation(summary = "Get all users", description = "Retrieves a list of all users. Admin access required.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of users")
     @GetMapping("/users")
@@ -35,6 +47,10 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getAllUsers());
     }
 
+    /**
+     * Lấy một người dùng theo ID.
+     * Luồng hoạt động: Gọi adminService.getUserById(userId) và trả về UserResponseDto.
+     */
     @Operation(summary = "Get user by ID", description = "Retrieves a single user by their ID. Admin access required.")
     @ApiResponse(responseCode = "200", description = "User found")
     @GetMapping("/users/{id}")
@@ -42,6 +58,10 @@ public class AdminController {
         return ResponseEntity.ok(adminService.getUserById(userId));
     }
 
+    /**
+     * Cập nhật chi tiết người dùng.
+     * Luồng hoạt động: Gọi adminService.updateUser(userId, updateUserRequestDto) và trả về UserResponseDto đã cập nhật.
+     */
     @Operation(summary = "Update a user", description = "Updates a user's details. Admin access required.")
     @ApiResponse(responseCode = "200", description = "User updated successfully")
     @PutMapping("/users/{id}")
@@ -49,6 +69,10 @@ public class AdminController {
         return ResponseEntity.ok(adminService.updateUser(userId, updateUserRequestDto));
     }
 
+    /**
+     * Xóa một người dùng.
+     * Luồng hoạt động: Gọi adminService.deleteUser(userId) và trả về thông báo thành công.
+     */
     @Operation(summary = "Delete a user", description = "Deletes a user from the system. Admin access required.")
     @ApiResponse(responseCode = "200", description = "User deleted successfully")
     @DeleteMapping("/users/{id}")
@@ -57,7 +81,7 @@ public class AdminController {
         return ResponseEntity.ok("User deleted successfully!");
     }
 
-    // Recipe Management Endpoints
+    // --- Recipe Management Endpoints --- (Luồng tương tự cho Công thức)
 
     @Operation(summary = "Get all recipes", description = "Retrieves a list of all recipes. Admin access required.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of recipes")
@@ -95,7 +119,7 @@ public class AdminController {
         return ResponseEntity.ok("Recipe deleted successfully!");
     }
 
-    // Goal Management Endpoints
+    // --- Goal Management Endpoints --- (Luồng tương tự cho Mục tiêu)
 
     @Operation(summary = "Get all goals", description = "Retrieves a list of all goals. Admin access required.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of goals")
@@ -133,7 +157,7 @@ public class AdminController {
         return ResponseEntity.ok("Goal deleted successfully!");
     }
 
-    // Nutrition Plan Management Endpoints
+    // --- Nutrition Plan Management Endpoints --- (Luồng tương tự cho Kế hoạch Dinh dưỡng)
 
     @Operation(summary = "Get all nutrition plans", description = "Retrieves a list of all nutrition plans. Admin access required.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list of nutrition plans")
@@ -171,4 +195,3 @@ public class AdminController {
         return ResponseEntity.ok("Nutrition plan deleted successfully!");
     }
 }
-

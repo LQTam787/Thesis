@@ -6,7 +6,12 @@ from src.recommendation_service import generate_nutrition_recommendations
 
 @pytest.fixture
 def mock_food_database():
-    """Fixture to provide a mock food database for testing."""
+    """
+    Fixture để tạo một DataFrame giả lập (mock) cơ sở dữ liệu thực phẩm.
+    - Nguyên lý: Cung cấp một tập dữ liệu cố định, đã biết để các bài kiểm tra
+      có thể xác minh rằng logic đề xuất (lọc, sắp xếp) hoạt động chính xác
+      dựa trên các giá trị calo, protein, và tag được thiết lập sẵn.
+    """
     # This data should be consistent and cover various tags for testing
     data = {
         'food_item': ['apple', 'banana', 'chicken breast', 'tofu salad', 'beef steak'],
@@ -20,7 +25,16 @@ def mock_food_database():
 
 @patch('src.recommendation_service.food_database')
 def test_recommendation_for_weight_loss(mock_db, mock_food_database):
-    """Tests recommendations for a user with a weight loss goal."""
+    """
+    Kiểm tra đề xuất cho mục tiêu Giảm Cân.
+
+    Luồng hoạt động:
+    1. `mock_db.copy.return_value = mock_food_database`: Thiết lập để hàm đề xuất
+       sử dụng dữ liệu giả lập.
+    2. Gọi hàm với mục tiêu `weight_loss: True`.
+    - Nguyên lý: Xác minh rằng tất cả các mục trong `meal_plan` được chọn
+      từ các thực phẩm có lượng **calo thấp** (< 200).
+    """
     mock_db.copy.return_value = mock_food_database
     user_profile = {'user_id': 'test_user_1'}
     health_goals = {'weight_loss': True}
@@ -33,7 +47,11 @@ def test_recommendation_for_weight_loss(mock_db, mock_food_database):
 
 @patch('src.recommendation_service.food_database')
 def test_recommendation_for_muscle_gain(mock_db, mock_food_database):
-    """Tests recommendations for a user with a muscle gain goal."""
+    """
+    Kiểm tra đề xuất cho mục tiêu Tăng Cơ.
+    - Nguyên lý: Xác minh rằng tất cả các mục trong `meal_plan` được chọn
+      từ các thực phẩm có lượng **protein cao** (> 20g).
+    """
     mock_db.copy.return_value = mock_food_database
     user_profile = {'user_id': 'test_user_2'}
     health_goals = {'muscle_gain': True}
@@ -46,7 +64,11 @@ def test_recommendation_for_muscle_gain(mock_db, mock_food_database):
 
 @patch('src.recommendation_service.food_database')
 def test_recommendation_for_vegan(mock_db, mock_food_database):
-    """Tests recommendations for a user with a vegan dietary preference."""
+    """
+    Kiểm tra đề xuất cho sở thích ăn kiêng Thuần chay (Vegan).
+    - Nguyên lý: Xác minh rằng tất cả các mục được đề xuất đều có tag 'vegan'
+      trong cơ sở dữ liệu giả lập.
+    """
     mock_db.copy.return_value = mock_food_database
     user_profile = {'user_id': 'test_user_3'}
     dietary_preferences = {'vegan': True}
@@ -60,7 +82,11 @@ def test_recommendation_for_vegan(mock_db, mock_food_database):
 
 @patch('src.recommendation_service.food_database')
 def test_no_specific_goals(mock_db, mock_food_database):
-    """Tests that some recommendations are generated even with no specific goals."""
+    """
+    Kiểm tra luồng mặc định khi không có mục tiêu hoặc sở thích cụ thể.
+    - Nguyên lý: Xác minh rằng hàm vẫn tạo ra cấu trúc kết quả hợp lệ
+      (`meal_plan` và `tips`) ngay cả khi không có tiêu chí lọc cụ thể.
+    """
     mock_db.copy.return_value = mock_food_database
     user_profile = {'user_id': 'test_user_4'}
 

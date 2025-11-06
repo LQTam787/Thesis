@@ -11,6 +11,8 @@ def collect_mock_nlp_data(
         output_file (str): The path to the output CSV file.
     """
     print("Collecting mock NLP data...")
+    # Nguyên lý: Tạo DataFrame với các cặp (text, labels) giả lập.
+    # Luồng hoạt động: Dữ liệu này sẽ được data_preprocessor.py sử dụng để tiền xử lý.
     data = {
         "text": [
             "I had a delicious apple for breakfast.",
@@ -43,7 +45,8 @@ def collect_mock_vision_data(
     """
     print("Collecting mock Vision data (simulated image files)...")
     os.makedirs(output_dir, exist_ok=True)
-    # Create dummy files to simulate images
+    # Nguyên lý: Tạo các tệp giả lập (.jpg, .png) để mô phỏng hình ảnh thô.
+    # Luồng hoạt động: Tệp này chỉ chứa 'dummy data' nhưng mô phỏng sự tồn tại của dữ liệu hình ảnh.
     with open(os.path.join(output_dir, "apple.jpg"), "w", encoding="utf-8") as f:
         f.write("dummy image data for apple")
     with open(os.path.join(output_dir, "pizza.png"), "w", encoding="utf-8") as f:
@@ -59,6 +62,8 @@ def collect_mock_recommendation_data(
         output_file (str): The path to the output CSV file.
     """
     print("Collecting mock Recommendation data...")
+    # Nguyên lý: Tạo DataFrame với dữ liệu hồ sơ người dùng, mục tiêu và thói quen ăn uống giả lập.
+    # Luồng hoạt động: Dữ liệu này sẽ được dùng để huấn luyện/kiểm tra mô hình khuyến nghị.
     data = {
         "user_id": ["user1", "user2", "user3"],
         "age": [30, 24, 45],
@@ -80,6 +85,7 @@ def collect_mock_recommendation_data(
     print(f"Mock Recommendation data collected and saved to {output_file}")
 
 if __name__ == "__main__":
+    # Luồng hoạt động: Khi chạy trực tiếp, hàm sẽ tạo ra tất cả các tệp dữ liệu mock.
     collect_mock_nlp_data()
     collect_mock_vision_data()
     collect_mock_recommendation_data()

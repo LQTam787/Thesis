@@ -14,6 +14,8 @@ def load_nlp_dataset(
         pd.DataFrame: The loaded NLP data as a DataFrame.
     """
     print(f"Loading NLP dataset from {file_path}")
+    # Nguyên lý: Kiểm tra sự tồn tại và tải dữ liệu NLP đã được làm sạch (từ data_preprocessor.py).
+    # Luồng hoạt động: Trả về DataFrame hoặc DataFrame rỗng kèm cảnh báo.
     if os.path.exists(file_path):
         return pd.read_csv(file_path)
     print(
@@ -33,6 +35,8 @@ def load_vision_dataset(dir_path: str = "ImplementationAi/data/processed_vision_
     """
     print(f"Loading Vision dataset from {dir_path}")
     images = []
+    # Nguyên lý: Lấy danh sách các tệp hình ảnh đã được tiền xử lý (có tiền tố 'processed_').
+    # Luồng hoạt động: Trả về danh sách các đường dẫn tệp.
     if os.path.exists(dir_path):
         for filename in os.listdir(dir_path):
             if filename.startswith("processed_"):
@@ -56,6 +60,8 @@ def load_recommendation_dataset(
         pd.DataFrame: The loaded recommendation data as a DataFrame.
     """
     print(f"Loading Recommendation dataset from {file_path}")
+    # Nguyên lý: Tải dữ liệu Khuyến nghị đã được mã hóa one-hot.
+    # Luồng hoạt động: Trả về DataFrame chứa dữ liệu người dùng/mục tiêu đã được số hóa.
     if os.path.exists(file_path):
         return pd.read_csv(file_path)
     print(
@@ -65,6 +71,7 @@ def load_recommendation_dataset(
     return pd.DataFrame()
 
 if __name__ == "__main__":
+    # Luồng hoạt động: Ví dụ kiểm tra cách tải và hiển thị dữ liệu đã tải.
     # Example usage
     nlp_data = load_nlp_dataset()
     print(f"NLP data head:\n{nlp_data.head()}")

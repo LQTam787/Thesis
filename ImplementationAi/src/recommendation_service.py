@@ -2,8 +2,8 @@ import pandas as pd
 from typing import Dict, Any
 
 def load_food_data() -> pd.DataFrame:
-    # In a real application, this would load data from a database or a more complex source.
-    # For demonstration, we'll use a simple in-memory DataFrame.
+    # Nguyên lý: Tạo một cơ sở dữ liệu thực phẩm đơn giản trong bộ nhớ (in-memory).
+    # Luồng hoạt động: Trong thực tế, hàm này sẽ tải dữ liệu từ CSDL hoặc tệp lớn hơn.
     data = {
         "food_item": ["oatmeal", "grilled chicken salad", "salmon with steamed vegetables", "beef steak", "vegan curry", "fruit smoothie"],
         "calories": [150, 350, 450, 500, 300, 200],
@@ -28,14 +28,16 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
 
     filtered_foods = food_database.copy()
 
-    # Apply dietary preferences
+    # Nguyên lý: Lọc thực phẩm dựa trên sở thích ăn kiêng (ví dụ: ăn chay, ít carb).
+    # Luồng hoạt động: Giảm thiểu DataFrame thực phẩm chỉ còn các món phù hợp.
     if dietary_preferences:
         if dietary_preferences.get("vegan"): 
             filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'vegan' in x)]
         if dietary_preferences.get("low_carb"): 
             filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'low-carb' in x)]
 
-    # Apply health goals
+    # Nguyên lý: Lọc hoặc sắp xếp thực phẩm dựa trên mục tiêu sức khỏe (ví dụ: giảm cân, tăng cơ).
+    # Luồng hoạt động: Ưu tiên các món ăn ít calo (giảm cân) hoặc giàu protein (tăng cơ).
     if health_goals:
         if health_goals.get("weight_loss"):
             # Prioritize lower calorie foods
@@ -44,9 +46,10 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
             # Prioritize higher protein foods
             filtered_foods = filtered_foods.sort_values(by='protein_g', ascending=False).head(3)
 
-    # Generate a simple meal plan
+    # Luồng hoạt động: Tạo một kế hoạch bữa ăn đơn giản bằng cách chọn ngẫu nhiên một món ăn cho mỗi bữa.
     meal_types = ["breakfast", "lunch", "dinner"]
     for meal_type in meal_types:
+        # Lọc thực phẩm cho loại bữa ăn cụ thể
         available_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: meal_type in x.lower() if isinstance(x, str) else False)]
         if not available_foods.empty:
             selected_food = available_foods.sample(1).iloc[0]
