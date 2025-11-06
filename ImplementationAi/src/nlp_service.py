@@ -6,15 +6,9 @@ For a production system, this would be replaced with a more sophisticated model 
 """
 from transformers import pipeline
 
-<<<<<<< HEAD
-# Load a pre-trained NLP model for sentiment analysis.
-# This is a placeholder and would be replaced by a more specialized model.
-nlp_pipeline = pipeline("sentiment-analysis")
-=======
 # Nguyên lý: Tải một mô hình NLP tiền huấn luyện (ở đây là sentiment-analysis) từ thư viện Hugging Face.
 # Luồng hoạt động: Mô hình này sẽ được gọi mỗi khi API NLP nhận yêu cầu.
 nlp_pipeline = pipeline("sentiment-analysis") # Using a sentiment analysis model as an example
->>>>>>> temp
 
 def process_text_for_nutrition_analysis(text: str):
     """Analyzes a string of text to extract nutritional information.
