@@ -9,22 +9,8 @@ import pandas as pd
 from typing import Dict, Any
 
 def load_food_data() -> pd.DataFrame:
-<<<<<<< HEAD
-    """Loads a mock food database into a pandas DataFrame.
-
-    In a real-world application, this data would be loaded from a database or a more 
-    robust data source. This function creates an in-memory DataFrame with sample 
-    food items and their nutritional information.
-
-    Returns:
-        pd.DataFrame: A DataFrame containing the food database.
-    """
-    # In a real application, this would load data from a database or a more complex source.
-    # For demonstration, we'll use a simple in-memory DataFrame.
-=======
     # Nguyên lý: Tạo một cơ sở dữ liệu thực phẩm đơn giản trong bộ nhớ (in-memory).
     # Luồng hoạt động: Trong thực tế, hàm này sẽ tải dữ liệu từ CSDL hoặc tệp lớn hơn.
->>>>>>> temp
     data = {
         "food_item": ["oatmeal", "grilled chicken salad", "salmon with steamed vegetables", "beef steak", "vegan curry", "fruit smoothie"],
         "calories": [150, 350, 450, 500, 300, 200],
