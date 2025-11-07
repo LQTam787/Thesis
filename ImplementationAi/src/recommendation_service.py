@@ -72,12 +72,8 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
     # Luồng hoạt động: Tạo một kế hoạch bữa ăn đơn giản bằng cách chọn ngẫu nhiên một món ăn cho mỗi bữa.
     meal_types = ["breakfast", "lunch", "dinner"]
     for meal_type in meal_types:
-<<<<<<< HEAD
-        available_foods = filtered_foods[filtered_foods['tags'].apply(lambda tags: meal_type in tags if isinstance(tags, list) else False)]
-=======
         # Lọc thực phẩm cho loại bữa ăn cụ thể
         available_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: meal_type in x.lower() if isinstance(x, str) else False)]
->>>>>>> temp
         if not available_foods.empty:
             selected_food = available_foods.sample(1).iloc[0]
             recommendations["meal_plan"].append({"meal_type": meal_type, "food_item": selected_food['food_item']})

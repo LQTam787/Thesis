@@ -59,7 +59,23 @@ class NutritionPlanControllerTest {
     void setUp() {
         // Chuẩn bị các đối tượng giả lập
         testUser = new User(1L, "testuser", "password", "test@example.com", Collections.emptySet());
-        // ... (Khởi tạo plan1, planDto1, plan2, planDto2)
+        plan1 = new NutritionPlan();
+        plan1.setId(1L);
+        plan1.setPlanName("Plan A");
+        plan1.setUser(testUser);
+
+        planDto1 = new NutritionPlanDto();
+        planDto1.setId(1L);
+        planDto1.setPlanName("Plan A");
+
+        plan2 = new NutritionPlan();
+        plan2.setId(2L);
+        plan2.setPlanName("Plan B");
+        plan2.setUser(testUser);
+
+        planDto2 = new NutritionPlanDto();
+        planDto2.setId(2L);
+        planDto2.setPlanName("Plan B");
     }
 
     @Test
