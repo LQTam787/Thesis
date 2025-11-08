@@ -8,6 +8,7 @@ from transformers import pipeline
 
 # Nguyên lý: Tải một mô hình NLP tiền huấn luyện (ở đây là sentiment-analysis) từ thư viện Hugging Face.
 # Luồng hoạt động: Mô hình này sẽ được gọi mỗi khi API NLP nhận yêu cầu.
+# Luồng dữ liệu AI: Mô hình được tải đã được huấn luyện trên một tập dữ liệu lớn về phân tích tình cảm.
 nlp_pipeline = pipeline("sentiment-analysis") # Using a sentiment analysis model as an example
 
 def process_text_for_nutrition_analysis(text: str):

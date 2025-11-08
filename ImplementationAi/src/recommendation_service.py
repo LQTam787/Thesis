@@ -11,6 +11,7 @@ from typing import Dict, Any
 def load_food_data() -> pd.DataFrame:
     # Nguyên lý: Tạo một cơ sở dữ liệu thực phẩm đơn giản trong bộ nhớ (in-memory).
     # Luồng hoạt động: Trong thực tế, hàm này sẽ tải dữ liệu từ CSDL hoặc tệp lớn hơn.
+    # Nguồn thông tin AI: Đây là nguồn dữ liệu thực phẩm được dùng để lọc và khuyến nghị.
     data = {
         "food_item": ["oatmeal", "grilled chicken salad", "salmon with steamed vegetables", "beef steak", "vegan curry", "fruit smoothie"],
         "calories": [150, 350, 450, 500, 300, 200],
@@ -42,6 +43,7 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
     """
     print(f"Generating recommendations for user: {user_profile.get('user_id')}")
     
+    # Luồng hoạt động: Khởi tạo cấu trúc khuyến nghị mặc định.
     recommendations: Dict[str, Any] = {
         "meal_plan": [],
         "caloric_intake_target": 2000,
@@ -53,6 +55,7 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
 
     # Nguyên lý: Lọc thực phẩm dựa trên sở thích ăn kiêng (ví dụ: ăn chay, ít carb).
     # Luồng hoạt động: Giảm thiểu DataFrame thực phẩm chỉ còn các món phù hợp.
+    # Luồng thông tin AI: Sử dụng thông tin người dùng (dietary_preferences) để lọc dữ liệu thực phẩm (food_database).
     if dietary_preferences:
         if dietary_preferences.get("vegan"): 
             filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'vegan' in x)]
@@ -61,6 +64,7 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
 
     # Nguyên lý: Lọc hoặc sắp xếp thực phẩm dựa trên mục tiêu sức khỏe (ví dụ: giảm cân, tăng cơ).
     # Luồng hoạt động: Ưu tiên các món ăn ít calo (giảm cân) hoặc giàu protein (tăng cơ).
+    # Luồng thông tin AI: Sử dụng thông tin mục tiêu (health_goals) để định hình kết quả khuyến nghị.
     if health_goals:
         if health_goals.get("weight_loss"):
             # Prioritize lower calorie foods

@@ -41,6 +41,7 @@ def nlp_analyze(body: NlpRequest):
         description: Analysis result
     """
     # Luồng hoạt động: Gọi hàm xử lý chính và trả về kết quả dưới dạng JSON.
+    # Luồng dữ liệu API: Nhận văn bản đầu vào từ body, chuyển đến process_text_for_nutrition_analysis.
     result = process_text_for_nutrition_analysis(body.text)
     return jsonify(result)
 
@@ -62,6 +63,7 @@ def vision_analyze(body: VisionRequest):
         description: Recognition result
     """
     # Luồng hoạt động: Gọi hàm xử lý hình ảnh và trả về kết quả dưới dạng JSON.
+    # Luồng dữ liệu API: Nhận dữ liệu hình ảnh Base64, chuyển đến analyze_image_for_food_recognition.
     result = analyze_image_for_food_recognition(body.image_data)
     return jsonify(result)
 
@@ -83,6 +85,7 @@ def recommendation_generate(body: RecommendationRequest):
         description: Recommendation result
     """
     # Luồng hoạt động: Gọi hàm tạo khuyến nghị với các tham số từ body.
+    # Luồng dữ liệu API: Nhận hồ sơ người dùng, sở thích, mục tiêu, chuyển đến generate_nutrition_recommendations.
     recommendations = generate_nutrition_recommendations(
         body.user_profile,
         body.dietary_preferences,

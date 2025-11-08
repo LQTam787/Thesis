@@ -23,6 +23,7 @@ def preprocess_nlp_data(
     df = pd.read_csv(input_file)
     # Nguyên lý: Làm sạch văn bản (lowercase và loại bỏ ký tự không phải chữ/số/khoảng trắng) để chuẩn hóa đầu vào cho mô hình NLP.
     # Luồng hoạt động: Tạo cột 'text_cleaned' mới trong DataFrame.
+    # Hoạt động tiền xử lý AI: Chuẩn bị dữ liệu văn bản để sử dụng trong mô hình NLP.
     df["text_cleaned"] = df["text"].str.lower().str.replace(r"[^\w\s]", "", regex=True)
     df.to_csv(output_file, index=False)
     print(f"Processed NLP data saved to {output_file}")
@@ -41,6 +42,7 @@ def preprocess_vision_data(
     os.makedirs(output_dir, exist_ok=True)
     # Nguyên lý: Mô phỏng các bước tiền xử lý hình ảnh thực tế (ví dụ: thay đổi kích thước, chuẩn hóa)
     # Luồng hoạt động: Tạo các tệp đầu ra giả lập với tiền tố 'processed_' cho dữ liệu hình ảnh.
+    # Hoạt động tiền xử lý AI: Mô phỏng việc thay đổi kích thước/chuẩn hóa dữ liệu hình ảnh.
     for filename in os.listdir(input_dir):
         if filename.endswith((".jpg", ".png")):
             # In a real scenario, this would involve resizing, normalization, etc.
@@ -64,6 +66,7 @@ def preprocess_recommendation_data(
     df = pd.read_csv(input_file)
     # Nguyên lý: Sử dụng mã hóa one-hot cho các biến phân loại (dietary_preferences, health_goals).
     # Luồng hoạt động: Chuẩn bị dữ liệu cho mô hình học máy yêu cầu đầu vào số hóa.
+    # Hoạt động tiền xử lý AI: Mã hóa one-hot các biến phân loại để tạo features số hóa cho mô hình Khuyến nghị.
     df = pd.get_dummies(
         df, columns=["dietary_preferences", "health_goals"], prefix=["diet", "goal"]
     )

@@ -19,6 +19,7 @@ def collect_mock_nlp_data(
     print("Collecting mock NLP data...")
     # Nguyên lý: Tạo DataFrame với các cặp (text, labels) giả lập.
     # Luồng hoạt động: Dữ liệu này sẽ được data_preprocessor.py sử dụng để tiền xử lý.
+    # Hoạt động thu thập AI: Tạo dữ liệu thô (mock) cho mô hình NLP.
     data = {
         "text": [
             "I had a delicious apple for breakfast.",
@@ -53,6 +54,7 @@ def collect_mock_vision_data(
     os.makedirs(output_dir, exist_ok=True)
     # Nguyên lý: Tạo các tệp giả lập (.jpg, .png) để mô phỏng hình ảnh thô.
     # Luồng hoạt động: Tệp này chỉ chứa 'dummy data' nhưng mô phỏng sự tồn tại của dữ liệu hình ảnh.
+    # Hoạt động thu thập AI: Tạo dữ liệu thô (mock) cho mô hình Thị giác Máy tính (dạng tệp).
     with open(os.path.join(output_dir, "apple.jpg"), "w", encoding="utf-8") as f:
         f.write("dummy image data for apple")
     with open(os.path.join(output_dir, "pizza.png"), "w", encoding="utf-8") as f:
@@ -70,6 +72,7 @@ def collect_mock_recommendation_data(
     print("Collecting mock Recommendation data...")
     # Nguyên lý: Tạo DataFrame với dữ liệu hồ sơ người dùng, mục tiêu và thói quen ăn uống giả lập.
     # Luồng hoạt động: Dữ liệu này sẽ được dùng để huấn luyện/kiểm tra mô hình khuyến nghị.
+    # Hoạt động thu thập AI: Tạo dữ liệu thô (mock) cho mô hình Khuyến nghị (hồ sơ người dùng/mục tiêu).
     data = {
         "user_id": ["user1", "user2", "user3"],
         "age": [30, 24, 45],
