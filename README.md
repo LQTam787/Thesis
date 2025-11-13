@@ -33,7 +33,7 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 |---------------|------------------------------------------------------------------------|
 | **Backend**   | Java 17, Spring Boot, Spring Security (JWT), Maven                     |
 | **AI/ML**     | Python, Flask, TensorFlow, Scikit-learn, Pandas                        |
-| **Cơ sở dữ liệu** | MySQL, Spring Data JPA (Hibernate)                                 | | **Frontend**  | ReactJS								 |
+| **Cơ sở dữ liệu** | MySQL, Spring Data JPA (Hibernate)                                 |
 | **Thiết kế**  | PlantUML                                                               |
 | **Kiểm thử**  | JUnit 5, Mockito (Backend) & Pytest (AI)                               |
 | **Tài liệu API** | Swagger (OpenAPI)                                                   |
