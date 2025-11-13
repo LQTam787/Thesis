@@ -101,3 +101,48 @@
 - [x] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.
     - [x] **Backend**: Tối ưu hóa `NutritionPlanService` bằng cách thay thế phương thức lọc dữ liệu trong bộ nhớ bằng truy vấn trực tiếp tới CSDL (`findByUser`), giúp cải thiện hiệu suất.
     - [x] **AI Service**: Tích hợp `Pydantic` để xác thực dữ liệu đầu vào cho các API endpoint, giúp mã nguồn an toàn, dễ đọc và dễ bảo trì hơn.
+
+### **IX. Giai đoạn Phát triển Frontend (Frontend Development - ReactJS)**
+
+- [ ] **Khởi tạo Dự án Frontend**: Thiết lập dự án ReactJS với TypeScript, cấu trúc thư mục và quản lý dependencies (npm/yarn).
+- [ ] **Thiết kế Giao diện Người dùng (UI/UX)**:
+    - [ ] Phân tích các yêu cầu UI/UX từ `BusinessModel.md` và `PLANNING.md`.
+    - [ ] Lên kế hoạch cấu trúc các component React (vd: `Auth`, `UserProfile`, `NutritionPlan`, `Chatbox`, `Tracking`, `Admin`).
+    - [ ] Lựa chọn và tích hợp thư viện UI component (vd: Material-UI, Ant Design).
+- [ ] **Phát triển Module Xác thực (Authentication Module)**:
+    - [ ] Xây dựng các component `Login`, `Register`.
+    - [ ] Tích hợp với `AuthController` của Backend để xử lý đăng nhập/đăng ký (JWT).
+    - [ ] Quản lý trạng thái xác thực và phân quyền người dùng trong Frontend.
+- [ ] **Phát triển Module Quản lý Hồ sơ Người dùng (User Profile Management)**:
+    - [ ] Xây dựng các component để hiển thị và cập nhật thông tin cá nhân.
+    - [ ] Tương tác với `UserController` để lấy và cập nhật dữ liệu người dùng.
+- [ ] **Phát triển Module Tư vấn Dinh dưỡng (Nutrition Consultation Module)**:
+    - [ ] Xây dựng giao diện `Chatbox` để người dùng tương tác với AI.
+    - [ ] Tích hợp với API của AI Service (qua Backend) để gửi câu hỏi và nhận gợi ý.
+    - [ ] Hiển thị thực đơn, công thức và lý do đề xuất.
+- [ ] **Phát triển Module Lập Kế hoạch Dinh dưỡng (Nutrition Plan Management)**:
+    - [ ] Xây dựng các component để tạo, chỉnh sửa và hiển thị kế hoạch dinh dưỡng.
+    - [ ] Tương tác với `NutritionPlanController` để quản lý kế hoạch.
+- [ ] **Phát triển Module Theo dõi và Đánh giá (Tracking & Evaluation Module)**:
+    - [ ] Xây dựng giao diện để người dùng ghi nhật ký ăn uống và hoạt động thể chất.
+    - [ ] Tích hợp chức năng tải ảnh (Vision AI).
+    - [ ] Hiển thị biểu đồ tiến độ và báo cáo dinh dưỡng.
+    - [ ] Tương tác với `TrackingController`.
+- [ ] **Phát triển Module Chia sẻ Cộng đồng (Community Sharing Module)**:
+    - [ ] Xây dựng các component để hiển thị nội dung chia sẻ (công thức, kế hoạch).
+    - [ ] Tích hợp các chức năng thích, bình luận, lưu.
+    - [ ] Tương tác với `ShareController`.
+- [ ] **Phát triển Module Quản trị (Admin Module)**:
+    - [ ] Xây dựng các component quản lý người dùng, công thức, kế hoạch, mục tiêu.
+    - [ ] Tương tác với `AdminController`.
+
+### **X. Giai đoạn Tích hợp Hệ thống (System Integration)**
+
+- [ ] **Tích hợp Backend và Frontend**: Kết nối hoàn chỉnh API của Spring Boot Backend với ứng dụng ReactJS Frontend.
+- [ ] **Tích hợp Frontend với AI Service**: Đảm bảo luồng dữ liệu thông suốt từ Frontend -> Backend -> AI Service và ngược lại.
+- [ ] **Kiểm thử Tích hợp End-to-End**: Thực hiện kiểm thử toàn bộ các luồng nghiệp vụ trên hệ thống đã tích hợp.
+
+### **XI. Giai đoạn Triển khai (Deployment)**
+
+- [ ] **Chuẩn bị Môi trường Triển khai**: Cấu hình server, container (Docker) cho Backend, Frontend và AI Service.
+- [ ] **Triển khai Hệ thống**: Đưa ứng dụng lên môi trường production.

@@ -7,7 +7,7 @@
 # **II. Tầm hướng Thiết kế Hệ thống (System Design Overview)**
 
 - **Lớp Giao diện (Presentation Layer)**:
-    - Ứng dụng di động/Web.
+    - Ứng dụng **Web (ReactJS)** và/hoặc Di động (nếu phát triển sau).
     - Chịu trách nhiệm hiển thị giao diện, đặc biệt là giao diện **Chatbox/NLP** thân thiện để người dùng nhập liệu, đặt câu hỏi và nhận tư vấn.
     - Cung cấp trải nghiệm **Tư vấn chế độ dinh dưỡng** và **Theo dõi/Đánh giá** dễ dàng.
 - **Lớp Logic Ứng dụng (Application/Service Layer)**:
@@ -30,6 +30,11 @@
     - **Java** (Ngôn ngữ Chính): Ngôn ngữ mạnh mẽ, hiệu suất cao, phù hợp cho các hệ thống phức tạp.
     - **Spring Boot** (Framework): Giúp phát triển API RESTful nhanh chóng, dễ dàng triển khai (Microservices-ready nếu cần).
     - **Spring Security**: Bảo mật API (Oauth2/JWT) cho các chức năng Đăng nhập/Đăng ký và phân quyền **User/Admin**.
+- **Frontend**:
+    - **ReactJS**: Thư viện JavaScript mạnh mẽ để xây dựng giao diện người dùng động và tương tác cao.
+    - **TypeScript**: Tăng cường khả năng bảo trì và phát triển quy mô lớn cho ứng dụng React.
+    - **Redux/Zustand**: Quản lý trạng thái ứng dụng phức tạp.
+    - **Axios/Fetch API**: Giao tiếp với API Backend.
 - **Cơ sở Dữ liệu**:
     - **MySQL**: Độ tin cậy cao, phù hợp cho dữ liệu quan hệ (User, Plan, Recipe) và hỗ trợ tốt cho các truy vấn phức tạp (SQL).
     - **Spring Data JPA** (Hibernate): Framework truy vấn ORM giúp ánh xạ các đối tượng Java (User, Goal, Plan,...) sang bảng Cơ sở Dữ liệu.
