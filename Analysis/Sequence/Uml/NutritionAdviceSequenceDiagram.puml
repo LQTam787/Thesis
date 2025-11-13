@@ -35,7 +35,7 @@ Controller -> AI: 8. xửLýYêuCầu(dữ liệu, hồ sơ)
 activate AI
 
 AI -> AI: 9. phânTíchNLP(dữ liệu)
-AI -> AI: 10. tínhToánNhuCầuDinhDưỡng()
+AI -> AI: 10. xácĐịnhMụcTiêuDinhDưỡng()
 
 AI -> DB: 11. truyVấnThựcPhẩmPhùHợp()
 activate DB

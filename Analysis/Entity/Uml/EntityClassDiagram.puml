@@ -33,7 +33,7 @@ class NutritionPlan {
   planName
   startDate
   endDate
-  totalCaloriesGoal
+  nutritionGoal
 }
 
 class DailyMenu {

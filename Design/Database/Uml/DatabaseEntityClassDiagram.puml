@@ -39,7 +39,7 @@ entity tblNutritionPlan {
   + planName: VARCHAR
   + startDate: DATE
   + endDate: DATE
-  + totalCaloriesGoal: INTEGER
+  + nutritionGoal: VARCHAR
   -- Foreign Keys --
   + **userId: BIGINT (FK)**
 }

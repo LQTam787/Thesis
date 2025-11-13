@@ -30,6 +30,9 @@ rectangle "Manage Nutrition Plan" {
 
     UC_CreatePlan .> UC_DefineDetails : <<include>>
 
+    UC_DefineDetails .> UC_ViewSummary : <<include>>
+    UC_DefineDetails <. UC_DescribeGoals : <<extend>>
+
     UC_Plan .> UC_ViewSummary : <<include>>
     UC_Plan .> UC_GenerateList : <<include>>
 }

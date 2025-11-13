@@ -63,7 +63,7 @@ package "Thực thể (Entity)" {
       planName: String
       startDate: Date
       endDate: Date
-      totalCaloriesGoal: Integer
+      nutritionGoal: String
     }
 
     class DailyMenu {

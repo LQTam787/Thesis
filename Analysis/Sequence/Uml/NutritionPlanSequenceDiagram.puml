@@ -34,7 +34,7 @@ Control -> PlanEntity**: create(planDetails)
 
 Control -> GoalEntity: getCurrentGoal()
 activate GoalEntity
-GoalEntity --> Control: Trả về thông tin mục tiêu (calo, macro)
+GoalEntity --> Control: Trả về thông tin mục tiêu (nutritionGoal)
 deactivate GoalEntity
 
 Control -> Control: calculateTotalNutrition(planDetails)

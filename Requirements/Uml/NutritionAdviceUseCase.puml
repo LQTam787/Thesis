@@ -16,6 +16,7 @@ rectangle "Get AI Nutrition Advice" {
 
     ' Use cases con (phân rã)
     usecase UC_ProvideInfo as "Provide Goals & Characteristics"
+    usecase UC_DescribeGoals as "Describe Detailed Nutrition Goals"
     usecase UC_GetMenu as "Receive Menu Suggestions"
     usecase UC_EditMenu as "Request Menu Edits"
 
@@ -23,11 +24,13 @@ rectangle "Get AI Nutrition Advice" {
     User -- UC_Advice
 
     UC_Advice .> UC_ProvideInfo : <<include>>
+    UC_ProvideInfo .> UC_DescribeGoals : <<include>>
     UC_Advice .> UC_GetMenu : <<include>>
     UC_GetMenu <. UC_EditMenu : <<extend>>
 
     ' Tương tác với hệ thống AI
     UC_ProvideInfo ..> AISystem : <<invoke>>
+    UC_DescribeGoals ..> AISystem : <<invoke>>
     UC_GetMenu ..> AISystem : <<invoke>>
     UC_EditMenu ..> AISystem : <<invoke>>
 }

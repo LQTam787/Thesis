@@ -59,7 +59,7 @@ entity Goal {
 
 entity Plan {
   +planId
-  +targetCalories
+  +nutritionGoal
   ' ... các thuộc tính khác
 }
 

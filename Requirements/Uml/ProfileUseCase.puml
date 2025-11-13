@@ -19,6 +19,7 @@ rectangle "Profile Functions" {
 
     UC_Profile .> UC_UpdateInfo : <<include>>
     UC_Profile .> UC_UpdateGoals : <<include>>
+    UC_UpdateGoals <. UC_DescribeGoals : <<extend>>
     UC_Profile .> UC_UpdatePrefs : <<include>>
 }
 

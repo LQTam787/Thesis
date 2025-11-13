@@ -79,7 +79,7 @@ class NutritionPlan {
   + planName: String
   + startDate: LocalDate
   + endDate: LocalDate
-  + totalCaloriesGoal: Integer
+  + nutritionGoal: String
   --
   + user: User
   + dailyMenus: List<DailyMenu>

@@ -18,8 +18,7 @@ class CreatePlanUI {
   +in_planName
   +in_planDescription
   +in_mealDetails
-  +out_totalCalories
-  +out_totalMacros
+  +out_nutritionGoal
   +out_warnings
   +out_shoppingList
   +out_reminders
@@ -56,7 +55,7 @@ entity Goal {
   +thoiGianBatDau
   +thoiGianKetThuc
   +trangThai
-  +nhuCauCaloMacroDeXuat
+  +mucTieuDinhDuong
 }
 
 entity Plan {
@@ -64,8 +63,7 @@ entity Plan {
   +moTa
   +ngayBatDau
   +ngayKetThuc
-  +tongCaloMucTieu
-  +macroMucTieu
+  +mucTieuDinhDuong
   +trangThai
   +mucDoCongKhai
   +createSamplePlanFromGoal(goal)

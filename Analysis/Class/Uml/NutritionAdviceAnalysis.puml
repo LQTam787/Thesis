@@ -30,8 +30,7 @@ class Goal {
   +thoiGianBatDau
   +thoiGianKetThuc
   +trangThai
-  +nhuCauCaloDeXuat
-  +nhuCauMacroDeXuat
+  +mucTieuDinhDuong
   --
   +createNutritionGoal(userInput)
   +calculateNutritionalNeeds()
