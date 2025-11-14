@@ -55,4 +55,9 @@ public class Goal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    /**
+     * Mục tiêu dinh dưỡng bằng ngôn ngữ tự nhiên.
+     */
+    private String nutritionGoal;
 }

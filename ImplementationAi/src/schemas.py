@@ -19,4 +19,4 @@ class VisionRequest(BaseModel):
 class RecommendationRequest(BaseModel):
     user_profile: Dict[str, Any] = Field(..., description="The user's profile information.")
     dietary_preferences: Dict[str, Any] = Field(..., description="The user's dietary preferences.")
-    health_goals: Dict[str, Any] = Field(..., description="The user's health goals.")
+    nutrition_goal_natural_language: str = Field(..., description="The user's health goals described in natural language.", example="Tôi muốn giảm 5kg trong 2 tháng và tăng cơ bắp.")

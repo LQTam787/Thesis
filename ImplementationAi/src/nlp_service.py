@@ -48,3 +48,43 @@ def process_text_for_nutrition_analysis(text: str):
         "nutritional_summary": "Further analysis needed with specialized models."
     }
     return analysis_result
+
+def extract_nutrition_goals_from_text(nutrition_goal_natural_language: str) -> dict:
+    """
+    Extracts structured nutrition goals (e.g., target calories, macros) from a natural language description.
+    This is a placeholder function and would require a more advanced NLP model (e.g., custom NER or intent recognition)
+    to accurately parse and quantify nutritional targets from free-form text.
+
+    Args:
+        nutrition_goal_natural_language (str): A natural language description of the user's nutrition goals.
+                                               Example: "Tôi muốn giảm 5kg trong 2 tháng và tăng cơ bắp."
+
+    Returns:
+        dict: A dictionary containing extracted nutritional targets, e.g.,
+              {"target_weight_loss_kg": 5, "target_duration_months": 2, "goal_type": "muscle_gain", "daily_calories": 2000, "daily_protein_g": 150}
+              Returns an empty dictionary or default values if extraction fails or is not possible.
+    """
+    print(f"Extracting nutrition goals from natural language: {nutrition_goal_natural_language}")
+    # Placeholder for actual NLP logic
+    # In a real system, this would involve:
+    # 1. Named Entity Recognition (NER) to identify numbers, units, timeframes, food types.
+    # 2. Intent recognition to understand the user's primary goal (e.g., "lose weight", "gain muscle").
+    # 3. Rule-based or ML-based mapping to convert extracted entities into structured nutritional targets.
+
+    # Mock extraction for demonstration
+    extracted_goals = {}
+    if "giảm 5kg" in nutrition_goal_natural_language.lower():
+        extracted_goals["target_weight_loss_kg"] = 5
+    if "2 tháng" in nutrition_goal_natural_language.lower():
+        extracted_goals["target_duration_months"] = 2
+    if "tăng cơ bắp" in nutrition_goal_natural_language.lower():
+        extracted_goals["goal_type"] = "muscle_gain"
+
+    # Assume some default calculation or a call to another AI model for daily targets
+    # For now, just a placeholder
+    extracted_goals["daily_calories"] = 2000 # Example
+    extracted_goals["daily_protein_g"] = 150 # Example
+    extracted_goals["daily_carbs_g"] = 200 # Example
+    extracted_goals["daily_fats_g"] = 60 # Example
+
+    return extracted_goals

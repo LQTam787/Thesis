@@ -22,4 +22,9 @@ public class GoalDto {
     private EGoalType goalType; // Loại mục tiêu (ví dụ: GAIN_WEIGHT, LOSE_WEIGHT, MAINTAIN). Nguyên lý hoạt động: Sử dụng enum để đảm bảo tính nhất quán của dữ liệu.
     private String status; // Trạng thái của mục tiêu (ví dụ: ACTIVE, COMPLETED, ARCHIVED).
     private Long userId; // ID của người dùng sở hữu mục tiêu này.
+
+    /**
+     * Mục tiêu dinh dưỡng bằng ngôn ngữ tự nhiên.
+     */
+    private String nutritionGoal;
 }

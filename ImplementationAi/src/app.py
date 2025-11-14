@@ -89,7 +89,7 @@ def recommendation_generate(body: RecommendationRequest):
     recommendations = generate_nutrition_recommendations(
         body.user_profile,
         body.dietary_preferences,
-        body.health_goals
+        body.nutrition_goal_natural_language
     )
     return jsonify(recommendations)
 

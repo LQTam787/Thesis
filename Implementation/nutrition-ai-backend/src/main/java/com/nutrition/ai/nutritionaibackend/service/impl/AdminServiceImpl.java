@@ -365,7 +365,7 @@ public class AdminServiceImpl implements AdminService {
         plan.setPlanName(nutritionPlanDto.getPlanName());
         plan.setStartDate(nutritionPlanDto.getStartDate());
         plan.setEndDate(nutritionPlanDto.getEndDate());
-        plan.setTotalCaloriesGoal(nutritionPlanDto.getTotalCaloriesGoal());
+        plan.setNutritionGoal(nutritionPlanDto.getNutritionGoal());
         plan.setUser(user); // 4. Thiết lập User
 
         // 5. Lưu và 6. Trả về

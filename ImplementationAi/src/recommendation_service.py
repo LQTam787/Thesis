@@ -7,6 +7,7 @@ customized meal plan.
 """
 import pandas as pd
 from typing import Dict, Any
+from .nlp_service import extract_nutrition_goals_from_text
 
 def load_food_data() -> pd.DataFrame:
     # Nguyên lý: Tạo một cơ sở dữ liệu thực phẩm đơn giản trong bộ nhớ (in-memory).
@@ -24,30 +25,37 @@ def load_food_data() -> pd.DataFrame:
 
 food_database = load_food_data()
 
-def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_preferences: Dict[str, Any] = None, health_goals: Dict[str, Any] = None) -> Dict[str, Any]:
+def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_preferences: Dict[str, Any] = None, nutrition_goal_natural_language: str = None) -> Dict[str, Any]:
     """Generates personalized nutrition recommendations based on user data.
 
-    This function takes a user's profile, dietary preferences, and health goals to 
-    create a customized meal plan. It filters a food database based on these 
+    This function takes a user's profile, dietary preferences, and a natural language description of health goals to
+    create a customized meal plan. It filters a food database based on these
     parameters and provides a simple set of recommendations.
 
     Args:
         user_profile (Dict[str, Any]): A dictionary containing user information, such as user_id.
-        dietary_preferences (Dict[str, Any], optional): A dictionary of dietary 
+        dietary_preferences (Dict[str, Any], optional): A dictionary of dietary
                                                      preferences (e.g., 'vegan', 'low-carb').
-        health_goals (Dict[str, Any], optional): A dictionary of health goals (e.g., 
-                                              'weight_loss', 'muscle_gain').
+        nutrition_goal_natural_language (str, optional): A natural language description of the user's nutrition goals.
 
     Returns:
         A dictionary containing the generated meal plan and other nutritional advice.
     """
     print(f"Generating recommendations for user: {user_profile.get('user_id')}")
-    
+
+    extracted_goals = {}
+    if nutrition_goal_natural_language:
+        extracted_goals = extract_nutrition_goals_from_text(nutrition_goal_natural_language)
+
     # Luồng hoạt động: Khởi tạo cấu trúc khuyến nghị mặc định.
     recommendations: Dict[str, Any] = {
         "meal_plan": [],
-        "caloric_intake_target": 2000,
-        "macronutrient_distribution": {"protein": "30%", "carbs": "40%", "fats": "30%"},
+        "caloric_intake_target": extracted_goals.get("daily_calories", 2000),
+        "macronutrient_distribution": {
+            "protein": f"{extracted_goals.get("daily_protein_g", 150) / (extracted_goals.get("daily_calories", 2000) / 4) * 100:.0f}%" if extracted_goals.get("daily_calories") else "30%",
+            "carbs": f"{extracted_goals.get("daily_carbs_g", 200) / (extracted_goals.get("daily_calories", 2000) / 4) * 100:.0f}%" if extracted_goals.get("daily_calories") else "40%",
+            "fats": f"{extracted_goals.get("daily_fats_g", 60) / (extracted_goals.get("daily_calories", 2000) / 9) * 100:.0f}%" if extracted_goals.get("daily_calories") else "30%"
+        },
         "tips": "Stay hydrated and incorporate regular exercise."
     }
 
@@ -65,11 +73,11 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
     # Nguyên lý: Lọc hoặc sắp xếp thực phẩm dựa trên mục tiêu sức khỏe (ví dụ: giảm cân, tăng cơ).
     # Luồng hoạt động: Ưu tiên các món ăn ít calo (giảm cân) hoặc giàu protein (tăng cơ).
     # Luồng thông tin AI: Sử dụng thông tin mục tiêu (health_goals) để định hình kết quả khuyến nghị.
-    if health_goals:
-        if health_goals.get("weight_loss"):
+    if extracted_goals:
+        if extracted_goals.get("target_weight_loss_kg"):
             # Prioritize lower calorie foods
             filtered_foods = filtered_foods.sort_values(by='calories').head(3)
-        elif health_goals.get("muscle_gain"):
+        elif extracted_goals.get("goal_type") == "muscle_gain":
             # Prioritize higher protein foods
             filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'high-protein' in x)]
 

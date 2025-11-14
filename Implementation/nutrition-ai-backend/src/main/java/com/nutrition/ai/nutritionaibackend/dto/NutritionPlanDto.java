@@ -20,7 +20,11 @@ public class NutritionPlanDto {
     private String planName; // Tên của kế hoạch (ví dụ: "Kế hoạch Giảm cân 4 tuần").
     private LocalDate startDate; // Ngày bắt đầu kế hoạch.
     private LocalDate endDate; // Ngày kết thúc kế hoạch.
-    private Integer totalCaloriesGoal; // Mục tiêu tổng lượng calo hàng ngày của kế hoạch.
+
+    /**
+     * Mục tiêu dinh dưỡng bằng ngôn ngữ tự nhiên cho kế hoạch này.
+     */
+    private String nutritionGoal;
     private Long userId; // ID của người dùng sở hữu kế hoạch.
     private List<DailyMenuDto> dailyMenus; // Danh sách các thực đơn hàng ngày (DailyMenuDto) thuộc về kế hoạch. Nguyên lý hoạt động: Thể hiện mối quan hệ 1-nhiều (một kế hoạch có nhiều thực đơn ngày).
 }

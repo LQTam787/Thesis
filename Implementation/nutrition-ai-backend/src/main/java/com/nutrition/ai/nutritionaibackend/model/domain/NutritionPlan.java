@@ -41,9 +41,9 @@ public class NutritionPlan {
     private LocalDate endDate;
 
     /**
-     * Mục tiêu Calo tổng thể cho mỗi ngày theo kế hoạch.
+     * Mục tiêu dinh dưỡng bằng ngôn ngữ tự nhiên cho kế hoạch này.
      */
-    private Integer totalCaloriesGoal;
+    private String nutritionGoal;
 
     /**
      * Mối quan hệ Many-to-One với User.
