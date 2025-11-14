@@ -17,6 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * AuthController xử lý các yêu cầu liên quan đến xác thực như đăng ký người dùng và đăng nhập.
  * Nguyên lý hoạt động: Cung cấp các REST endpoint để người dùng tương tác với hệ thống xác thực.
+ *
+ * Luồng hoạt động: Nhận HTTP request từ client, ủy quyền xử lý nghiệp vụ cho UserService,
+ * và trả về HTTP response với status code và dữ liệu thích hợp.
  */
 @RestController // Đánh dấu lớp này là một Spring REST Controller
 @RequestMapping("/api/auth") // Ánh xạ tất cả các endpoint trong controller này với đường dẫn cơ sở /api/auth
@@ -25,6 +28,11 @@ public class AuthController {
 
     private final UserService userService; // Dependency Injection cho lớp Service
 
+    /**
+     * Nguyên lý hoạt động: Spring tự động inject (tiêm) một thể hiện của UserService
+     * vào constructor này khi AuthController được tạo.
+     * @param userService Service quản lý nghiệp vụ người dùng và xác thực.
+     */
     public AuthController(UserService userService) { // Constructor injection
         this.userService = userService;
     }
@@ -49,9 +57,12 @@ public class AuthController {
     @PostMapping("/register") // Ánh xạ với POST /api/auth/register
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) throws Exception {
         try {
+            // Luồng hoạt động: Gọi Service để thực hiện logic nghiệp vụ đăng ký
             UserDto registeredUser = userService.registerNewUserAccount(userDto);
+            // Luồng hoạt động: Trả về kết quả thành công (201 CREATED)
             return new ResponseEntity<>(registeredUser, HttpStatus.CREATED);
         } catch (RuntimeException e) { // Catch more specific exceptions if possible
+            // Luồng hoạt động: Xử lý ngoại lệ nghiệp vụ và trả về lỗi (400 BAD_REQUEST)
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -64,6 +75,10 @@ public class AuthController {
      * 3. Nếu xác thực thành công (isAuthenticated là true): Trả về HTTP status 200 (OK) và một chuỗi thông báo (lý tưởng là một JWT token).
      * 4. Nếu xác thực thất bại: Trả về HTTP status 401 (UNAUTHORIZED) với thông báo lỗi.
      *
+     * Nguyên lý hoạt động: Đây là một mô phỏng cơ bản của quá trình đăng nhập. Trong môi trường thực tế,
+     * phương thức này sẽ tích hợp với Spring Security để quản lý mật khẩu băm (hashing),
+     * và tạo/trả về một JSON Web Token (JWT) sau khi xác thực thành công.
+     *
      * @param loginDto DTO chứa thông tin đăng nhập.
      * @return ResponseEntity cho biết thành công hay thất bại.
      */
@@ -75,11 +90,14 @@ public class AuthController {
     @PostMapping("/login") // Ánh xạ với POST /api/auth/login
     public ResponseEntity<String> loginUser(@RequestBody LoginDto loginDto) {
         // Đây là một cách tiếp cận đơn giản. Trong ứng dụng thực tế sẽ sử dụng Spring Security.
+        // Luồng hoạt động: Gọi Service để kiểm tra thông tin đăng nhập
         boolean isAuthenticated = userService.authenticate(loginDto.getUsername(), loginDto.getPassword());
         if (isAuthenticated) {
+            // Luồng hoạt động: Nếu xác thực thành công, trả về 200 OK
             // Trong ứng dụng thực, hãy tạo và trả về JWT token tại đây.
             return ResponseEntity.ok("User authenticated successfully. JWT token would be here.");
         } else {
+            // Luồng hoạt động: Nếu xác thực thất bại, trả về 401 UNAUTHORIZED
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid username or password.");
         }
     }
