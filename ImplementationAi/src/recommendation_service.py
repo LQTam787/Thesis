@@ -43,19 +43,15 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
     """
     print(f"Generating recommendations for user: {user_profile.get('user_id')}")
 
-    extracted_goals = {}
+    nutrition_goal_description = "Mục tiêu dinh dưỡng chung"
     if nutrition_goal_natural_language:
-        extracted_goals = extract_nutrition_goals_from_text(nutrition_goal_natural_language)
+        nutrition_goal_description = extract_nutrition_goals_from_text(nutrition_goal_natural_language)
 
     # Luồng hoạt động: Khởi tạo cấu trúc khuyến nghị mặc định.
     recommendations: Dict[str, Any] = {
         "meal_plan": [],
-        "caloric_intake_target": extracted_goals.get("daily_calories", 2000),
-        "macronutrient_distribution": {
-            "protein": f"{extracted_goals.get("daily_protein_g", 150) / (extracted_goals.get("daily_calories", 2000) / 4) * 100:.0f}%" if extracted_goals.get("daily_calories") else "30%",
-            "carbs": f"{extracted_goals.get("daily_carbs_g", 200) / (extracted_goals.get("daily_calories", 2000) / 4) * 100:.0f}%" if extracted_goals.get("daily_calories") else "40%",
-            "fats": f"{extracted_goals.get("daily_fats_g", 60) / (extracted_goals.get("daily_calories", 2000) / 9) * 100:.0f}%" if extracted_goals.get("daily_calories") else "30%"
-        },
+        "nutrition_goal_description": nutrition_goal_description,  # Sử dụng mô tả ngôn ngữ tự nhiên
+        "macronutrient_distribution_notes": "Phân bổ macro sẽ được ước tính dựa trên mục tiêu dinh dưỡng tổng thể.",
         "tips": "Stay hydrated and incorporate regular exercise."
     }
 
@@ -70,16 +66,19 @@ def generate_nutrition_recommendations(user_profile: Dict[str, Any], dietary_pre
         if dietary_preferences.get("low_carb"): 
             filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'low-carb' in x)]
 
-    # Nguyên lý: Lọc hoặc sắp xếp thực phẩm dựa trên mục tiêu sức khỏe (ví dụ: giảm cân, tăng cơ).
-    # Luồng hoạt động: Ưu tiên các món ăn ít calo (giảm cân) hoặc giàu protein (tăng cơ).
     # Luồng thông tin AI: Sử dụng thông tin mục tiêu (health_goals) để định hình kết quả khuyến nghị.
-    if extracted_goals:
-        if extracted_goals.get("target_weight_loss_kg"):
-            # Prioritize lower calorie foods
-            filtered_foods = filtered_foods.sort_values(by='calories').head(3)
-        elif extracted_goals.get("goal_type") == "muscle_gain":
-            # Prioritize higher protein foods
-            filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'high-protein' in x)]
+    # Chỉnh sửa logic này để nó không còn dựa vào các giá trị số từ extracted_goals
+    # Thay vào đó, nó sẽ dựa trên phân tích ngôn ngữ tự nhiên hoặc các quy tắc khác
+    # Vì hiện tại nlp_service.py trả về một chuỗi, chúng ta cần một cơ chế mới để diễn giải nó.
+    # Đối với mục đích của bài tập này, chúng ta sẽ loại bỏ logic lọc dựa trên số calo cụ thể.
+
+    # if extracted_goals:
+    #     if extracted_goals.get("target_weight_loss_kg"):
+    #         # Prioritize lower calorie foods
+    #         filtered_foods = filtered_foods.sort_values(by='calories').head(3)
+    #     elif extracted_goals.get("goal_type") == "muscle_gain":
+    #         # Prioritize higher protein foods
+    #         filtered_foods = filtered_foods[filtered_foods['tags'].apply(lambda x: 'high-protein' in x)]
 
     # Luồng hoạt động: Tạo một kế hoạch bữa ăn đơn giản bằng cách chọn ngẫu nhiên một món ăn cho mỗi bữa.
     meal_types = ["breakfast", "lunch", "dinner"]

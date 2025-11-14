@@ -5,6 +5,7 @@ For a production system, this would be replaced with a more sophisticated model 
 (NER) to identify food items, quantities, and other relevant details.
 """
 from transformers import pipeline
+from typing import Dict, Any
 
 # Nguyên lý: Tải một mô hình NLP tiền huấn luyện (ở đây là sentiment-analysis) từ thư viện Hugging Face.
 # Luồng hoạt động: Mô hình này sẽ được gọi mỗi khi API NLP nhận yêu cầu.
@@ -49,7 +50,7 @@ def process_text_for_nutrition_analysis(text: str):
     }
     return analysis_result
 
-def extract_nutrition_goals_from_text(nutrition_goal_natural_language: str) -> dict:
+def extract_nutrition_goals_from_text(nutrition_goal_natural_language: str) -> str:
     """
     Extracts structured nutrition goals (e.g., target calories, macros) from a natural language description.
     This is a placeholder function and would require a more advanced NLP model (e.g., custom NER or intent recognition)
@@ -60,9 +61,8 @@ def extract_nutrition_goals_from_text(nutrition_goal_natural_language: str) -> d
                                                Example: "Tôi muốn giảm 5kg trong 2 tháng và tăng cơ bắp."
 
     Returns:
-        dict: A dictionary containing extracted nutritional targets, e.g.,
-              {"target_weight_loss_kg": 5, "target_duration_months": 2, "goal_type": "muscle_gain", "daily_calories": 2000, "daily_protein_g": 150}
-              Returns an empty dictionary or default values if extraction fails or is not possible.
+        str: A natural language description of the extracted nutritional goals, e.             g., "Mục tiêu giảm 5kg trong 2 tháng với chế độ tăng cơ, khoảng 2000 calo mỗi ngày, 150g protein, 200g carbs, 60g chất béo."
+             Returns a default description if extraction fails or is not possible.
     """
     print(f"Extracting nutrition goals from natural language: {nutrition_goal_natural_language}")
     # Placeholder for actual NLP logic
@@ -71,8 +71,7 @@ def extract_nutrition_goals_from_text(nutrition_goal_natural_language: str) -> d
     # 2. Intent recognition to understand the user's primary goal (e.g., "lose weight", "gain muscle").
     # 3. Rule-based or ML-based mapping to convert extracted entities into structured nutritional targets.
 
-    # Mock extraction for demonstration
-    extracted_goals = {}
+    extracted_goals: Dict[str, Any] = {}
     if "giảm 5kg" in nutrition_goal_natural_language.lower():
         extracted_goals["target_weight_loss_kg"] = 5
     if "2 tháng" in nutrition_goal_natural_language.lower():
@@ -82,9 +81,25 @@ def extract_nutrition_goals_from_text(nutrition_goal_natural_language: str) -> d
 
     # Assume some default calculation or a call to another AI model for daily targets
     # For now, just a placeholder
-    extracted_goals["daily_calories"] = 2000 # Example
-    extracted_goals["daily_protein_g"] = 150 # Example
-    extracted_goals["daily_carbs_g"] = 200 # Example
-    extracted_goals["daily_fats_g"] = 60 # Example
+    daily_calories = 2000  # Example
+    daily_protein_g = 150  # Example
+    daily_carbs_g = 200    # Example
+    daily_fats_g = 60      # Example
 
-    return extracted_goals
+    # Construct a natural language description of the goals
+    goal_description_parts = []
+    if "target_weight_loss_kg" in extracted_goals:
+        goal_description_parts.append(f"giảm {extracted_goals['target_weight_loss_kg']}kg")
+    if "target_duration_months" in extracted_goals:
+        goal_description_parts.append(f"trong {extracted_goals['target_duration_months']} tháng")
+    if extracted_goals.get("goal_type") == "muscle_gain":
+        goal_description_parts.append("với chế độ tăng cơ")
+    elif extracted_goals.get("goal_type") == "weight_loss":
+        goal_description_parts.append("với chế độ giảm cân")
+
+    if goal_description_parts:
+        goal_summary = "Mục tiêu " + " ".join(goal_description_parts)
+    else:
+        goal_summary = "Mục tiêu dinh dưỡng chung"
+
+    return f"{goal_summary}, khoảng {daily_calories} calo mỗi ngày, {daily_protein_g}g protein, {daily_carbs_g}g carbs, {daily_fats_g}g chất béo."

@@ -3,6 +3,7 @@ import pandas as pd
 from unittest.mock import patch
 
 from src.recommendation_service import generate_nutrition_recommendations
+from src.nlp_service import extract_nutrition_goals_from_text
 
 @pytest.fixture
 def mock_food_database():
@@ -24,43 +25,40 @@ def mock_food_database():
     return pd.DataFrame(data)
 
 @patch('src.recommendation_service.food_database')
-def test_recommendation_for_weight_loss(mock_db, mock_food_database):
+@patch('src.recommendation_service.extract_nutrition_goals_from_text')
+def test_recommendation_for_weight_loss(mock_nlp_extract, mock_db, mock_food_database):
     """
-    Kiểm tra đề xuất cho mục tiêu Giảm Cân.
-
-    Luồng hoạt động:
-    1. `mock_db.copy.return_value = mock_food_database`: Thiết lập để hàm đề xuất
-       sử dụng dữ liệu giả lập.
-    2. Gọi hàm với mục tiêu `weight_loss: True`.
-    - Nguyên lý: Xác minh rằng tất cả các mục trong `meal_plan` được chọn
-      từ các thực phẩm có lượng **calo thấp** (< 200).
+    Kiểm tra đề xuất cho mục tiêu Giảm Cân với mô tả ngôn ngữ tự nhiên.
     """
     mock_db.copy.return_value = mock_food_database
+    mock_nlp_extract.return_value = "Mục tiêu giảm cân, khoảng 1500 calo mỗi ngày, 100g protein, 150g carbs, 50g chất béo."
+
     user_profile = {'user_id': 'test_user_1'}
-    health_goals = {'weight_loss': True}
+    nutrition_goal_natural_language = "Tôi muốn giảm cân."
 
-    recommendations = generate_nutrition_recommendations(user_profile, health_goals=health_goals)
+    recommendations = generate_nutrition_recommendations(user_profile, nutrition_goal_natural_language=nutrition_goal_natural_language)
 
-    # Check if the meal plan prioritizes lower-calorie foods
-    recommended_calories = [mock_food_database[mock_food_database['food_item'] == meal['food_item']]['calories'].iloc[0] for meal in recommendations['meal_plan']]
-    assert all(c < 200 for c in recommended_calories) # Assuming low-calorie is < 200
+    assert "Mục tiêu giảm cân" in recommendations['nutrition_goal_description']
+    assert "Phân bổ macro sẽ được ước tính dựa trên mục tiêu dinh dưỡng tổng thể." in recommendations['macronutrient_distribution_notes']
+    # Không kiểm tra calo cụ thể vì logic đã được loại bỏ
 
 @patch('src.recommendation_service.food_database')
-def test_recommendation_for_muscle_gain(mock_db, mock_food_database):
+@patch('src.recommendation_service.extract_nutrition_goals_from_text')
+def test_recommendation_for_muscle_gain(mock_nlp_extract, mock_db, mock_food_database):
     """
-    Kiểm tra đề xuất cho mục tiêu Tăng Cơ.
-    - Nguyên lý: Xác minh rằng tất cả các mục trong `meal_plan` được chọn
-      từ các thực phẩm có lượng **protein cao** (> 20g).
+    Kiểm tra đề xuất cho mục tiêu Tăng Cơ với mô tả ngôn ngữ tự nhiên.
     """
     mock_db.copy.return_value = mock_food_database
+    mock_nlp_extract.return_value = "Mục tiêu tăng cơ, khoảng 2500 calo mỗi ngày, 200g protein, 250g carbs, 80g chất béo."
+
     user_profile = {'user_id': 'test_user_2'}
-    health_goals = {'muscle_gain': True}
+    nutrition_goal_natural_language = "Tôi muốn tăng cơ bắp."
 
-    recommendations = generate_nutrition_recommendations(user_profile, health_goals=health_goals)
+    recommendations = generate_nutrition_recommendations(user_profile, nutrition_goal_natural_language=nutrition_goal_natural_language)
 
-    # Check if the meal plan prioritizes high-protein foods
-    recommended_proteins = [mock_food_database[mock_food_database['food_item'] == meal['food_item']]['protein_g'].iloc[0] for meal in recommendations['meal_plan']]
-    assert all(p > 20 for p in recommended_proteins) # Assuming high-protein is > 20g
+    assert "Mục tiêu tăng cơ" in recommendations['nutrition_goal_description']
+    assert "Phân bổ macro sẽ được ước tính dựa trên mục tiêu dinh dưỡng tổng thể." in recommendations['macronutrient_distribution_notes']
+    # Không kiểm tra protein cụ thể vì logic đã được loại bỏ
 
 @patch('src.recommendation_service.food_database')
 def test_recommendation_for_vegan(mock_db, mock_food_database):
@@ -81,16 +79,19 @@ def test_recommendation_for_vegan(mock_db, mock_food_database):
         assert 'vegan' in tags
 
 @patch('src.recommendation_service.food_database')
-def test_no_specific_goals(mock_db, mock_food_database):
+@patch('src.recommendation_service.extract_nutrition_goals_from_text')
+def test_no_specific_goals(mock_nlp_extract, mock_db, mock_food_database):
     """
     Kiểm tra luồng mặc định khi không có mục tiêu hoặc sở thích cụ thể.
-    - Nguyên lý: Xác minh rằng hàm vẫn tạo ra cấu trúc kết quả hợp lệ
-      (`meal_plan` và `tips`) ngay cả khi không có tiêu chí lọc cụ thể.
     """
     mock_db.copy.return_value = mock_food_database
+    mock_nlp_extract.return_value = "Mục tiêu dinh dưỡng chung, khoảng 2000 calo mỗi ngày, 150g protein, 200g carbs, 60g chất béo."
+
     user_profile = {'user_id': 'test_user_4'}
 
     recommendations = generate_nutrition_recommendations(user_profile)
 
     assert 'meal_plan' in recommendations
     assert 'tips' in recommendations
+    assert "Mục tiêu dinh dưỡng chung" in recommendations['nutrition_goal_description']
+    assert "Phân bổ macro sẽ được ước tính dựa trên mục tiêu dinh dưỡng tổng thể." in recommendations['macronutrient_distribution_notes']

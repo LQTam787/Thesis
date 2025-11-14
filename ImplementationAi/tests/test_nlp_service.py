@@ -1,7 +1,7 @@
 import pytest
 from unittest.mock import patch
 
-from src.nlp_service import process_text_for_nutrition_analysis
+from src.nlp_service import process_text_for_nutrition_analysis, extract_nutrition_goals_from_text
 
 @pytest.fixture
 def mock_nlp_pipeline():
@@ -59,3 +59,33 @@ def test_process_text_case_insensitivity(mock_nlp_pipeline):
 
     assert 'apple' in result['detected_food_items']
     assert len(result['detected_food_items']) == 1
+
+def test_extract_nutrition_goals_from_text():
+    """
+    Kiểm tra chức năng trích xuất mục tiêu dinh dưỡng từ văn bản ngôn ngữ tự nhiên.
+    - Nguyên lý: Xác minh hàm trả về một chuỗi mô tả mục tiêu dinh dưỡng.
+    """
+    text = "Tôi muốn giảm 5kg trong 2 tháng và tăng cơ bắp."
+    expected_output_start = "Mục tiêu giảm 5kg trong 2 tháng với chế độ tăng cơ,"
+    result = extract_nutrition_goals_from_text(text)
+
+    assert result.startswith(expected_output_start)
+    assert "calo mỗi ngày" in result
+    assert "protein" in result
+    assert "carbs" in result
+    assert "chất béo" in result
+
+def test_extract_nutrition_goals_from_text_default():
+    """
+    Kiểm tra chức năng trích xuất mục tiêu dinh dưỡng khi không có mục tiêu cụ thể.
+    - Nguyên lý: Xác minh hàm trả về một chuỗi mô tả mục tiêu dinh dưỡng chung.
+    """
+    text = "Tôi muốn ăn uống lành mạnh hơn."
+    expected_output_start = "Mục tiêu dinh dưỡng chung,"
+    result = extract_nutrition_goals_from_text(text)
+
+    assert result.startswith(expected_output_start)
+    assert "calo mỗi ngày" in result
+    assert "protein" in result
+    assert "carbs" in result
+    assert "chất béo" in result
