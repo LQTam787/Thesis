@@ -29,5 +29,10 @@ public enum EGoalType {
      * Mục tiêu duy trì cân nặng hiện tại.
      * Vai trò: Thiết lập trạng thái calo duy trì và cân bằng dinh dưỡng.
      */
-    MAINTAIN_WEIGHT
+    MAINTAIN_WEIGHT,
+    /**
+     * Mục tiêu phục hồi sức khỏe sau ốm.
+     * Vai trò: Tập trung vào cung cấp dinh dưỡng đầy đủ và hỗ trợ hệ miễn dịch.
+     */
+    RECOVERY
 }
