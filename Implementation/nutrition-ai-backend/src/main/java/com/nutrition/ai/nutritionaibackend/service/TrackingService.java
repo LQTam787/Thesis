@@ -5,40 +5,69 @@ import com.nutrition.ai.nutritionaibackend.dto.FoodLogDto;
 import com.nutrition.ai.nutritionaibackend.dto.ProgressReportDto;
 
 /**
- * Service interface for handling tracking-related operations such as logging food, activities,
- * and generating progress reports.
- * Định nghĩa các API để người dùng ghi lại lượng ăn vào, hoạt động thể chất và xem báo cáo tiến độ.
+ * Service interface cho việc xử lý các hoạt động theo dõi (tracking) liên quan đến sức khỏe và dinh dưỡng của người dùng.
+ * Giao diện này định nghĩa các phương thức cho phép người dùng ghi lại lượng thức ăn đã tiêu thụ, các hoạt động thể chất đã thực hiện,
+ * và tạo ra các báo cáo tiến độ tổng hợp dựa trên dữ liệu đã ghi lại. Mục tiêu là cung cấp một tầng trừu tượng
+ * cho logic nghiệp vụ liên quan đến việc theo dõi và báo cáo tiến độ cá nhân.
  */
 public interface TrackingService {
 
     /**
-     * Luồng hoạt động: Ghi lại một món ăn đã tiêu thụ cho người dùng.
-     * Nguyên lý hoạt động: Nhận FoodLogDto, chuyển đổi thành Entity, lưu vào cơ sở dữ liệu (thường liên quan đến việc tính toán lại tổng lượng calo/dinh dưỡng trong ngày).
+     * Ghi lại một nhật ký thức ăn (Food Log) cho một người dùng cụ thể.
      *
-     * @param userId The ID of the user.
-     * @param foodLogDto The DTO containing food log details.
-     * @return The created FoodLogDto.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <ol>
+     *     <li>Nhận ID của người dùng ({@code userId}) và một đối tượng {@link FoodLogDto} chứa chi tiết về món ăn đã tiêu thụ.</li>
+     *     <li>Chuyển đổi {@link FoodLogDto} này thành một đối tượng {@link com.nutrition.ai.nutritionaibackend.model.domain.FoodLog} Entity.</li>
+     *     <li>Lưu đối tượng {@code FoodLog} mới vào cơ sở dữ liệu.</li>
+     *     <li>Trả về một đối tượng {@link FoodLogDto} của nhật ký thức ăn đã được ghi thành công.</li>
+     * </ol>
+     * <p>Nguyên lý hoạt động: Thao tác này thường liên quan đến việc cập nhật hoặc tính toán lại tổng lượng calo/dinh dưỡng
+     * đã tiêu thụ trong ngày hoặc một khoảng thời gian cụ thể của người dùng.</p>
+     *
+     * @param userId ID của người dùng thực hiện ghi nhật ký thức ăn.
+     * @param foodLogDto {@link FoodLogDto} chứa thông tin chi tiết về món ăn đã tiêu thụ.
+     * @return {@link FoodLogDto} của nhật ký thức ăn đã được ghi.
      */
     FoodLogDto logFood(String userId, FoodLogDto foodLogDto);
 
     /**
-     * Luồng hoạt động: Ghi lại một hoạt động thể chất đã thực hiện cho người dùng.
-     * Nguyên lý hoạt động: Nhận ActivityLogDto, chuyển đổi thành Entity, lưu vào cơ sở dữ liệu (thường liên quan đến việc tính toán lượng calo đã đốt cháy).
+     * Ghi lại một nhật ký hoạt động (Activity Log) cho một người dùng cụ thể.
      *
-     * @param userId The ID of the user.
-     * @param activityLogDto The DTO containing activity log details.
-     * @return The created ActivityLogDto.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <ol>
+     *     <li>Nhận ID của người dùng ({@code userId}) và một đối tượng {@link ActivityLogDto} chứa chi tiết về hoạt động đã thực hiện.</li>
+     *     <li>Chuyển đổi {@link ActivityLogDto} này thành một đối tượng {@link com.nutrition.ai.nutritionaibackend.model.domain.ActivityLog} Entity.</li>
+     *     <li>Lưu đối tượng {@code ActivityLog} mới vào cơ sở dữ liệu.</li>
+     *     <li>Trả về một đối tượng {@link ActivityLogDto} của nhật ký hoạt động đã được ghi thành công.</li>
+     * </ol>
+     * <p>Nguyên lý hoạt động: Thao tác này thường liên quan đến việc tính toán lượng calo đã đốt cháy
+     * và cập nhật các chỉ số hoạt động của người dùng.</p>
+     *
+     * @param userId ID của người dùng thực hiện ghi nhật ký hoạt động.
+     * @param activityLogDto {@link ActivityLogDto} chứa thông tin chi tiết về hoạt động.
+     * @return {@link ActivityLogDto} của nhật ký hoạt động đã được ghi.
      */
     ActivityLogDto logActivity(String userId, ActivityLogDto activityLogDto);
 
     /**
-     * Luồng hoạt động: Tạo báo cáo tiến độ tổng hợp cho người dùng.
-     * Nguyên lý hoạt động: Truy vấn dữ liệu FoodLog, ActivityLog và dữ liệu mục tiêu của người dùng trong một khoảng thời gian cụ thể (`reportType`), thực hiện tính toán và tổng hợp kết quả vào ProgressReportDto.
+     * Tạo báo cáo tiến độ tổng hợp cho người dùng dựa trên các nhật ký thức ăn và hoạt động.
      *
-     * @param userId The ID of the user.
-     * @param reportType The type of report to generate (e.g., 'weekly', 'monthly').
-     * @return A DTO containing the comprehensive progress report.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <ol>
+     *     <li>Nhận ID của người dùng ({@code userId}) và loại báo cáo ({@code reportType}, ví dụ: "weekly" hoặc "monthly").</li>
+     *     <li>Truy vấn cơ sở dữ liệu để lấy các dữ liệu liên quan như {@link com.nutrition.ai.nutritionaibackend.model.domain.FoodLog},
+     *         {@link com.nutrition.ai.nutritionaibackend.model.domain.ActivityLog} và dữ liệu mục tiêu của người dùng trong một khoảng thời gian cụ thể
+     *         (được xác định bởi {@code reportType}).</li>
+     *     <li>Thực hiện các tính toán và tổng hợp cần thiết từ dữ liệu đã truy vấn.</li>
+     *     <li>Tạo một đối tượng {@link ProgressReportDto} chứa dữ liệu báo cáo toàn diện và trả về.</li>
+     * </ol>
+     * <p>Nguyên lý hoạt động: Phương pháp này tập trung vào việc tổng hợp thông tin từ nhiều nguồn
+     * để cung cấp cái nhìn tổng quan về tiến độ sức khỏe và dinh dưỡng của người dùng.</p>
+     *
+     * @param userId ID của người dùng để tạo báo cáo.
+     * @param reportType Loại báo cáo cần tạo (ví dụ: "weekly" cho hàng tuần, "monthly" cho hàng tháng).
+     * @return {@link ProgressReportDto} chứa dữ liệu báo cáo tiến độ toàn diện.
      */
     ProgressReportDto generateProgressReport(String userId, String reportType);
-
 }

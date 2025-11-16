@@ -16,9 +16,24 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * FoodController xử lý các yêu cầu liên quan đến quản lý các mục thực phẩm (ví dụ: cơ sở dữ liệu thành phần).
- * Nguyên lý hoạt động: Cung cấp các REST endpoint CRUD cơ bản cho FoodItem. Các hoạt động tạo, cập nhật, xóa
- * thường được giới hạn cho vai trò Admin (như được ghi chú trong Swagger).
+ * FoodController xử lý các yêu cầu HTTP liên quan đến việc quản lý các mục thực phẩm trong hệ thống.
+ * <p>
+ * Nguyên lý hoạt động: Controller này cung cấp các RESTful endpoint cho phép thực hiện các hoạt động CRUD
+ * (Tạo, Đọc, Cập nhật, Xóa) trên tài nguyên {@code FoodItem}. Các hoạt động tạo, cập nhật và xóa
+ * thường được giới hạn cho người dùng có vai trò quản trị viên để duy trì tính toàn vẹn của dữ liệu.
+ * Controller này sử dụng {@link com.nutrition.ai.nutritionaibackend.service.FoodService}
+ * để xử lý logic nghiệp vụ và tương tác với cơ sở dữ liệu, và {@link org.modelmapper.ModelMapper}
+ * để chuyển đổi giữa các đối tượng DTO và entity.
+ * </p>
+ * <p>
+ * Luồng hoạt động:
+ * <ul>
+ *     <li>Nhận các yêu cầu HTTP (POST, GET, PUT, DELETE) từ client tại đường dẫn cơ sở {@code /api/foods}.</li>
+ *     <li>Sử dụng {@code ModelMapper} để chuyển đổi dữ liệu giữa {@link FoodItemDto} và {@link FoodItem} entity.</li>
+ *     <li>Ủy quyền các yêu cầu xử lý nghiệp vụ cho {@code FoodService}.</li>
+ *     <li>Trả về {@code ResponseEntity} với dữ liệu {@link FoodItemDto} hoặc thông báo trạng thái HTTP thích hợp (ví dụ: 200 OK, 204 NO CONTENT, 404 NOT FOUND).</li>
+ * </ul>
+ * </p>
  */
 @RestController // Đánh dấu lớp này là một Spring REST Controller
 @RequestMapping("/api/foods") // Ánh xạ với đường dẫn cơ sở /api/foods
@@ -29,21 +44,38 @@ public class FoodController {
     private final FoodService foodService; // Dependency cho Service
     private final ModelMapper modelMapper; // Dependency cho ModelMapper
 
+    /**
+     * Constructor để inject {@link FoodService} và {@link ModelMapper} vào FoodController.
+     * <p>
+     * Nguyên lý hoạt động: Spring Framework tự động tiêm các thể hiện của {@code FoodService}
+     * và {@code ModelMapper} vào constructor này khi tạo bean {@code FoodController}.
+     * Điều này cho phép controller truy cập các dịch vụ và tiện ích cần thiết để xử lý yêu cầu.
+     * </p>
+     * @param foodService Service quản lý logic nghiệp vụ liên quan đến các mục thực phẩm.
+     * @param modelMapper ModelMapper để chuyển đổi giữa các DTO và entity.
+     */
     public FoodController(FoodService foodService, ModelMapper modelMapper) { // Constructor injection
         this.foodService = foodService;
         this.modelMapper = modelMapper;
     }
 
     /**
-     * Tạo một mục thực phẩm mới.
+     * Tạo một mục thực phẩm mới trong hệ thống.
+     * <p>
+     * Endpoint này nhận dữ liệu của một mục thực phẩm mới dưới dạng {@link FoodItemDto},
+     * chuyển đổi nó thành {@link FoodItem} entity, và lưu vào cơ sở dữ liệu thông qua {@link FoodService}.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận FoodItemDto từ body của request.
-     * 2. Ánh xạ DTO thành FoodItem entity.
-     * 3. Gọi foodService.save() để lưu FoodItem.
-     * 4. Ánh xạ FoodItem đã lưu thành FoodItemDto và trả về HTTP status 200 (OK).
-     *
-     * @param foodItemDto DTO chứa dữ liệu mục thực phẩm.
-     * @return ResponseEntity chứa FoodItemDto đã tạo.
+     * <ol>
+     *     <li>Nhận yêu cầu POST đến {@code /api/foods} với {@link FoodItemDto} trong body.</li>
+     *     <li>Ánh xạ {@code foodItemDto} sang {@link FoodItem} entity.</li>
+     *     <li>Gọi phương thức {@code foodService.save(foodItem)} để lưu entity.</li>
+     *     <li>Ánh xạ {@link FoodItem} đã lưu trở lại {@link FoodItemDto} và trả về với trạng thái HTTP 200 OK.</li>
+     * </ol>
+     * </p>
+     * @param foodItemDto DTO chứa thông tin chi tiết của mục thực phẩm cần tạo.
+     * @return ResponseEntity chứa {@link FoodItemDto} của mục thực phẩm đã tạo.
      */
     @Operation(summary = "Create a new food item", description = "Adds a new food item to the database. Typically an admin-only function.")
     @ApiResponses(value = {
@@ -58,15 +90,24 @@ public class FoodController {
     }
 
     /**
-     * Lấy một mục thực phẩm theo ID.
+     * Lấy thông tin chi tiết của một mục thực phẩm cụ thể dựa trên ID.
+     * <p>
+     * Endpoint này tìm kiếm một {@link FoodItem} bằng ID được cung cấp.
+     * Nếu tìm thấy, nó sẽ trả về thông tin dưới dạng {@link FoodItemDto};
+     * nếu không tìm thấy, nó sẽ trả về trạng thái 404 NOT FOUND.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'id' từ path variable.
-     * 2. Gọi foodService.findOne(id).
-     * 3. Nếu tìm thấy: Ánh xạ thành DTO và trả về HTTP status 200 (OK).
-     * 4. Nếu không tìm thấy: Trả về HTTP status 404 (NOT_FOUND).
-     *
-     * @param id ID của mục thực phẩm.
-     * @return ResponseEntity chứa FoodItemDto hoặc status 404.
+     * <ol>
+     *     <li>Nhận yêu cầu GET đến {@code /api/foods/{id}}.</li>
+     *     <li>Trích xuất {@code id} của mục thực phẩm từ đường dẫn.</li>
+     *     <li>Gọi phương thức {@code foodService.findOne(id)}.</li>
+     *     <li>Nếu Optional chứa giá trị, ánh xạ {@link FoodItem} sang {@link FoodItemDto} và trả với trạng thái HTTP 200 OK.</li>
+     *     <li>Nếu Optional rỗng, trả về {@code ResponseEntity.notFound().build()} với trạng thái HTTP 404 NOT FOUND.</li>
+     * </ol>
+     * </p>
+     * @param id ID của mục thực phẩm cần lấy thông tin.
+     * @return ResponseEntity chứa {@link FoodItemDto} của mục thực phẩm nếu tìm thấy, hoặc trạng thái 404 NOT FOUND.
      */
     @Operation(summary = "Get a food item by ID", description = "Retrieves details of a specific food item.")
     @ApiResponses(value = {
@@ -81,13 +122,21 @@ public class FoodController {
     }
 
     /**
-     * Lấy tất cả các mục thực phẩm.
+     * Lấy danh sách tất cả các mục thực phẩm có sẵn trong hệ thống.
+     * <p>
+     * Endpoint này truy xuất tất cả các {@link FoodItem} từ cơ sở dữ liệu và chuyển đổi chúng
+     * thành danh sách {@link FoodItemDto} để trả về cho client.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Gọi foodService.findAll() để lấy tất cả FoodItem entities.
-     * 2. Sử dụng Stream API để ánh xạ từng entity thành FoodItemDto.
-     * 3. Trả về danh sách DTO với HTTP status 200 (OK).
-     *
-     * @return ResponseEntity chứa danh sách FoodItemDto.
+     * <ol>
+     *     <li>Nhận yêu cầu GET đến {@code /api/foods}.</li>
+     *     <li>Gọi phương thức {@code foodService.findAll()} để lấy tất cả các {@link FoodItem} entity.</li>
+     *     <li>Sử dụng Stream API và {@code ModelMapper} để chuyển đổi từng {@link FoodItem} sang {@link FoodItemDto}.</li>
+     *     <li>Trả về danh sách {@link FoodItemDto} với trạng thái HTTP 200 OK.</li>
+     * </ol>
+     * </p>
+     * @return ResponseEntity chứa danh sách {@link FoodItemDto} của tất cả các mục thực phẩm.
      */
     @Operation(summary = "Get all food items", description = "Retrieves a list of all available food items.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved list")
@@ -100,19 +149,31 @@ public class FoodController {
     }
 
     /**
-     * Cập nhật một mục thực phẩm hiện có.
+     * Cập nhật thông tin chi tiết của một mục thực phẩm hiện có.
+     * <p>
+     * Endpoint này nhận ID của mục thực phẩm cần cập nhật và dữ liệu cập nhật dưới dạng {@link FoodItemDto}.
+     * Nó tìm kiếm mục thực phẩm hiện có, áp dụng các thay đổi và lưu chúng vào cơ sở dữ liệu.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Tìm FoodItem hiện có bằng 'id' từ path variable.
-     * 2. Nếu tìm thấy:
-     * - Đảm bảo ID được đặt trong DTO để ModelMapper cập nhật đúng đối tượng.
-     * - Ánh xạ DTO (với ID) thành FoodItem entity.
-     * - Gọi foodService.save() để cập nhật FoodItem.
-     * - Ánh xạ FoodItem đã cập nhật thành FoodItemDto và trả về HTTP status 200 (OK).
-     * 3. Nếu không tìm thấy: Trả về HTTP status 404 (NOT_FOUND).
-     *
-     * @param id ID của mục thực phẩm.
-     * @param foodItemDto DTO chứa dữ liệu cập nhật.
-     * @return ResponseEntity chứa FoodItemDto đã cập nhật hoặc status 404.
+     * <ol>
+     *     <li>Nhận yêu cầu PUT đến {@code /api/foods/{id}} với {@link FoodItemDto} trong body.</li>
+     *     <li>Trích xuất {@code id} từ đường dẫn.</li>
+     *     <li>Gọi phương thức {@code foodService.findOne(id)} để tìm mục thực phẩm hiện có.</li>
+     *     <li>Nếu tìm thấy:
+     *         <ul>
+     *             <li>Đặt {@code id} từ đường dẫn vào {@code foodItemDto} để đảm bảo cập nhật đúng đối tượng.</li>
+     *             <li>Ánh xạ {@code foodItemDto} sang {@link FoodItem} entity.</li>
+     *             <li>Gọi phương thức {@code foodService.save(updatedFoodItem)} để lưu các thay đổi.</li>
+     *             <li>Ánh xạ {@link FoodItem} đã cập nhật trở lại {@link FoodItemDto} và trả với trạng thái HTTP 200 OK.</li>
+     *         </ul>
+     *     </li>
+     *     <li>Nếu không tìm thấy, trả về {@code ResponseEntity.notFound().build()} với trạng thái HTTP 404 NOT FOUND.</li>
+     * </ol>
+     * </p>
+     * @param id ID của mục thực phẩm cần cập nhật.
+     * @param foodItemDto DTO chứa dữ liệu cập nhật cho mục thực phẩm.
+     * @return ResponseEntity chứa {@link FoodItemDto} của mục thực phẩm đã cập nhật nếu thành công, hoặc trạng thái 404 NOT FOUND.
      */
     @Operation(summary = "Update a food item", description = "Updates the details of an existing food item. Typically an admin-only function.")
     @ApiResponses(value = {
@@ -131,14 +192,21 @@ public class FoodController {
     }
 
     /**
-     * Xóa một mục thực phẩm.
+     * Xóa một mục thực phẩm khỏi hệ thống dựa trên ID.
+     * <p>
+     * Endpoint này thực hiện xóa một {@link FoodItem} khỏi cơ sở dữ liệu.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'id' từ path variable.
-     * 2. Gọi foodService.delete(id) để xóa mục thực phẩm (hầu hết các Service/Repository sẽ xử lý việc kiểm tra xem có tồn tại hay không).
-     * 3. Trả về HTTP status 204 (NO_CONTENT) để biểu thị việc xóa thành công mà không có body trả về.
-     *
-     * @param id ID của mục thực phẩm.
-     * @return ResponseEntity rỗng với status 204.
+     * <ol>
+     *     <li>Nhận yêu cầu DELETE đến {@code /api/foods/{id}}.</li>
+     *     <li>Trích xuất {@code id} của mục thực phẩm từ đường dẫn.</li>
+     *     <li>Gọi phương thức {@code foodService.delete(id)} để xóa mục thực phẩm.</li>
+     *     <li>Trả về {@code ResponseEntity.noContent().build()} với trạng thái HTTP 204 NO CONTENT, cho biết việc xóa đã thành công mà không có nội dung phản hồi.</li>
+     * </ol>
+     * </p>
+     * @param id ID của mục thực phẩm cần xóa.
+     * @return ResponseEntity rỗng với trạng thái HTTP 204 NO CONTENT.
      */
     @Operation(summary = "Delete a food item", description = "Deletes a food item from the database. Typically an admin-only function.")
     @ApiResponses(value = {

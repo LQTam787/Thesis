@@ -13,12 +13,25 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * UserController xử lý các yêu cầu liên quan đến quản lý hồ sơ người dùng cá nhân.
- * Nguyên lý hoạt động: Cho phép người dùng xem và cập nhật dữ liệu hồ sơ của chính họ thông qua các REST endpoint.
- *
- * Luồng hoạt động: Nhận HTTP request (yêu cầu Bearer Token cho xác thực),
- * sử dụng UserService để truy xuất/lưu dữ liệu, và ModelMapper để chuyển đổi dữ liệu giữa
- * đối tượng Entity (User) và đối tượng truyền tải dữ liệu (ProfileDto), sau đó trả về phản hồi.
+ * UserController xử lý các yêu cầu HTTP liên quan đến quản lý hồ sơ cá nhân của người dùng.
+ * <p>
+ * Nguyên lý hoạt động: Controller này cung cấp các RESTful endpoint cho phép người dùng đã xác thực
+ * xem và cập nhật thông tin hồ sơ của chính họ. Nó ủy quyền logic nghiệp vụ cho
+ * {@link com.nutrition.ai.nutritionaibackend.service.UserService} để tương tác với dữ liệu người dùng,
+ * và sử dụng {@link org.modelmapper.ModelMapper} để chuyển đổi dữ liệu giữa các đối tượng Entity ({@link com.nutrition.ai.nutritionaibackend.model.domain.User})
+ * và các đối tượng truyền tải dữ liệu (DTOs) như {@link ProfileDto}.
+ * </p>
+ * <p>
+ * Luồng hoạt động:
+ * <ul>
+ *     <li>Nhận các yêu cầu HTTP (GET, PUT) từ client tại đường dẫn cơ sở {@code /api/users/{username}}.</li>
+ *     <li>Yêu cầu phải bao gồm Bearer Token để xác thực (thông qua {@code @SecurityRequirement}).</li>
+ *     <li>Trích xuất {@code username} từ đường dẫn để xác định người dùng.</li>
+ *     <li>Ủy quyền các yêu cầu xử lý nghiệp vụ cho {@code UserService} (ví dụ: tìm kiếm, lưu dữ liệu người dùng).</li>
+ *     <li>Sử dụng {@code ModelMapper} để chuyển đổi giữa {@link User} entity và {@link ProfileDto}.</li>
+ *     <li>Trả về {@code ResponseEntity} với dữ liệu {@link ProfileDto} hoặc thông báo trạng thái HTTP thích hợp (ví dụ: 200 OK, 404 NOT FOUND).</li>
+ * </ul>
+ * </p>
  */
 @RestController // Đánh dấu lớp này là một Spring REST Controller
 @RequestMapping("/api/users") // Ánh xạ tất cả các endpoint trong controller này với đường dẫn cơ sở /api/users
@@ -30,10 +43,14 @@ public class UserController {
     private final ModelMapper modelMapper; // Dependency Injection cho ModelMapper (chuyển đổi DTO <-> Entity)
 
     /**
-     * Nguyên lý hoạt động: Spring tự động inject (tiêm) các thể hiện của UserService
-     * và ModelMapper vào constructor này.
-     * @param userService Service quản lý nghiệp vụ người dùng.
-     * @param modelMapper Thư viện giúp chuyển đổi dữ liệu giữa các lớp.
+     * Constructor để inject {@link UserService} và {@link ModelMapper} vào UserController.
+     * <p>
+     * Nguyên lý hoạt động: Spring Framework tự động tiêm các thể hiện của {@code UserService}
+     * và {@code ModelMapper} vào constructor này khi tạo bean {@code UserController}. Điều này đảm bảo
+     * rằng controller có thể truy cập các dịch vụ cần thiết để xử lý logic người dùng và chuyển đổi dữ liệu.
+     * </p>
+     * @param userService Service quản lý logic nghiệp vụ liên quan đến người dùng.
+     * @param modelMapper ModelMapper để chuyển đổi giữa các DTO và entity.
      */
     public UserController(UserService userService, ModelMapper modelMapper) { // Constructor injection
         this.userService = userService;
@@ -41,19 +58,29 @@ public class UserController {
     }
 
     /**
-     * Lấy thông tin hồ sơ người dùng.
+     * Lấy thông tin hồ sơ của một người dùng cụ thể dựa trên tên người dùng.
+     * <p>
+     * Endpoint này truy xuất thông tin hồ sơ của một {@link com.nutrition.ai.nutritionaibackend.model.domain.User}
+     * được xác định bởi {@code username}. Nếu người dùng được tìm thấy, thông tin của họ sẽ được trả về dưới dạng
+     * {@link ProfileDto}. Nếu không, một phản hồi 404 NOT FOUND sẽ được gửi đi.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'username' từ path variable.
-     * 2. Gọi userService.findByUsername() để tìm đối tượng User. Kết quả là một Optional<User>.
-     * 3. Sử dụng Optional.map:
-     * - Nếu tìm thấy User: Chuyển đổi User thành ProfileDto bằng ModelMapper và trả về HTTP status 200 (OK).
-     * - Nếu không tìm thấy: Trả về HTTP status 404 (NOT_FOUND).
-     *
-     * Nguyên lý hoạt động: Sử dụng Optional để xử lý an toàn trường hợp không tìm thấy người dùng,
-     * tránh NullPointerException. ModelMapper đảm bảo chỉ các trường an toàn được công khai trong ProfileDto.
-     *
+     * <ol>
+     *     <li>Nhận yêu cầu GET đến {@code /api/users/{username}}.</li>
+     *     <li>Trích xuất {@code username} từ đường dẫn.</li>
+     *     <li>Gọi phương thức {@code userService.findByUsername(username)} để tìm người dùng.</li>
+     *     <li>Nếu {@code Optional<User>} chứa một giá trị:
+     *         <ul>
+     *             <li>Ánh xạ {@link User} sang {@link ProfileDto} bằng {@code ModelMapper}.</li>
+     *             <li>Trả về {@link ProfileDto} với trạng thái HTTP 200 OK.</li>
+     *         </ul>
+     *     </li>
+     *     <li>Nếu {@code Optional<User>} rỗng (không tìm thấy người dùng), trả về {@code ResponseEntity.notFound().build()} với trạng thái HTTP 404 NOT FOUND.</li>
+     * </ol>
+     * </p>
      * @param username Tên người dùng của hồ sơ cần truy xuất.
-     * @return ResponseEntity chứa ProfileDto hoặc status 404.
+     * @return ResponseEntity chứa {@link ProfileDto} của người dùng nếu tìm thấy, hoặc trạng thái 404 NOT FOUND.
      */
     @Operation(summary = "Get user profile", description = "Retrieves the profile information for a specific user.")
     @ApiResponses(value = {
@@ -69,23 +96,30 @@ public class UserController {
     }
 
     /**
-     * Cập nhật thông tin hồ sơ người dùng.
+     * Cập nhật thông tin hồ sơ của một người dùng hiện có.
+     * <p>
+     * Endpoint này cho phép cập nhật thông tin hồ sơ của một {@link com.nutrition.ai.nutritionaibackend.model.domain.User}
+     * được xác định bởi {@code username}. Dữ liệu cập nhật được cung cấp trong {@link ProfileDto}.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'username' từ path variable và ProfileDto mới từ body của request.
-     * 2. Gọi userService.findByUsername() để tìm User hiện có. Kết quả là một Optional<User>.
-     * 3. Sử dụng Optional.map:
-     * - Nếu tìm thấy User:
-     * - Ánh xạ (map) dữ liệu từ ProfileDto vào đối tượng User hiện có (modelMapper.map(profileDto, user)).
-     * - Gọi userService.save() để lưu User đã cập nhật.
-     * - Chuyển đổi User đã lưu thành ProfileDto và trả về HTTP status 200 (OK).
-     * - Nếu không tìm thấy: Trả về HTTP status 404 (NOT_FOUND).
-     *
-     * Nguyên lý hoạt động: Sử dụng ModelMapper để ánh xạ dữ liệu cập nhật từ DTO vào đối tượng Entity (User) hiện có,
-     * sau đó gọi Service để duy trì (lưu) các thay đổi vào cơ sở dữ liệu.
-     *
+     * <ol>
+     *     <li>Nhận yêu cầu PUT đến {@code /api/users/{username}} với {@link ProfileDto} trong body.</li>
+     *     <li>Trích xuất {@code username} từ đường dẫn và {@code profileDto} từ body.</li>
+     *     <li>Gọi phương thức {@code userService.findByUsername(username)} để tìm người dùng hiện có.</li>
+     *     <li>Nếu tìm thấy người dùng:
+     *         <ul>
+     *             <li>Ánh xạ các trường từ {@code profileDto} vào đối tượng {@link User} hiện có bằng {@code ModelMapper}.</li>
+     *             <li>Gọi phương thức {@code userService.save(user)} để lưu các thay đổi vào cơ sở dữ liệu.</li>
+     *             <li>Ánh xạ {@link User} đã cập nhật trở lại {@link ProfileDto} và trả về với trạng thái HTTP 200 OK.</li>
+     *         </ul>
+     *     </li>
+     *     <li>Nếu không tìm thấy người dùng, trả về {@code ResponseEntity.notFound().build()} với trạng thái HTTP 404 NOT FOUND.</li>
+     * </ol>
+     * </p>
      * @param username Tên người dùng của hồ sơ cần cập nhật.
-     * @param profileDto DTO chứa dữ liệu hồ sơ mới.
-     * @return ResponseEntity chứa ProfileDto đã cập nhật hoặc status 404.
+     * @param profileDto DTO chứa dữ liệu hồ sơ mới để cập nhật.
+     * @return ResponseEntity chứa {@link ProfileDto} của người dùng đã cập nhật nếu thành công, hoặc trạng thái 404 NOT FOUND.
      */
     @Operation(summary = "Update user profile", description = "Updates the profile information for a specific user.")
     @ApiResponses(value = {

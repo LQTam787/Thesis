@@ -11,6 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Đây là class chính (main class) của ứng dụng Spring Boot.
+ * Class này đóng vai trò là điểm vào (entry point) của toàn bộ ứng dụng backend,
+ * chịu trách nhiệm khởi tạo và cấu hình môi trường cần thiết cho các module khác
+ * (như controllers, services, repositories) hoạt động. Nó là nền tảng để các chức năng
+ * backend như quản lý dữ liệu người dùng, logic nghiệp vụ và tích hợp AI được thực thi.
  *
  * Annotation @SpringBootApplication là sự kết hợp của:
  * 1. @Configuration: Đánh dấu class này là nguồn định nghĩa bean (đối tượng Spring).

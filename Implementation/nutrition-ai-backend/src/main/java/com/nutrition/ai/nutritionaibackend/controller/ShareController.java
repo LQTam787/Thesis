@@ -20,9 +20,25 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * ShareController xử lý việc chia sẻ nội dung, thích và bình luận.
- * Nguyên lý hoạt động: Cung cấp các REST endpoint để người dùng tương tác với các tính năng xã hội của ứng dụng.
- * Lưu ý: 'userId' đang sử dụng giá trị placeholder (1L) thay vì trích xuất từ UserDetails thực tế.
+ * ShareController xử lý các yêu cầu HTTP liên quan đến tính năng chia sẻ nội dung, bao gồm chia sẻ, thích và bình luận.
+ * <p>
+ * Nguyên lý hoạt động: Controller này cung cấp các RESTful endpoint để người dùng tương tác với các tính năng xã hội của ứng dụng.
+ * Nó ủy quyền logic nghiệp vụ cho {@link com.nutrition.ai.nutritionaibackend.service.ShareService}.
+ * Lưu ý quan trọng: Hiện tại, {@code userId} đang sử dụng giá trị placeholder ({@code 1L}) thay vì trích xuất từ {@link UserDetails} thực tế.
+ * Trong một triển khai sản phẩm, {@code userId} phải được lấy một cách an toàn từ thông tin xác thực của người dùng hiện tại.
+ * </p>
+ * <p>
+ * Luồng hoạt động:
+ * <ul>
+ *     <li>Nhận các yêu cầu HTTP (POST, GET) từ client tại đường dẫn cơ sở {@code /api/share}.</li>
+ *     <li>Trích xuất dữ liệu cần thiết từ {@code @RequestBody} hoặc {@code @PathVariable}.</li>
+ *     <li>Sử dụng {@code @AuthenticationPrincipal UserDetails} để có được thông tin người dùng đã xác thực (mặc dù hiện đang dùng placeholder cho userId).</li>
+ *     <li>Chuyển đổi các chuỗi thành các kiểu dữ liệu Enum thích hợp như {@link ContentType} và {@link Visibility}.</li>
+ *     <li>Ủy quyền các yêu cầu xử lý nghiệp vụ cho {@code ShareService}.</li>
+ *     <li>Trả về {@code ResponseEntity} với dữ liệu {@link SharedContentDto}, {@link ContentCommentDto},
+ *         hoặc danh sách các DTO, cùng với trạng thái HTTP thích hợp (ví dụ: 200 OK, 201 CREATED).</li>
+ * </ul>
+ * </p>
  */
 @RestController // Đánh dấu lớp này là một Spring REST Controller
 @RequestMapping("/api/share") // Ánh xạ với đường dẫn cơ sở /api/share
@@ -34,17 +50,26 @@ public class ShareController {
     private final ShareService shareService; // Dependency Injection
 
     /**
-     * Cho phép người dùng chia sẻ một nội dung (ví dụ: công thức, kế hoạch).
+     * Cho phép người dùng chia sẻ một nội dung (ví dụ: công thức nấu ăn, kế hoạch dinh dưỡng) lên hệ thống.
+     * <p>
+     * Endpoint này nhận ID nội dung, loại nội dung và mức độ hiển thị từ payload.
+     * Nó sử dụng {@link UserDetails} để xác định người dùng đang thực hiện hành động chia sẻ
+     * và sau đó gọi {@link ShareService} để lưu thông tin chia sẻ.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận UserDetails từ token (AuthenticationPrincipal) và payload (contentId, contentType, visibility).
-     * 2. (Giả định) Lấy userId từ UserDetails.
-     * 3. Chuyển đổi các chuỗi trong payload thành các kiểu dữ liệu thích hợp (Long, Enum).
-     * 4. Gọi shareService.shareContent() để xử lý logic chia sẻ.
-     * 5. Trả về SharedContentDto đã tạo với HTTP status 201 (CREATED).
-     *
-     * @param userDetails Chi tiết người dùng đã xác thực.
-     * @param payload Map chứa contentId, contentType, visibility.
-     * @return ResponseEntity chứa SharedContentDto.
+     * <ol>
+     *     <li>Nhận yêu cầu POST đến {@code /api/share} với payload chứa {@code contentId}, {@code contentType}, và {@code visibility}.</li>
+     *     <li>Trích xuất {@code userId} từ {@code UserDetails} (hiện đang dùng placeholder {@code 1L}).</li>
+     *     <li>Phân tích {@code contentId} thành {@code Long}, {@code contentType} thành {@link ContentType}, và {@code visibility} thành {@link Visibility}.</li>
+     *     <li>Gọi phương thức {@code shareService.shareContent(userId, contentId, contentType, visibility)}.</li>
+     *     <li>Trả về {@link SharedContentDto} của nội dung đã chia sẻ với trạng thái HTTP 201 CREATED.</li>
+     * </ol>
+     * </p>
+     * @param userDetails Chi tiết người dùng đã xác thực, được cung cấp bởi Spring Security.
+     * @param payload Map chứa các trường: "contentId" (ID của nội dung), "contentType" (loại nội dung, ví dụ: RECIPE, NUTRITION_PLAN),
+     *                và "visibility" (mức độ hiển thị, ví dụ: PUBLIC, PRIVATE).
+     * @return ResponseEntity chứa {@link SharedContentDto} của nội dung đã chia sẻ.
      */
     @Operation(summary = "Share content", description = "Allows a user to share a piece of content, like a recipe or a nutrition plan.")
     @ApiResponse(responseCode = "201", description = "Content shared successfully")
@@ -61,12 +86,20 @@ public class ShareController {
     }
 
     /**
-     * Lấy danh sách tất cả nội dung được chia sẻ công khai.
+     * Lấy danh sách tất cả các nội dung được chia sẻ công khai trong hệ thống.
+     * <p>
+     * Endpoint này cho phép bất kỳ người dùng nào truy xuất danh sách các mục nội dung
+     * đã được chia sẻ với mức độ hiển thị {@code PUBLIC}.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Gọi shareService.getAllPublicContent().
-     * 2. Trả về danh sách SharedContentDto với HTTP status 200 (OK).
-     *
-     * @return ResponseEntity chứa danh sách SharedContentDto.
+     * <ol>
+     *     <li>Nhận yêu cầu GET đến {@code /api/share/public}.</li>
+     *     <li>Gọi phương thức {@code shareService.getAllPublicContent()}.</li>
+     *     <li>Trả về danh sách {@link SharedContentDto} của tất cả nội dung công khai với trạng thái HTTP 200 OK.</li>
+     * </ol>
+     * </p>
+     * @return ResponseEntity chứa danh sách {@link SharedContentDto} của nội dung được chia sẻ công khai.
      */
     @Operation(summary = "Get public content", description = "Retrieves a feed of all publicly shared content.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved public content")
@@ -77,16 +110,23 @@ public class ShareController {
     }
 
     /**
-     * Cho phép người dùng thích một nội dung đã chia sẻ.
+     * Cho phép người dùng đã xác thực thích một nội dung đã được chia sẻ.
+     * <p>
+     * Endpoint này ghi lại một lượt thích cho nội dung được chỉ định bởi {@code contentId},
+     * liên kết với người dùng đang thực hiện yêu cầu.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'contentId' từ path variable và UserDetails.
-     * 2. (Giả định) Lấy userId từ UserDetails.
-     * 3. Gọi shareService.likeContent(contentId, userId) để ghi lại lượt thích.
-     * 4. Trả về HTTP status 200 (OK) rỗng.
-     *
-     * @param contentId ID của nội dung được thích.
+     * <ol>
+     *     <li>Nhận yêu cầu POST đến {@code /api/share/{contentId}/like}.</li>
+     *     <li>Trích xuất {@code contentId} từ đường dẫn và {@code userId} từ {@code UserDetails} (hiện đang dùng placeholder {@code 1L}).</li>
+     *     <li>Gọi phương thức {@code shareService.likeContent(contentId, userId)}.</li>
+     *     <li>Trả về {@code ResponseEntity} rỗng với trạng thái HTTP 200 OK để xác nhận lượt thích.</li>
+     * </ol>
+     * </p>
+     * @param contentId ID của nội dung được chia sẻ mà người dùng muốn thích.
      * @param userDetails Chi tiết người dùng đã xác thực.
-     * @return ResponseEntity rỗng với status 200.
+     * @return ResponseEntity rỗng với trạng thái HTTP 200 OK.
      */
     @Operation(summary = "Like content", description = "Allows a user to like a piece of shared content.")
     @ApiResponse(responseCode = "200", description = "Content liked successfully")
@@ -98,17 +138,25 @@ public class ShareController {
     }
 
     /**
-     * Cho phép người dùng bình luận về một nội dung đã chia sẻ.
+     * Cho phép người dùng đã xác thực bình luận về một nội dung đã được chia sẻ.
+     * <p>
+     * Endpoint này nhận nội dung bình luận từ payload và tạo một bình luận mới
+     * cho nội dung được chỉ định bởi {@code contentId}, liên kết với người dùng đang bình luận.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'contentId', UserDetails và payload (text).
-     * 2. (Giả định) Lấy userId và text.
-     * 3. Gọi shareService.commentOnContent() để lưu bình luận.
-     * 4. Trả về ContentCommentDto đã tạo với HTTP status 201 (CREATED).
-     *
-     * @param contentId ID của nội dung.
+     * <ol>
+     *     <li>Nhận yêu cầu POST đến {@code /api/share/{contentId}/comment} với payload chứa trường "text".</li>
+     *     <li>Trích xuất {@code contentId} từ đường dẫn và {@code userId} từ {@code UserDetails} (hiện đang dùng placeholder {@code 1L}).</li>
+     *     <li>Trích xuất nội dung bình luận ({@code text}) từ payload.</li>
+     *     <li>Gọi phương thức {@code shareService.commentOnContent(contentId, userId, text)}.</li>
+     *     <li>Trả về {@link ContentCommentDto} của bình luận đã tạo với trạng thái HTTP 201 CREATED.</li>
+     * </ol>
+     * </p>
+     * @param contentId ID của nội dung được chia sẻ mà người dùng muốn bình luận.
      * @param userDetails Chi tiết người dùng đã xác thực.
-     * @param payload Map chứa nội dung bình luận ('text').
-     * @return ResponseEntity chứa ContentCommentDto.
+     * @param payload Map chứa trường "text" với nội dung bình luận.
+     * @return ResponseEntity chứa {@link ContentCommentDto} của bình luận đã tạo.
      */
     @Operation(summary = "Comment on content", description = "Allows a user to add a comment to a piece of shared content.")
     @ApiResponse(responseCode = "201", description = "Comment added successfully")
@@ -123,14 +171,22 @@ public class ShareController {
     }
 
     /**
-     * Lấy tất cả bình luận cho một nội dung đã chia sẻ.
+     * Lấy tất cả các bình luận cho một nội dung đã được chia sẻ cụ thể.
+     * <p>
+     * Endpoint này truy xuất danh sách tất cả các bình luận liên quan đến một mục nội dung
+     * được chia sẻ, được xác định bởi {@code contentId}.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận 'contentId'.
-     * 2. Gọi shareService.getCommentsForContent(contentId).
-     * 3. Trả về danh sách ContentCommentDto với HTTP status 200 (OK).
-     *
-     * @param contentId ID của nội dung.
-     * @return ResponseEntity chứa danh sách ContentCommentDto.
+     * <ol>
+     *     <li>Nhận yêu cầu GET đến {@code /api/share/{contentId}/comments}.</li>
+     *     <li>Trích xuất {@code contentId} từ đường dẫn.</li>
+     *     <li>Gọi phương thức {@code shareService.getCommentsForContent(contentId)}.</li>
+     *     <li>Trả về danh sách {@link ContentCommentDto} của các bình luận với trạng thái HTTP 200 OK.</li>
+     * </ol>
+     * </p>
+     * @param contentId ID của nội dung được chia sẻ để lấy bình luận.
+     * @return ResponseEntity chứa danh sách {@link ContentCommentDto} của các bình luận.
      */
     @Operation(summary = "Get comments for content", description = "Retrieves all comments for a specific piece of shared content.")
     @ApiResponse(responseCode = "200", description = "Successfully retrieved comments")

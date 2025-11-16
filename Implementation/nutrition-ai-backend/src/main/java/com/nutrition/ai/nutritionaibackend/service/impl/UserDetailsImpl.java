@@ -12,11 +12,10 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * Implementation of Spring Security's UserDetails interface.
- * Stores user information retrieved by UserDetailsService for authentication and authorization.
- * Lớp này triển khai giao diện UserDetails của Spring Security.
- * Nó lưu trữ thông tin chi tiết về người dùng (ID, username, email, password, authorities/roles)
- * được sử dụng trong quá trình xác thực và ủy quyền (authorization) của Spring Security.
+ * Lớp triển khai {@link org.springframework.security.core.userdetails.UserDetails} của Spring Security.
+ * Lớp này chịu trách nhiệm lưu trữ thông tin chi tiết về người dùng (như ID, tên người dùng, email, mật khẩu và quyền hạn)
+ * được truy xuất bởi {@link UserDetailsService} trong quá trình xác thực và ủy quyền của Spring Security.
+ * Nó cung cấp các phương thức cần thiết để Spring Security xác định trạng thái tài khoản và các quyền của người dùng.
  */
 public class UserDetailsImpl implements UserDetails {
     private static final long serialVersionUID = 1L;
@@ -25,13 +24,27 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
     private String email;
 
+    /**
+     * Mật khẩu của người dùng. Được đánh dấu {@link JsonIgnore} để ngăn không cho mật khẩu bị hiển thị
+     * trong bất kỳ phản hồi JSON nào được trả về bởi API, tăng cường bảo mật.
+     */
     @JsonIgnore // Ngăn không cho password bị serialize (hiển thị) trong phản hồi JSON
     private String password;
 
+    /**
+     * Tập hợp các quyền (authorities/roles) được cấp cho người dùng.
+     * Mỗi quyền được biểu diễn bởi một đối tượng kế thừa {@link GrantedAuthority}.
+     */
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
-     * Constructor được sử dụng để tạo đối tượng UserDetailsImpl.
+     * Hàm tạo (Constructor) để khởi tạo một đối tượng {@link UserDetailsImpl} với các thông tin chi tiết về người dùng.
+     *
+     * @param id ID duy nhất của người dùng.
+     * @param username Tên đăng nhập của người dùng.
+     * @param email Địa chỉ email của người dùng.
+     * @param password Mật khẩu đã được mã hóa của người dùng.
+     * @param authorities Tập hợp các quyền hạn/vai trò của người dùng.
      */
     public UserDetailsImpl(Long id, String username, String email, String password,
                            Collection<? extends GrantedAuthority> authorities) {
@@ -43,21 +56,28 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * Phương thức tĩnh để xây dựng UserDetailsImpl từ User Entity.
-     * 1. Chuyển đổi tập hợp Role của User thành List<GrantedAuthority>.
-     * 2. Tạo UserDetailsImpl mới với các thông tin của User và Authorities.
+     * Phương thức tĩnh factory để xây dựng một đối tượng {@link UserDetailsImpl} từ một {@link User} Entity.
      *
-     * @param user User Entity.
-     * @return UserDetailsImpl.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <ol>
+     *     <li><b>Chuyển đổi Roles thành GrantedAuthorities:</b> Lấy tập hợp các {@link com.nutrition.ai.nutritionaibackend.model.domain.Role} từ đối tượng {@link User}.
+     *         Mỗi {@link com.nutrition.ai.nutritionaibackend.model.domain.Role} được ánh xạ thành một {@link SimpleGrantedAuthority},
+     *         sử dụng tên của Role (ví dụ: "ROLE_USER", "ROLE_ADMIN") làm tên quyền hạn.</li>
+     *     <li><b>Tạo UserDetailsImpl:</b> Tạo một instance mới của {@link UserDetailsImpl} bằng cách truyền
+     *         ID, tên người dùng, email, mật khẩu và danh sách các {@link GrantedAuthority} đã chuyển đổi.</li>
+     * </ol>
+     *
+     * @param user Đối tượng {@link User} Entity chứa thông tin người dùng.
+     * @return Một đối tượng {@link UserDetailsImpl} tương ứng.
      */
     public static UserDetailsImpl build(User user) {
-        // 1. Chuyển đổi Roles thành GrantedAuthorities
+        // 1. Chuyển đổi các Roles của User thành List<GrantedAuthority>
         List<GrantedAuthority> authorities = user.getRoles().stream()
-                // Tạo SimpleGrantedAuthority với tên ROLE (ví dụ: "ROLE_USER", "ROLE_ADMIN")
+                // Ánh xạ mỗi Role thành một SimpleGrantedAuthority với tên ROLE (ví dụ: "ROLE_USER", "ROLE_ADMIN")
                 .map(role -> new SimpleGrantedAuthority(role.getName().name()))
                 .collect(Collectors.toList());
 
-        // 2. Tạo và trả về đối tượng
+        // 2. Tạo và trả về đối tượng UserDetailsImpl mới
         return new UserDetailsImpl(
                 user.getId(),
                 user.getUsername(),
@@ -67,18 +87,32 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * Trả về các quyền (roles) được cấp cho người dùng.
+     * Trả về tập hợp các quyền (granted authorities) được cấp cho người dùng.
+     * Các quyền này được sử dụng bởi Spring Security để xác định các tài nguyên
+     * mà người dùng có quyền truy cập.
+     *
+     * @return {@link Collection} các {@link GrantedAuthority} của người dùng.
      */
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return authorities;
     }
 
-    // Các getters bổ sung (không phải của UserDetails gốc)
+    // Các phương thức getter bổ sung không thuộc giao diện UserDetails gốc, nhưng hữu ích để truy cập thông tin người dùng.
+    /**
+     * Trả về ID duy nhất của người dùng.
+     *
+     * @return ID của người dùng.
+     */
     public Long getId() {
         return id;
     }
 
+    /**
+     * Trả về địa chỉ email của người dùng.
+     *
+     * @return Địa chỉ email của người dùng.
+     */
     public String getEmail() {
         return email;
     }
@@ -87,6 +121,9 @@ public class UserDetailsImpl implements UserDetails {
 
     /**
      * Trả về mật khẩu được sử dụng để xác thực người dùng.
+     * Mật khẩu này đã được mã hóa và được đánh dấu {@link JsonIgnore} để không bị hiển thị.
+     *
+     * @return Mật khẩu của người dùng.
      */
     @Override
     public String getPassword() {
@@ -95,6 +132,9 @@ public class UserDetailsImpl implements UserDetails {
 
     /**
      * Trả về tên người dùng được sử dụng để xác thực người dùng.
+     * Đây là tên đăng nhập duy nhất của người dùng.
+     *
+     * @return Tên đăng nhập của người dùng.
      */
     @Override
     public String getUsername() {
@@ -102,8 +142,12 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * Cho biết liệu tài khoản của người dùng có hết hạn hay không.
-     * Luôn trả về true (tài khoản không bao giờ hết hạn) trong triển khai này.
+     * Cho biết liệu tài khoản của người dùng có hết hạn (expired) hay không.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <p>Trong triển khai hiện tại, phương thức này luôn trả về {@code true},
+     * ngụ ý rằng tài khoản người dùng không bao giờ hết hạn.</p>
+     *
+     * @return {@code true} nếu tài khoản không hết hạn, {@code false} nếu ngược lại.
      */
     @Override
     public boolean isAccountNonExpired() {
@@ -111,8 +155,12 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * Cho biết liệu người dùng có bị khóa hay không.
-     * Luôn trả về true (tài khoản không bị khóa) trong triển khai này.
+     * Cho biết liệu người dùng có bị khóa (locked) hay không.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <p>Trong triển khai hiện tại, phương thức này luôn trả về {@code true},
+     * ngụ ý rằng tài khoản người dùng không bao giờ bị khóa.</p>
+     *
+     * @return {@code true} nếu tài khoản không bị khóa, {@code false} nếu ngược lại.
      */
     @Override
     public boolean isAccountNonLocked() {
@@ -120,8 +168,12 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * Cho biết liệu thông tin xác thực (mật khẩu) của người dùng có hết hạn hay không.
-     * Luôn trả về true (thông tin xác thực không hết hạn) trong triển khai này.
+     * Cho biết liệu thông tin xác thực (mật khẩu) của người dùng có hết hạn (expired) hay không.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <p>Trong triển khai hiện tại, phương thức này luôn trả về {@code true},
+     * ngụ ý rằng thông tin xác thực của người dùng không bao giờ hết hạn.</p>
+     *
+     * @return {@code true} nếu thông tin xác thực không hết hạn, {@code false} nếu ngược lại.
      */
     @Override
     public boolean isCredentialsNonExpired() {
@@ -130,7 +182,11 @@ public class UserDetailsImpl implements UserDetails {
 
     /**
      * Cho biết liệu người dùng có được bật (enabled) hay không.
-     * Luôn trả về true (người dùng được bật) trong triển khai này.
+     * <p><b>Luồng hoạt động:</b></p>
+     * <p>Trong triển khai hiện tại, phương thức này luôn trả về {@code true},
+     * ngụ ý rằng tài khoản người dùng luôn được kích hoạt và có thể sử dụng.</p>
+     *
+     * @return {@code true} nếu người dùng được bật, {@code false} nếu ngược lại.
      */
     @Override
     public boolean isEnabled() {
@@ -138,7 +194,19 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     /**
-     * Kiểm tra sự bằng nhau (equality) giữa hai đối tượng UserDetailsImpl dựa trên ID.
+     * Kiểm tra sự bằng nhau (equality) giữa hai đối tượng {@link UserDetailsImpl} dựa trên ID của chúng.
+     * Hai đối tượng được coi là bằng nhau nếu chúng có cùng ID.
+     *
+     * <p><b>Luồng hoạt động:</b></p>
+     * <ol>
+     *     <li>Kiểm tra xem đối tượng truyền vào có phải là chính đối tượng hiện tại không (kiểm tra tham chiếu).</li>
+     *     <li>Kiểm tra xem đối tượng truyền vào có phải là {@code null} hoặc không cùng lớp hay không.</li>
+     *     <li>Ép kiểu đối tượng truyền vào thành {@link UserDetailsImpl}.</li>
+     *     <li>So sánh trường {@code id} của hai đối tượng bằng {@link Objects#equals(Object, Object)} để đảm bảo so sánh an toàn null.</li>
+     * </ol>
+     *
+     * @param o Đối tượng để so sánh với đối tượng hiện tại.
+     * @return {@code true} nếu các đối tượng bằng nhau, {@code false} nếu ngược lại.
      */
     @Override
     public boolean equals(Object o) {
@@ -148,6 +216,12 @@ public class UserDetailsImpl implements UserDetails {
         return Objects.equals(id, user.id);
     }
 
+    /**
+     * Trả về giá trị mã băm (hash code) cho đối tượng {@link UserDetailsImpl} dựa trên ID của nó.
+     * Phương thức này nhất quán với phương thức {@link #equals(Object)}.
+     *
+     * @return Giá trị mã băm của đối tượng.
+     */
     @Override
     public int hashCode() {
         return Objects.hash(id);

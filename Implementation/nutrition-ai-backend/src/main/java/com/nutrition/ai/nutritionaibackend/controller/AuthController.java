@@ -15,11 +15,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * AuthController xử lý các yêu cầu liên quan đến xác thực như đăng ký người dùng và đăng nhập.
- * Nguyên lý hoạt động: Cung cấp các REST endpoint để người dùng tương tác với hệ thống xác thực.
- *
- * Luồng hoạt động: Nhận HTTP request từ client, ủy quyền xử lý nghiệp vụ cho UserService,
- * và trả về HTTP response với status code và dữ liệu thích hợp.
+ * AuthController xử lý tất cả các yêu cầu liên quan đến xác thực người dùng, bao gồm đăng ký tài khoản mới và đăng nhập.
+ * <p>
+ * Nguyên lý hoạt động: Controller này cung cấp các RESTful endpoint cho phép người dùng tương tác với hệ thống xác thực.
+ * Nó ủy quyền logic nghiệp vụ cho {@link com.nutrition.ai.nutritionaibackend.service.UserService}.
+ * </p>
+ * <p>
+ * Luồng hoạt động:
+ * <ul>
+ *     <li>Nhận các yêu cầu HTTP POST từ client tại các đường dẫn {@code /api/auth/register} và {@code /api/auth/login}.</li>
+ *     <li>Trích xuất dữ liệu đăng ký hoặc đăng nhập từ body của yêu cầu.</li>
+ *     <li>Gọi các phương thức tương ứng trong {@code UserService} để xử lý logic nghiệp vụ (ví dụ: tạo người dùng mới, xác thực thông tin đăng nhập).</li>
+ *     <li>Dựa trên kết quả từ {@code UserService}, controller xây dựng và trả về {@code ResponseEntity} với trạng thái HTTP và dữ liệu phù hợp (ví dụ: 201 CREATED cho đăng ký thành công, 200 OK cho đăng nhập thành công, 400 BAD REQUEST hoặc 401 UNAUTHORIZED cho lỗi).</li>
+ * </ul>
+ * </p>
  */
 @RestController // Đánh dấu lớp này là một Spring REST Controller
 @RequestMapping("/api/auth") // Ánh xạ tất cả các endpoint trong controller này với đường dẫn cơ sở /api/auth
@@ -29,25 +38,37 @@ public class AuthController {
     private final UserService userService; // Dependency Injection cho lớp Service
 
     /**
-     * Nguyên lý hoạt động: Spring tự động inject (tiêm) một thể hiện của UserService
-     * vào constructor này khi AuthController được tạo.
-     * @param userService Service quản lý nghiệp vụ người dùng và xác thực.
+     * Constructor để inject {@link UserService} vào AuthController.
+     * <p>
+     * Nguyên lý hoạt động: Spring Framework tự động tiêm (inject) một thể hiện của {@code UserService}
+     * vào constructor này khi tạo bean {@code AuthController}. Điều này đảm bảo rằng controller
+     * có thể truy cập các dịch vụ liên quan đến người dùng và xác thực mà không cần quản lý phụ thuộc thủ công.
+     * </p>
+     * @param userService Service quản lý logic nghiệp vụ liên quan đến người dùng và xác thực.
      */
     public AuthController(UserService userService) { // Constructor injection
         this.userService = userService;
     }
 
     /**
-     * Đăng ký tài khoản người dùng mới.
+     * Đăng ký một tài khoản người dùng mới vào hệ thống.
+     * <p>
+     * Endpoint này nhận dữ liệu người dùng mới dưới dạng {@link UserDto} và chuyển tiếp đến
+     * {@link UserService} để xử lý việc tạo tài khoản. Nếu đăng ký thành công, nó trả về thông tin
+     * người dùng đã đăng ký; nếu không, nó xử lý ngoại lệ và trả về lỗi.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận dữ liệu người dùng (UserDto) từ body của request.
-     * 2. Gọi phương thức registerNewUserAccount của UserService để tạo và lưu người dùng mới.
-     * 3. Trả về đối tượng người dùng đã đăng ký thành công với HTTP status 201 (CREATED).
-     * 4. Nếu có lỗi (ví dụ: tên người dùng đã tồn tại), bắt RuntimeException và trả về HTTP status 400 (BAD_REQUEST).
-     *
-     * @param userDto DTO chứa thông tin đăng ký người dùng.
-     * @return ResponseEntity với người dùng đã tạo hoặc thông báo lỗi.
-     * @throws Exception
+     * <ol>
+     *     <li>Nhận yêu cầu POST đến {@code /api/auth/register} với {@link UserDto} trong body.</li>
+     *     <li>Thử gọi phương thức {@code userService.registerNewUserAccount(userDto)}.</li>
+     *     <li>Nếu thành công, trả về {@link UserDto} của người dùng đã tạo với trạng thái HTTP 201 CREATED.</li>
+     *     <li>Nếu {@code RuntimeException} xảy ra (ví dụ: tên người dùng đã tồn tại), bắt ngoại lệ và trả về thông báo lỗi với trạng thái HTTP 400 BAD REQUEST.</li>
+     * </ol>
+     * </p>
+     * @param userDto DTO chứa thông tin cần thiết để đăng ký người dùng mới (ví dụ: username, password, email).
+     * @return ResponseEntity chứa {@link UserDto} của người dùng đã đăng ký nếu thành công, hoặc thông báo lỗi nếu thất bại.
+     * @throws Exception có thể ném ra nếu có vấn đề trong quá trình đăng ký tài khoản.
      */
     @Operation(summary = "Register a new user", description = "Creates a new user account.")
     @ApiResponses(value = {
@@ -68,19 +89,24 @@ public class AuthController {
     }
 
     /**
-     * Xác thực người dùng và trả về token khi đăng nhập thành công.
+     * Xác thực thông tin đăng nhập của người dùng và cấp phát token (mô phỏng).
+     * <p>
+     * Endpoint này nhận thông tin đăng nhập dưới dạng {@link LoginDto} (username và password).
+     * Nó sử dụng {@link UserService} để xác thực người dùng. Trong một ứng dụng thực tế,
+     * phương thức này sẽ tạo và trả về một JWT (JSON Web Token) sau khi xác thực thành công.
+     * </p>
+     * <p>
      * Luồng hoạt động:
-     * 1. Nhận thông tin đăng nhập (LoginDto: username, password) từ body của request.
-     * 2. Gọi phương thức authenticate của UserService.
-     * 3. Nếu xác thực thành công (isAuthenticated là true): Trả về HTTP status 200 (OK) và một chuỗi thông báo (lý tưởng là một JWT token).
-     * 4. Nếu xác thực thất bại: Trả về HTTP status 401 (UNAUTHORIZED) với thông báo lỗi.
-     *
-     * Nguyên lý hoạt động: Đây là một mô phỏng cơ bản của quá trình đăng nhập. Trong môi trường thực tế,
-     * phương thức này sẽ tích hợp với Spring Security để quản lý mật khẩu băm (hashing),
-     * và tạo/trả về một JSON Web Token (JWT) sau khi xác thực thành công.
-     *
-     * @param loginDto DTO chứa thông tin đăng nhập.
-     * @return ResponseEntity cho biết thành công hay thất bại.
+     * <ol>
+     *     <li>Nhận yêu cầu POST đến {@code /api/auth/login} với {@link LoginDto} trong body.</li>
+     *     <li>Trích xuất username và password từ {@code loginDto}.</li>
+     *     <li>Gọi phương thức {@code userService.authenticate(username, password)}.</li>
+     *     <li>Nếu xác thực thành công ({@code isAuthenticated} là {@code true}), trả về thông báo thành công (mô phỏng token) với trạng thái HTTP 200 OK.</li>
+     *     <li>Nếu xác thực thất bại, trả về thông báo lỗi với trạng thái HTTP 401 UNAUTHORIZED.</li>
+     * </ol>
+     * </p>
+     * @param loginDto DTO chứa thông tin đăng nhập của người dùng (username và password).
+     * @return ResponseEntity chứa thông báo xác thực thành công hoặc lỗi. Trong môi trường thực tế, đây sẽ là JWT token.
      */
     @Operation(summary = "Authenticate a user", description = "Logs in a user and returns an authentication token.")
     @ApiResponses(value = {
