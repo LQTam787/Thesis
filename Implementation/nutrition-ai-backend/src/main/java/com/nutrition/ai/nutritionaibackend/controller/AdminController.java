@@ -18,6 +18,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import com.nutrition.ai.nutritionaibackend.exception.ResourceNotFoundException;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
 /**
  * AdminController xử lý các yêu cầu dành cho quản trị viên đối với nhiều tài nguyên hệ thống.
  * Nguyên lý hoạt động: Tất cả các endpoint được bảo vệ bằng @PreAuthorize("hasRole('ADMIN')")
@@ -193,5 +197,12 @@ public class AdminController {
     public ResponseEntity<String> deleteNutritionPlan(@PathVariable("id") Long planId) {
         adminService.deleteNutritionPlan(planId);
         return ResponseEntity.ok("Nutrition plan deleted successfully!");
+    }
+
+    // Exception Handler for ResourceNotFoundException
+    @ExceptionHandler(ResourceNotFoundException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
 }

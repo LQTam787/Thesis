@@ -128,5 +128,37 @@ class NutritionPlanControllerTest {
                 .andExpect(jsonPath("$[0].planName").value("Plan A"))
                 .andExpect(jsonPath("$[1].planName").value("Plan B"));
     }
-    // ... (Các bài kiểm thử khác tuân theo nguyên lý tìm kiếm/không tìm thấy)
+
+    @Test
+    void testGetNutritionPlan_Success() throws Exception {
+        // 1. Mocking Service: Giả lập tìm thấy kế hoạch theo ID
+        when(nutritionPlanService.findOne(1L)).thenReturn(Optional.of(plan1));
+        // 2. Mocking ModelMapper: Chuyển đổi Entity -> DTO
+        when(modelMapper.map(eq(plan1), eq(NutritionPlanDto.class))).thenReturn(planDto1);
+
+        // 3. Thực hiện yêu cầu GET /api/users/testuser/nutrition-plans/1
+        mockMvc.perform(get("/api/users/testuser/nutrition-plans/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.planName").value("Plan A"));
+    }
+
+    @Test
+    void testGetNutritionPlan_NotFound() throws Exception {
+        // 1. Mocking Service: Giả lập không tìm thấy kế hoạch
+        when(nutritionPlanService.findOne(99L)).thenReturn(Optional.empty());
+
+        // 2. Thực hiện yêu cầu GET với ID kế hoạch không tồn tại
+        mockMvc.perform(get("/api/users/testuser/nutrition-plans/99"))
+                .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
+    }
+
+    @Test
+    void testGetAllNutritionPlans_UserNotFound() throws Exception {
+        // 1. Mocking UserRepository: Giả lập không tìm thấy User
+        when(userRepository.findByUsername("nonexistentuser")).thenReturn(Optional.empty());
+
+        // 2. Thực hiện yêu cầu GET với username không tồn tại
+        mockMvc.perform(get("/api/users/nonexistentuser/nutrition-plans"))
+                .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
+    }
 }

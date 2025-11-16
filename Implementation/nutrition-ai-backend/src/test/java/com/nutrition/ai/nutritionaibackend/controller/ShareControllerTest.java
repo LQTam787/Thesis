@@ -119,4 +119,23 @@ class ShareControllerTest {
     }
 
     // ... (testGetCommentsForContent_Success tuân theo nguyên lý GET/tìm kiếm)
+    @Test
+    void testGetCommentsForContent_Success() throws Exception {
+        Long contentId = 1L;
+        // 1. Chuẩn bị danh sách bình luận giả lập
+        ContentCommentDto commentDto1 = new ContentCommentDto(1L, contentId, 1L, "user1", "Comment 1", LocalDateTime.now());
+        ContentCommentDto commentDto2 = new ContentCommentDto(2L, contentId, 2L, "user2", "Comment 2", LocalDateTime.now());
+        List<ContentCommentDto> comments = Arrays.asList(commentDto1, commentDto2);
+
+        // 2. Mocking Service: Giả lập trả về danh sách bình luận
+        when(shareService.getCommentsForContent(eq(contentId))).thenReturn(comments);
+
+        // 3. Thực hiện yêu cầu GET /api/share/{contentId}/comments
+        mockMvc.perform(get("/api/share/{contentId}/comments", contentId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(1L))
+                .andExpect(jsonPath("$[0].text").value("Comment 1"))
+                .andExpect(jsonPath("$[1].id").value(2L))
+                .andExpect(jsonPath("$[1].text").value("Comment 2"));
+    }
 }

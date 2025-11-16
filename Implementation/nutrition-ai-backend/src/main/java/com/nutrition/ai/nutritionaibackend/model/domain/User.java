@@ -2,6 +2,7 @@ package com.nutrition.ai.nutritionaibackend.model.domain;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -29,6 +30,7 @@ import java.util.Set;
 @Data // Lombok: Tự động tạo getter, setter, toString, equals, và hashCode.
 @NoArgsConstructor // Lombok: Tự động tạo constructor không đối số.
 @AllArgsConstructor // Lombok: Tự động tạo constructor với tất cả các trường.
+@Builder // Lombok: Tự động tạo builder pattern.
 public class User {
     /**
      * Khóa chính.
@@ -68,6 +70,7 @@ public class User {
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
+    @Builder.Default
     private Set<Role> roles = new HashSet<>();
 
     /**
@@ -80,5 +83,6 @@ public class User {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.roles = new HashSet<>(); // Khởi tạo roles để tránh NullPointerException
     }
 }

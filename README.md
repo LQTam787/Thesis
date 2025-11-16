@@ -252,6 +252,7 @@ Sau khi khởi chạy, tài liệu API có thể được truy cập tại:
 
 **Chạy Unit Tests**:
     - Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
+    - Sử dụng JUnit 5 và Mockito để viết các bài kiểm thử đơn vị.
     - Chạy lệnh sau: `mvn test`.
     - Maven sẽ tự động tìm và chạy tất cả các Unit Tests trong thư mục `src/test/java`.
 

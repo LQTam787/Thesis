@@ -94,15 +94,11 @@ public class SecurityConfig {
                 // (Không sử dụng session HTTP để lưu trạng thái, phù hợp với JWT)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 4. Ủy quyền yêu cầu HTTP (Authorization)
-                .authorizeHttpRequests(auth ->
-                        auth
-                                // Cho phép truy cập không cần xác thực tới các endpoint Auth (đăng ký/đăng nhập)
-                                .requestMatchers("/api/auth/**").permitAll()
-                                // Cho phép truy cập không cần xác thực tới các endpoint Test
-                                .requestMatchers("/api/test/**").permitAll()
-                                // Tất cả các request khác PHẢI được xác thực (authenticated)
-                                .anyRequest().authenticated()
-                );
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers("/api/auth/**", "/api/test/**").permitAll();
+                    auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
+                    auth.anyRequest().authenticated();
+                });
 
         // 5. Cấu hình sử dụng AuthenticationProvider đã định nghĩa
         http.authenticationProvider(authenticationProvider());

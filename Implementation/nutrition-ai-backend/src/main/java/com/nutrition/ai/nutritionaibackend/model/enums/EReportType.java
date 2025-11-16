@@ -14,6 +14,11 @@ public enum EReportType {
      */
     WEEKLY_PROGRESS,
     /**
+     * Báo cáo tiến độ hàng tháng của người dùng.
+     * Vai trò: Kích hoạt việc tổng hợp dữ liệu (cân nặng, calo tiêu thụ, hoạt động) trong 30 ngày gần nhất.
+     */
+    MONTHLY_PROGRESS,
+    /**
      * Báo cáo tóm tắt chi tiết về dinh dưỡng.
      * Vai trò: Kích hoạt việc tổng hợp chi tiết về lượng macro và vi chất dinh dưỡng trong một khoảng thời gian.
      */

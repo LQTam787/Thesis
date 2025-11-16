@@ -117,8 +117,14 @@ public class AdminServiceImpl implements AdminService {
         // 3. Xử lý và thiết lập Roles
         Set<Role> roles = updateUserRequestDto.getRoles().stream()
                 // Ánh xạ từng tên role (String) sang Role Entity
-                .map(roleName -> roleRepository.findByName(ERole.valueOf(roleName)) // Tìm Role Entity
-                        .orElseThrow(() -> new ResourceNotFoundException("Role", "name", roleName)))
+                .map(roleName -> {
+                    try {
+                        return roleRepository.findByName(ERole.valueOf(roleName)) // Tìm Role Entity
+                                .orElseThrow(() -> new ResourceNotFoundException("Role", "name", roleName));
+                    } catch (IllegalArgumentException e) {
+                        throw new ResourceNotFoundException("Role", "name", roleName);
+                    }
+                })
                 .collect(Collectors.toSet());
         user.setRoles(roles); // 4. Thiết lập Role mới
 

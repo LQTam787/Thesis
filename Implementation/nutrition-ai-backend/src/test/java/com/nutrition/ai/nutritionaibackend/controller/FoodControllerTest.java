@@ -119,6 +119,67 @@ class FoodControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Banana"));
     }
 
+    @Test
+    void testUpdateFoodItem_Success() throws Exception {
+        // Chuẩn bị DTO với dữ liệu cập nhật
+        FoodItemDto updatedFoodItemDto = new FoodItemDto(1L, "Updated Apple", 100.0, 0.6, 26.0, 0.4, "1 large", null);
+        FoodItem updatedFoodItem = new FoodItem();
+        updatedFoodItem.setId(1L);
+        updatedFoodItem.setName("Updated Apple");
+
+        // 1. Mocking Service: Giả lập tìm thấy FoodItem hiện có
+        when(foodService.findOne(1L)).thenReturn(Optional.of(foodItem1));
+        // 2. Mocking ModelMapper: Giả lập việc chuyển đổi DTO -> Entity cho FoodItem đã cập nhật
+        when(modelMapper.map(any(FoodItemDto.class), eq(FoodItem.class))).thenReturn(updatedFoodItem);
+        // 3. Mocking Service: Giả lập việc lưu FoodItem đã cập nhật
+        when(foodService.save(any(FoodItem.class))).thenReturn(updatedFoodItem);
+        // 4. Mocking ModelMapper: Giả lập việc chuyển đổi kết quả Entity -> DTO phản hồi
+        when(modelMapper.map(any(FoodItem.class), eq(FoodItemDto.class))).thenReturn(updatedFoodItemDto);
+
+        // 5. Thực hiện yêu cầu PUT /api/foods/1
+        mockMvc.perform(put("/api/foods/1")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedFoodItemDto)))
+                .andExpect(status().isOk()) // 6. Kiểm tra: Trạng thái 200 OK
+                .andExpect(jsonPath("$.name").value("Updated Apple")); // Kiểm tra nội dung phản hồi
+        
+        verify(foodService, times(1)).findOne(1L); // Xác minh rằng findOne được gọi
+        verify(foodService, times(1)).save(any(FoodItem.class)); // Xác minh rằng save được gọi
+    }
+
+    @Test
+    void testUpdateFoodItem_NotFound() throws Exception {
+        // Chuẩn bị DTO với dữ liệu cập nhật
+        FoodItemDto updatedFoodItemDto = new FoodItemDto(99L, "NonExistent Food", 100.0, 0.6, 26.0, 0.4, "1 large", null);
+
+        // 1. Mocking Service: Giả lập không tìm thấy FoodItem
+        when(foodService.findOne(99L)).thenReturn(Optional.empty());
+
+        // 2. Thực hiện yêu cầu PUT /api/foods/99
+        mockMvc.perform(put("/api/foods/99")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updatedFoodItemDto)))
+                .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
+        
+        verify(foodService, times(1)).findOne(99L); // Xác minh rằng findOne được gọi
+        verify(foodService, never()).save(any(FoodItem.class)); // Xác minh rằng save không được gọi
+    }
+
+    @Test
+    void testDeleteFoodItem_Success() throws Exception {
+        // 1. Mocking Service: Giả lập hành vi xóa
+        doNothing().when(foodService).delete(1L);
+
+        // 2. Thực hiện yêu cầu DELETE /api/foods/1
+        mockMvc.perform(delete("/api/foods/1")
+                        .with(csrf()))
+                .andExpect(status().isNoContent()); // 3. Kiểm tra: Trạng thái 204 No Content
+        
+        verify(foodService, times(1)).delete(1L); // Xác minh rằng delete được gọi
+    }
+
     // Các bài kiểm thử Update/Delete tuân theo nguyên lý tương tự:
     // Update: Tìm kiếm -> Chuyển đổi DTO -> Lưu (Save) -> Chuyển đổi Entity -> Kiểm tra OK/NOT FOUND
     // Delete: Giả lập `doNothing()` trên Service -> Kiểm tra `isNoContent()`

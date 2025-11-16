@@ -92,6 +92,8 @@ public class JwtUtils {
         } catch (IllegalArgumentException e) {
             // Chuỗi JWT trống hoặc null
             logger.error("JWT claims string is empty: {}", e.getMessage());
+        } catch (SignatureException e) { // Thêm khối catch này
+            logger.error("Invalid JWT signature: {}", e.getMessage());
         }
 
         return false;

@@ -67,7 +67,12 @@ public class FoodServiceImpl implements FoodService {
         // 2. Lọc (filter) danh sách trong bộ nhớ (Stream API) dựa trên tên.
         // 3. Chuyển đổi cả tên FoodItem và chuỗi tìm kiếm thành chữ thường để so sánh.
         return foodItemRepository.findAll().stream()
-            .filter(food -> food.getName().toLowerCase().contains(name.toLowerCase()))
+            .filter(food -> {
+                if (name == null || name.isEmpty()) {
+                    return true; // Return all food items if name is null or empty
+                }
+                return food.getName().toLowerCase().contains(name.toLowerCase());
+            })
             .collect(Collectors.toList());
     }
 }
