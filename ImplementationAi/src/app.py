@@ -12,11 +12,11 @@ from flasgger import Swagger
 from flask_pydantic import validate
 
 # Luồng hoạt động: Nhập các hàm logic nghiệp vụ từ các dịch vụ AI.
-from nlp_service import process_text_for_nutrition_analysis
-from vision_service import analyze_image_for_food_recognition
-from recommendation_service import generate_nutrition_recommendations
+from src.nlp_service import process_text_for_nutrition_analysis
+from src.vision_service import analyze_image_for_food_recognition
+from src.recommendation_service import generate_nutrition_recommendations
 # Luồng hoạt động: Nhập các schema Pydantic để xác thực yêu cầu API.
-from schemas import NlpRequest, VisionRequest, RecommendationRequest
+from src.schemas import NlpRequest, VisionRequest, RecommendationRequest
 
 app = Flask(__name__)
 # Nguyên lý: Khởi tạo Flasgger để tự động tạo tài liệu Swagger/OpenAPI từ docstring của các route.

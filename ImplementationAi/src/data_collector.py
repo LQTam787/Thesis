@@ -93,8 +93,11 @@ def collect_mock_recommendation_data(
     df.to_csv(output_file, index=False)
     print(f"Mock Recommendation data collected and saved to {output_file}")
 
-if __name__ == "__main__":
-    # Luồng hoạt động: Khi chạy trực tiếp, hàm sẽ tạo ra tất cả các tệp dữ liệu mock.
+def main():
+    """Chạy tất cả các hàm thu thập dữ liệu mock."""
     collect_mock_nlp_data()
     collect_mock_vision_data()
     collect_mock_recommendation_data()
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,9 @@
+[run]
+branch = true
+source = src
+
+[report]
+show_missing = true
+skip_covered = false
+exclude_lines =
+    if __name__ == ["']__main__["']:

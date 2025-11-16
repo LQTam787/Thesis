@@ -1,0 +1,58 @@
+import pytest
+from flask import json
+from unittest.mock import patch
+from src.app import app
+
+# Cấu hình client kiểm thử cho ứng dụng Flask
+@pytest.fixture
+def client():
+    app.config['TESTING'] = True
+    with app.test_client() as client:
+        yield client
+
+# Kiểm thử endpoint NLP
+def test_nlp_analyze(client):
+    with patch('src.app.process_text_for_nutrition_analysis') as mock_nlp_service:
+        mock_nlp_service.return_value = {"analysis_result": "mocked nlp analysis"}
+        response = client.post(
+            '/api/ai/nlp/analyze',
+            data=json.dumps({"text": "Một quả táo và một quả chuối"}),
+            content_type='application/json'
+        )
+        assert response.status_code == 200
+        assert json.loads(response.data) == mock_nlp_service.return_value
+        mock_nlp_service.assert_called_once_with("Một quả táo và một quả chuối")
+
+# Kiểm thử endpoint Vision
+def test_vision_analyze(client):
+    with patch('src.app.analyze_image_for_food_recognition') as mock_vision_service:
+        mock_vision_service.return_value = {"recognition_result": "mocked vision recognition"}
+        response = client.post(
+            '/api/ai/vision/analyze',
+            data=json.dumps({"image_data": "base64encodedimagedata"}),
+            content_type='application/json'
+        )
+        assert response.status_code == 200
+        assert json.loads(response.data) == mock_vision_service.return_value
+        mock_vision_service.assert_called_once_with("base64encodedimagedata")
+
+# Kiểm thử endpoint Recommendation
+def test_recommendation_generate(client):
+    with patch('src.app.generate_nutrition_recommendations') as mock_recommendation_service:
+        mock_recommendation_service.return_value = {"recommendation_result": "mocked recommendations"}
+        response = client.post(
+            '/api/ai/recommendation/generate',
+            data=json.dumps({
+                "user_profile": {"age": 30, "weight": 70, "height": 170},
+                "dietary_preferences": {"type": "vegetarian"},
+                "nutrition_goal_natural_language": "Tôi muốn giảm cân"
+            }),
+            content_type='application/json'
+        )
+        assert response.status_code == 200
+        assert json.loads(response.data) == mock_recommendation_service.return_value
+        mock_recommendation_service.assert_called_once_with(
+            {"age": 30, "weight": 70, "height": 170},
+            {"type": "vegetarian"},
+            "Tôi muốn giảm cân"
+        )

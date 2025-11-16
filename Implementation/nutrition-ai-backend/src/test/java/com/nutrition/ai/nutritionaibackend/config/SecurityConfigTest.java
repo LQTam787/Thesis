@@ -152,15 +152,21 @@ class SecurityConfigTest {
         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry mockAuthorizeHttpRequestsRegistry = mock(AuthorizeHttpRequestsConfigurer.AuthorizationManagerRequestMatcherRegistry.class);
         AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizedUrl mockAuthorizedUrl = mock(AuthorizeHttpRequestsConfigurer.AuthorizedUrl.class, RETURNS_DEEP_STUBS);
 
-        when(mockAuthorizeHttpRequestsRegistry.requestMatchers("/api/auth/**", "/api/test/**")).thenReturn(mockAuthorizedUrl);
-        when(mockAuthorizeHttpRequestsRegistry.requestMatchers("/api/admin/**")).thenReturn(mockAuthorizedUrl);
+        when(mockAuthorizeHttpRequestsRegistry.requestMatchers(any(String[].class))).thenReturn(mockAuthorizedUrl);
         when(mockAuthorizeHttpRequestsRegistry.anyRequest()).thenReturn(mockAuthorizedUrl);
 
         authorizeHttpRequestsCustomizerCaptor.getValue().customize(mockAuthorizeHttpRequestsRegistry);
+
+        // Verify that requestMatchers and permitAll were called correctly
         verify(mockAuthorizeHttpRequestsRegistry).requestMatchers("/api/auth/**", "/api/test/**");
         verify(mockAuthorizedUrl).permitAll();
+
+        // Verify that requestMatchers and hasRole were called correctly
         verify(mockAuthorizeHttpRequestsRegistry).requestMatchers("/api/admin/**");
         verify(mockAuthorizedUrl).hasRole("ADMIN");
+
+        // Verify that anyRequest and authenticated were called correctly
+        verify(mockAuthorizeHttpRequestsRegistry).anyRequest();
         verify(mockAuthorizedUrl).authenticated();
 
         // Verify other top-level calls on httpSecurity that are not part of customizers

@@ -61,6 +61,24 @@ def test_recommendation_for_muscle_gain(mock_nlp_extract, mock_db, mock_food_dat
     # Không kiểm tra protein cụ thể vì logic đã được loại bỏ
 
 @patch('src.recommendation_service.food_database')
+def test_recommendation_for_low_carb(mock_db, mock_food_database):
+    """
+    Kiểm tra đề xuất cho sở thích ăn kiêng Ít Carb (Low-Carb).
+    - Nguyên lý: Xác minh rằng tất cả các mục được đề xuất đều có tag 'low-carb'
+      trong cơ sở dữ liệu giả lập.
+    """
+    mock_db.copy.return_value = mock_food_database
+    user_profile = {'user_id': 'test_user_5'}
+    dietary_preferences = {'low_carb': True}
+
+    recommendations = generate_nutrition_recommendations(user_profile, dietary_preferences=dietary_preferences)
+
+    # Check if all recommended foods are low-carb
+    for meal in recommendations['meal_plan']:
+        tags = mock_food_database[mock_food_database['food_item'] == meal['food_item']]['tags'].iloc[0]
+        assert 'low-carb' in tags
+
+@patch('src.recommendation_service.food_database')
 def test_recommendation_for_vegan(mock_db, mock_food_database):
     """
     Kiểm tra đề xuất cho sở thích ăn kiêng Thuần chay (Vegan).

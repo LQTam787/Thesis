@@ -10,8 +10,8 @@ import os
 import pandas as pd
 
 def preprocess_nlp_data(
-    input_file: str = "ImplementationAi/data/mock_nlp_data.csv",
-    output_file: str = "ImplementationAi/data/processed_nlp_data.csv",
+    input_file: str = os.getenv("NLP_INPUT_FILE", "ImplementationAi/data/mock_nlp_data.csv"),
+    output_file: str = os.getenv("NLP_OUTPUT_FILE", "ImplementationAi/data/processed_nlp_data.csv"),
 ) -> None:
     """Preprocesses the NLP data by cleaning the text.
 
@@ -29,8 +29,8 @@ def preprocess_nlp_data(
     print(f"Processed NLP data saved to {output_file}")
 
 def preprocess_vision_data(
-    input_dir: str = "ImplementationAi/data/mock_vision_data",
-    output_dir: str = "ImplementationAi/data/processed_vision_data",
+    input_dir: str = os.getenv("VISION_INPUT_DIR", "ImplementationAi/data/mock_vision_data"),
+    output_dir: str = os.getenv("VISION_OUTPUT_DIR", "ImplementationAi/data/processed_vision_data"),
 ) -> None:
     """Simulates preprocessing of vision data.
 
@@ -53,8 +53,8 @@ def preprocess_vision_data(
     print(f"Processed Vision data saved to {output_dir}")
 
 def preprocess_recommendation_data(
-    input_file: str = "ImplementationAi/data/mock_recommendation_data.csv",
-    output_file: str = "ImplementationAi/data/processed_recommendation_data.csv",
+    input_file: str = os.getenv("REC_INPUT_FILE", "ImplementationAi/data/mock_recommendation_data.csv"),
+    output_file: str = os.getenv("REC_OUTPUT_FILE", "ImplementationAi/data/processed_recommendation_data.csv"),
 ) -> None:
     """Preprocesses recommendation data using one-hot encoding.
 
@@ -73,8 +73,20 @@ def preprocess_recommendation_data(
     df.to_csv(output_file, index=False)
     print(f"Processed Recommendation data saved to {output_file}")
 
-if __name__ == "__main__":
+def run_all_preprocessing():
     # Luồng hoạt động: Khi chạy trực tiếp, thực hiện tiền xử lý cho tất cả các tập dữ liệu.
-    preprocess_nlp_data()
-    preprocess_vision_data()
-    preprocess_recommendation_data()
+    preprocess_nlp_data(
+        input_file=os.getenv("NLP_INPUT_FILE", "ImplementationAi/data/mock_nlp_data.csv"),
+        output_file=os.getenv("NLP_OUTPUT_FILE", "ImplementationAi/data/processed_nlp_data.csv"),
+    )
+    preprocess_vision_data(
+        input_dir=os.getenv("VISION_INPUT_DIR", "ImplementationAi/data/mock_vision_data"),
+        output_dir=os.getenv("VISION_OUTPUT_DIR", "ImplementationAi/data/processed_vision_data"),
+    )
+    preprocess_recommendation_data(
+        input_file=os.getenv("REC_INPUT_FILE", "ImplementationAi/data/mock_recommendation_data.csv"),
+        output_file=os.getenv("REC_OUTPUT_FILE", "ImplementationAi/data/processed_recommendation_data.csv"),
+    )
+
+if __name__ == "__main__":
+    run_all_preprocessing()

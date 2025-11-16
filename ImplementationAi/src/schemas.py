@@ -5,7 +5,7 @@ from typing import Dict, Any
 # Luồng hoạt động: app.py sử dụng schema này để tự động xác thực dữ liệu POST.
 # Luồng dữ liệu API: Mô tả cấu trúc dữ liệu đầu vào (text) cho dịch vụ NLP.
 class NlpRequest(BaseModel):
-    text: str = Field(..., description="The text to analyze.", example='I ate a chicken salad for lunch.')
+    text: str = Field(..., description="The text to analyze.", json_schema_extra={'example': 'I ate a chicken salad for lunch.'})
 
 # Nguyên lý: Định nghĩa schema cho yêu cầu API Phân tích Thị giác Máy tính (Vision).
 # Luồng hoạt động: Yêu cầu API chứa dữ liệu hình ảnh được mã hóa Base64.
@@ -19,4 +19,4 @@ class VisionRequest(BaseModel):
 class RecommendationRequest(BaseModel):
     user_profile: Dict[str, Any] = Field(..., description="The user's profile information.")
     dietary_preferences: Dict[str, Any] = Field(..., description="The user's dietary preferences.")
-    nutrition_goal_natural_language: str = Field(..., description="The user's health goals described in natural language.", example="Tôi muốn giảm 5kg trong 2 tháng và tăng cơ bắp.")
+    nutrition_goal_natural_language: str = Field(..., description="The user's health goals described in natural language.", json_schema_extra={'example': 'Tôi muốn giảm 5kg trong 2 tháng và tăng cơ bắp.'})
