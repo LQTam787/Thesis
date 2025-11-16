@@ -3,6 +3,11 @@
 # các endpoint API và cách chúng xử lý các yêu cầu. Các kiểm thử sử dụng đối tượng giả lập (mocks)
 # để cô lập logic của endpoint khỏi các dịch vụ phụ thuộc.
 
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 import pytest
 from flask import json
 from unittest.mock import patch

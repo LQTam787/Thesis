@@ -7,7 +7,7 @@ customized meal plan.
 """
 import pandas as pd
 from typing import Dict, Any
-from .nlp_service import extract_nutrition_goals_from_text
+from nlp_service import extract_nutrition_goals_from_text
 
 def load_food_data() -> pd.DataFrame:
     # Logic: Create a simple in-memory food database.

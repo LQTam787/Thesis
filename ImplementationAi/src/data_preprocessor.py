@@ -24,7 +24,7 @@ def preprocess_nlp_data(
     # Logic: Clean text (lowercase and remove non-alphanumeric/whitespace characters) to standardize input for the NLP model.
     # Flow: Creates a new 'text_cleaned' column in the DataFrame.
     # AI Preprocessing Activity: Prepares text data for use in the NLP model.
-    df["text_cleaned"] = df["text"].str.lower().str.replace(r"[^\\w\\s]", "", regex=True)
+    df["text_cleaned"] = df["text"].str.lower().str.replace(r"[^a-z0-9\s]", "", regex=True)
     df.to_csv(output_file, index=False)
     print(f"Processed NLP data saved to {output_file}")
 
