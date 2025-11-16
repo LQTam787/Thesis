@@ -1,3 +1,8 @@
+# test_nlp_service.py
+# Tệp này chứa các kiểm thử cho module 'nlp_service.py', tập trung vào việc xác minh
+# chức năng phân tích văn bản để nhận diện các mục thực phẩm và trích xuất mục tiêu
+# dinh dưỡng. Các kiểm thử sử dụng đối tượng giả lập để cô lập logic của dịch vụ NLP.
+
 import pytest
 from unittest.mock import patch
 

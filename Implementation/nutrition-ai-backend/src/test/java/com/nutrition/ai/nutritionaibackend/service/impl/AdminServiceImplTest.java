@@ -25,23 +25,54 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * {@code AdminServiceImplTest} là một lớp kiểm thử đơn vị cho {@link AdminServiceImpl}.
+ * Lớp này sử dụng JUnit 5 và Mockito để kiểm thử các phương thức logic nghiệp vụ của dịch vụ quản trị,
+ * cô lập {@link AdminServiceImpl} khỏi các phụ thuộc bên ngoài như cơ sở dữ liệu thông qua các repository mock
+ * ({@link UserRepository}, {@link RoleRepository}, {@link RecipeRepository}, {@link GoalRepository}, {@link NutritionPlanRepository})
+ * và ánh xạ đối tượng thông qua {@link ModelMapper}.
+ * Mục tiêu chính là đảm bảo rằng các chức năng quản trị người dùng, công thức, mục tiêu và kế hoạch dinh dưỡng
+ * hoạt động chính xác trong các tình huống khác nhau, bao gồm tạo, đọc, cập nhật, xóa (CRUD) và xử lý các trường hợp biên như không tìm thấy tài nguyên.
+ */
 @ExtendWith(MockitoExtension.class)
 @DisplayName("Admin Service Impl Unit Tests")
 class AdminServiceImplTest {
 
+    /**
+     * Mô phỏng {@link UserRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link User}.
+     */
     @Mock
     private UserRepository userRepository;
+    /**
+     * Mô phỏng {@link RoleRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link Role}.
+     */
     @Mock
     private RoleRepository roleRepository;
+    /**
+     * Mô phỏng {@link RecipeRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link Recipe}.
+     */
     @Mock
     private RecipeRepository recipeRepository;
+    /**
+     * Mô phỏng {@link GoalRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link Goal}.
+     */
     @Mock
     private GoalRepository goalRepository;
+    /**
+     * Mô phỏng {@link NutritionPlanRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link NutritionPlan}.
+     */
     @Mock
     private NutritionPlanRepository nutritionPlanRepository;
+    /**
+     * Mô phỏng {@link ModelMapper} để kiểm soát hành vi ánh xạ giữa các đối tượng DTO và Domain.
+     */
     @Mock
     private ModelMapper modelMapper;
 
+    /**
+     * Tiêm {@link AdminServiceImpl} và tự động tiêm các đối tượng {@code @Mock} vào các trường tương ứng của nó.
+     * Đây là đối tượng thực sẽ được kiểm thử.
+     */
     @InjectMocks
     private AdminServiceImpl adminService;
 
@@ -56,6 +87,12 @@ class AdminServiceImplTest {
     private NutritionPlan nutritionPlan;
     private NutritionPlanDto nutritionPlanDto;
 
+    /**
+     * Phương thức thiết lập chạy trước mỗi bài kiểm thử (phương thức được chú thích bởi {@code @Test}).
+     * Phương thức này chịu trách nhiệm khởi tạo các đối tượng dữ liệu giả định như {@link User}, {@link Recipe},
+     * {@link Goal}, {@link NutritionPlan} và các DTO tương ứng để sử dụng trong các kiểm thử.
+     * Đồng thời, nó cũng khởi tạo các đối tượng {@link Role} cho vai trò ADMIN và USER.
+     */
     @BeforeEach
     void setUp() {
         adminRole = new Role(ERole.ROLE_ADMIN);
@@ -83,6 +120,21 @@ class AdminServiceImplTest {
         nutritionPlanDto = new NutritionPlanDto(1L, "Weight Loss Plan", LocalDate.now(), LocalDate.now().plusMonths(1), "Reduce calories", 1L, new java.util.ArrayList<>());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllUsers} của {@link AdminServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findAll()} được gọi, nó sẽ trả về
+     *    một danh sách chứa đối tượng {@link User} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link User} thành {@link UserResponseDto},
+     *    nó sẽ trả về đối tượng {@link UserResponseDto} giả định.
+     * 3. Gọi phương thức {@code getAllUsers} thực tế của {@code adminService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và có kích thước là 1.
+     *    - Kiểm tra xem đối tượng {@link UserResponseDto} trong danh sách có khớp với đối tượng giả định hay không.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findAll()} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(user, UserResponseDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getAllUsers - Success")
     void getAllUsers_Success() {
@@ -98,6 +150,20 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(user, UserResponseDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getUserById} của {@link AdminServiceImpl} trong trường hợp tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(1L)} được gọi, nó sẽ trả về
+     *    một {@link Optional} chứa đối tượng {@link User} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link User} thành {@link UserResponseDto},
+     *    nó sẽ trả về đối tượng {@link UserResponseDto} giả định.
+     * 3. Gọi phương thức {@code getUserById} thực tế của {@code adminService} với ID 1L.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link UserResponseDto} trả về không null và khớp với đối tượng giả định.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findById(1L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(user, UserResponseDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getUserById - Success")
     void getUserById_Success() {
@@ -112,6 +178,19 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(user, UserResponseDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getUserById} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 2. Gọi phương thức {@code getUserById} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findById(99L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map} KHÔNG BAO GIỜ được gọi, vì không có người dùng để ánh xạ.
+     */
     @Test
     @DisplayName("Test getUserById - Not Found")
     void getUserById_NotFound() {
@@ -125,6 +204,24 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateUser} của {@link AdminServiceImpl} trong trường hợp cập nhật thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link UpdateUserRequestDto} với thông tin người dùng được cập nhật (bao gồm vai trò ADMIN).
+     * 2. Tạo các đối tượng {@link User} và {@link UserResponseDto} giả định sau khi cập nhật.
+     * 3. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code userRepository.findById(1L)} trả về đối tượng {@link User} ban đầu.
+     *    - {@code roleRepository.findByName(ERole.ROLE_ADMIN)} trả về đối tượng {@link Role} ADMIN.
+     *    - {@code userRepository.save(any(User.class))} trả về đối tượng {@link User} đã cập nhật.
+     * 4. Thiết lập hành vi giả lập cho {@code modelMapper}: ánh xạ {@link User} đã cập nhật thành {@link UserResponseDto} đã cập nhật.
+     * 5. Gọi phương thức {@code updateUser} thực tế của {@code adminService}.
+     * 6. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link UserResponseDto} trả về không null và khớp với đối tượng giả định đã cập nhật.
+     * 7. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code findById}, {@code findByName} và {@code save} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link User} được lưu trữ, đảm bảo
+     *      rằng tên người dùng, email và vai trò đã được cập nhật chính xác.
+     */
     @Test
     @DisplayName("Test updateUser - Success")
     void updateUser_Success() {
@@ -154,6 +251,19 @@ class AdminServiceImplTest {
         assertTrue(capturedUser.getRoles().contains(adminRole));
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateUser} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link UpdateUserRequestDto}.
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 3. Gọi phương thức {@code updateUser} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code findByName}, {@code save} và {@code map} KHÔNG BAO GIỜ
+     *    được gọi.
+     */
     @Test
     @DisplayName("Test updateUser - User Not Found")
     void updateUser_UserNotFound() {
@@ -170,6 +280,20 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateUser} của {@link AdminServiceImpl} trong trường hợp không tìm thấy vai trò.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link UpdateUserRequestDto} với vai trò "ROLE_USER".
+     * 2. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code userRepository.findById(1L)} trả về đối tượng {@link User} ban đầu.
+     *    - {@code roleRepository.findByName(ERole.ROLE_USER)} trả về {@link Optional#empty()} (không tìm thấy vai trò).
+     * 3. Gọi phương thức {@code updateUser} thực tế của {@code adminService} với ID 1L.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng {@code userRepository.save} và {@code modelMapper.map} KHÔNG BAO GIỜ
+     *    được gọi.
+     */
     @Test
     @DisplayName("Test updateUser - Role Not Found")
     void updateUser_RoleNotFound() {
@@ -187,6 +311,16 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteUser} của {@link AdminServiceImpl} trong trường hợp xóa thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}:
+     *    - {@code findById(1L)} trả về đối tượng {@link User} giả định.
+     *    - {@code delete(user)} không làm gì cả (doNothing).
+     * 2. Gọi phương thức {@code deleteUser} thực tế của {@code adminService} với ID 1L.
+     * 3. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findById(1L)} và {@code userRepository.delete(user)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test deleteUser - Success")
     void deleteUser_Success() {
@@ -199,6 +333,17 @@ class AdminServiceImplTest {
         verify(userRepository, times(1)).delete(user);
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteUser} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 2. Gọi phương thức {@code deleteUser} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code userRepository.delete} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test deleteUser - Not Found")
     void deleteUser_NotFound() {
@@ -212,6 +357,21 @@ class AdminServiceImplTest {
         verify(userRepository, never()).delete(any(User.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllRecipes} của {@link AdminServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code recipeRepository}: khi {@code findAll()} được gọi, nó sẽ trả về
+     *    một danh sách chứa đối tượng {@link Recipe} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link Recipe} thành {@link RecipeDto},
+     *    nó sẽ trả về đối tượng {@link RecipeDto} giả định.
+     * 3. Gọi phương thức {@code getAllRecipes} thực tế của {@code adminService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và có kích thước là 1.
+     *    - Kiểm tra xem đối tượng {@link RecipeDto} trong danh sách có khớp với đối tượng giả định hay không.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code recipeRepository.findAll()} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(recipe, RecipeDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getAllRecipes - Success")
     void getAllRecipes_Success() {
@@ -227,6 +387,20 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(recipe, RecipeDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getRecipeById} của {@link AdminServiceImpl} trong trường hợp tìm thấy công thức.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code recipeRepository}: khi {@code findById(1L)} được gọi, nó sẽ trả về
+     *    một {@link Optional} chứa đối tượng {@link Recipe} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link Recipe} thành {@link RecipeDto},
+     *    nó sẽ trả về đối tượng {@link RecipeDto} giả định.
+     * 3. Gọi phương thức {@code getRecipeById} thực tế của {@code adminService} với ID 1L.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link RecipeDto} trả về không null và khớp với đối tượng giả định.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code recipeRepository.findById(1L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(recipe, RecipeDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getRecipeById - Success")
     void getRecipeById_Success() {
@@ -241,6 +415,19 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(recipe, RecipeDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getRecipeById} của {@link AdminServiceImpl} trong trường hợp không tìm thấy công thức.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code recipeRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy công thức).
+     * 2. Gọi phương thức {@code getRecipeById} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code recipeRepository.findById(99L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map} KHÔNG BAO GIỜ được gọi, vì không có công thức để ánh xạ.
+     */
     @Test
     @DisplayName("Test getRecipeById - Not Found")
     void getRecipeById_NotFound() {
@@ -254,6 +441,22 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code createRecipe} của {@link AdminServiceImpl} trong trường hợp tạo công thức thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link RecipeRequestDto} chứa thông tin công thức mới.
+     * 2. Tạo các đối tượng {@link FoodItem} và {@link Recipe} giả định để mô phỏng dữ liệu đã lưu.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code recipeRepository.save(any(Recipe.class))} trả về đối tượng {@link Recipe} đã lưu.
+     *    - {@code modelMapper.map(any(Recipe.class), eq(RecipeDto.class))} trả về đối tượng {@link RecipeDto} đã lưu.
+     * 4. Gọi phương thức {@code createRecipe} thực tế của {@code adminService} với {@link RecipeRequestDto}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link RecipeDto} trả về không null và khớp với đối tượng giả định đã lưu.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code save} và {@code map} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link Recipe} được lưu trữ, đảm bảo
+     *      rằng tên, hướng dẫn và thời gian chuẩn bị của công thức đã được thiết lập chính xác.
+     */
     @Test
     @DisplayName("Test createRecipe - Success")
     void createRecipe_Success() {
@@ -289,6 +492,23 @@ class AdminServiceImplTest {
         assertEquals("New Recipe", capturedRecipe.getFoodItem().getName());
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateRecipe} của {@link AdminServiceImpl} trong trường hợp cập nhật thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link RecipeRequestDto} chứa thông tin công thức được cập nhật.
+     * 2. Tạo các đối tượng {@link Recipe} và {@link RecipeDto} giả định sau khi cập nhật.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code recipeRepository.findById(1L)} trả về đối tượng {@link Recipe} ban đầu.
+     *    - {@code recipeRepository.save(any(Recipe.class))} trả về đối tượng {@link Recipe} đã cập nhật.
+     *    - {@code modelMapper.map(updatedRecipeEntity, RecipeDto.class))} trả về đối tượng {@link RecipeDto} đã cập nhật.
+     * 4. Gọi phương thức {@code updateRecipe} thực tế của {@code adminService}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link RecipeDto} trả về không null và khớp với đối tượng giả định đã cập nhật.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code findById}, {@code save} và {@code map} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link Recipe} được lưu trữ, đảm bảo
+     *      rằng tên, hướng dẫn, thời gian chuẩn bị và thông tin dinh dưỡng của công thức đã được cập nhật chính xác.
+     */
     @Test
     @DisplayName("Test updateRecipe - Success")
     void updateRecipe_Success() {
@@ -320,6 +540,18 @@ class AdminServiceImplTest {
         assertEquals(150.0, capturedRecipe.getFoodItem().getCalories());
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateRecipe} của {@link AdminServiceImpl} trong trường hợp không tìm thấy công thức.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link RecipeRequestDto}.
+     * 2. Thiết lập hành vi giả lập cho {@code recipeRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy công thức).
+     * 3. Gọi phương thức {@code updateRecipe} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code save} và {@code map} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test updateRecipe - Not Found")
     void updateRecipe_NotFound() {
@@ -335,6 +567,16 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteRecipe} của {@link AdminServiceImpl} trong trường hợp xóa thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code recipeRepository}:
+     *    - {@code existsById(1L)} trả về {@code true} (công thức tồn tại).
+     *    - {@code deleteById(1L)} không làm gì cả (doNothing).
+     * 2. Gọi phương thức {@code deleteRecipe} thực tế của {@code adminService} với ID 1L.
+     * 3. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code recipeRepository.existsById(1L)} và {@code recipeRepository.deleteById(1L)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test deleteRecipe - Success")
     void deleteRecipe_Success() {
@@ -347,6 +589,17 @@ class AdminServiceImplTest {
         verify(recipeRepository, times(1)).deleteById(1L);
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteRecipe} của {@link AdminServiceImpl} trong trường hợp không tìm thấy công thức.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code recipeRepository}: khi {@code existsById(anyLong())} được gọi,
+     *    nó sẽ trả về {@code false} (không tìm thấy công thức).
+     * 2. Gọi phương thức {@code deleteRecipe} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code recipeRepository.deleteById} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test deleteRecipe - Not Found")
     void deleteRecipe_NotFound() {
@@ -360,6 +613,21 @@ class AdminServiceImplTest {
         verify(recipeRepository, never()).deleteById(anyLong());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllGoals} của {@link AdminServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code goalRepository}: khi {@code findAll()} được gọi, nó sẽ trả về
+     *    một danh sách chứa đối tượng {@link Goal} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link Goal} thành {@link GoalDto},
+     *    nó sẽ trả về đối tượng {@link GoalDto} giả định.
+     * 3. Gọi phương thức {@code getAllGoals} thực tế của {@code adminService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và có kích thước là 1.
+     *    - Kiểm tra xem đối tượng {@link GoalDto} trong danh sách có khớp với đối tượng giả định hay không.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code goalRepository.findAll()} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(goal, GoalDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getAllGoals - Success")
     void getAllGoals_Success() {
@@ -375,6 +643,20 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(goal, GoalDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getGoalById} của {@link AdminServiceImpl} trong trường hợp tìm thấy mục tiêu.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code goalRepository}: khi {@code findById(1L)} được gọi, nó sẽ trả về
+     *    một {@link Optional} chứa đối tượng {@link Goal} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link Goal} thành {@link GoalDto},
+     *    nó sẽ trả về đối tượng {@link GoalDto} giả định.
+     * 3. Gọi phương thức {@code getGoalById} thực tế của {@code adminService} với ID 1L.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link GoalDto} trả về không null và khớp với đối tượng giả định.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code goalRepository.findById(1L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(goal, GoalDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getGoalById - Success")
     void getGoalById_Success() {
@@ -389,6 +671,19 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(goal, GoalDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getGoalById} của {@link AdminServiceImpl} trong trường hợp không tìm thấy mục tiêu.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code goalRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy mục tiêu).
+     * 2. Gọi phương thức {@code getGoalById} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code goalRepository.findById(99L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map} KHÔNG BAO GIỜ được gọi, vì không có mục tiêu để ánh xạ.
+     */
     @Test
     @DisplayName("Test getGoalById - Not Found")
     void getGoalById_NotFound() {
@@ -402,6 +697,24 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code createGoal} của {@link AdminServiceImpl} trong trường hợp tạo mục tiêu thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link GoalDto} chứa thông tin mục tiêu mới và {@link User} ID.
+     * 2. Tạo các đối tượng {@link Goal} giả định để mô phỏng dữ liệu đã lưu.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code userRepository.findById(1L)} trả về đối tượng {@link User} giả định.
+     *    - {@code modelMapper.map(createRequest, Goal.class)} trả về đối tượng {@link Goal} mới.
+     *    - {@code goalRepository.save(any(Goal.class))} trả về đối tượng {@link Goal} đã lưu.
+     *    - {@code modelMapper.map(savedGoal, GoalDto.class)} trả về đối tượng {@link GoalDto} đã lưu.
+     * 4. Gọi phương thức {@code createGoal} thực tế của {@code adminService} với {@link GoalDto}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link GoalDto} trả về không null và khớp với đối tượng giả định đã lưu.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code findById}, {@code map} và {@code save} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link Goal} được lưu trữ, đảm bảo
+     *      rằng mục tiêu trọng lượng, loại mục tiêu, trạng thái và người dùng của mục tiêu đã được thiết lập chính xác.
+     */
     @Test
     @DisplayName("Test createGoal - Success")
     void createGoal_Success() {
@@ -433,6 +746,18 @@ class AdminServiceImplTest {
         assertEquals(user, capturedGoal.getUser());
     }
 
+    /**
+     * Kiểm thử phương thức {@code createGoal} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng khi tạo mục tiêu.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link GoalDto} với một {@link User} ID không tồn tại (99L).
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 3. Gọi phương thức {@code createGoal} thực tế của {@code adminService} với {@link GoalDto}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code map} và {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test createGoal - User Not Found")
     void createGoal_UserNotFound() {
@@ -448,6 +773,24 @@ class AdminServiceImplTest {
         verify(goalRepository, never()).save(any(Goal.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateGoal} của {@link AdminServiceImpl} trong trường hợp cập nhật thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link GoalDto} chứa thông tin mục tiêu được cập nhật và {@link User} ID.
+     * 2. Tạo các đối tượng {@link Goal} và {@link GoalDto} giả định sau khi cập nhật.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code goalRepository.findById(1L)} trả về đối tượng {@link Goal} ban đầu.
+     *    - {@code userRepository.findById(1L)} trả về đối tượng {@link User} giả định.
+     *    - {@code goalRepository.save(any(Goal.class))} trả về đối tượng {@link Goal} đã cập nhật.
+     *    - {@code modelMapper.map(updatedGoalEntity, GoalDto.class))} trả về đối tượng {@link GoalDto} đã cập nhật.
+     * 4. Gọi phương thức {@code updateGoal} thực tế của {@code adminService}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link GoalDto} trả về không null và khớp với đối tượng giả định đã cập nhật.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code findById}, {@code save} và {@code map} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link Goal} được lưu trữ, đảm bảo
+     *      rằng mục tiêu trọng lượng, loại mục tiêu, trạng thái và người dùng của mục tiêu đã được cập nhật chính xác.
+     */
     @Test
     @DisplayName("Test updateGoal - Success")
     void updateGoal_Success() {
@@ -478,6 +821,18 @@ class AdminServiceImplTest {
         assertEquals(user, capturedGoal.getUser());
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateGoal} của {@link AdminServiceImpl} trong trường hợp không tìm thấy mục tiêu.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link GoalDto} chứa thông tin mục tiêu được cập nhật.
+     * 2. Thiết lập hành vi giả lập cho {@code goalRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy mục tiêu).
+     * 3. Gọi phương thức {@code updateGoal} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code findById(user)}, {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test updateGoal - Goal Not Found")
     void updateGoal_GoalNotFound() {
@@ -493,6 +848,19 @@ class AdminServiceImplTest {
         verify(goalRepository, never()).save(any(Goal.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateGoal} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link GoalDto} với một {@link User} ID không tồn tại (99L).
+     * 2. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code goalRepository.findById(1L)} trả về đối tượng {@link Goal} ban đầu.
+     *    - {@code userRepository.findById(anyLong())} trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 3. Gọi phương thức {@code updateGoal} thực tế của {@code adminService} với ID mục tiêu 1L và {@link GoalDto}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng phương thức {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test updateGoal - User Not Found")
     void updateGoal_UserNotFound() {
@@ -509,6 +877,16 @@ class AdminServiceImplTest {
         verify(goalRepository, never()).save(any(Goal.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteGoal} của {@link AdminServiceImpl} trong trường hợp xóa thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code goalRepository}:
+     *    - {@code existsById(1L)} trả về {@code true} (mục tiêu tồn tại).
+     *    - {@code doNothing().when(goalRepository).deleteById(1L)} không làm gì cả.
+     * 2. Gọi phương thức {@code deleteGoal} thực tế của {@code adminService} với ID 1L.
+     * 3. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code goalRepository.existsById(1L)} và {@code goalRepository.deleteById(1L)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test deleteGoal - Success")
     void deleteGoal_Success() {
@@ -521,6 +899,17 @@ class AdminServiceImplTest {
         verify(goalRepository, times(1)).deleteById(1L);
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteGoal} của {@link AdminServiceImpl} trong trường hợp không tìm thấy mục tiêu.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code goalRepository}: khi {@code existsById(anyLong())} được gọi,
+     *    nó sẽ trả về {@code false} (không tìm thấy mục tiêu).
+     * 2. Gọi phương thức {@code deleteGoal} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code goalRepository.deleteById} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test deleteGoal - Not Found")
     void deleteGoal_NotFound() {
@@ -534,6 +923,21 @@ class AdminServiceImplTest {
         verify(goalRepository, never()).deleteById(anyLong());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllNutritionPlans} của {@link AdminServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code nutritionPlanRepository}: khi {@code findAll()} được gọi, nó sẽ trả về
+     *    một danh sách chứa đối tượng {@link NutritionPlan} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link NutritionPlan} thành {@link NutritionPlanDto},
+     *    nó sẽ trả về đối tượng {@link NutritionPlanDto} giả định.
+     * 3. Gọi phương thức {@code getAllNutritionPlans} thực tế của {@code adminService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và có kích thước là 1.
+     *    - Kiểm tra xem đối tượng {@link NutritionPlanDto} trong danh sách có khớp với đối tượng giả định hay không.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code nutritionPlanRepository.findAll()} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(nutritionPlan, NutritionPlanDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getAllNutritionPlans - Success")
     void getAllNutritionPlans_Success() {
@@ -549,6 +953,20 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(nutritionPlan, NutritionPlanDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getNutritionPlanById} của {@link AdminServiceImpl} trong trường hợp tìm thấy kế hoạch dinh dưỡng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code nutritionPlanRepository}: khi {@code findById(1L)} được gọi, nó sẽ trả về
+     *    một {@link Optional} chứa đối tượng {@link NutritionPlan} giả định.
+     * 2. Thiết lập hành vi giả lập cho {@code modelMapper}: khi ánh xạ đối tượng {@link NutritionPlan} thành {@link NutritionPlanDto},
+     *    nó sẽ trả về đối tượng {@link NutritionPlanDto} giả định.
+     * 3. Gọi phương thức {@code getNutritionPlanById} thực tế của {@code adminService} với ID 1L.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link NutritionPlanDto} trả về không null và khớp với đối tượng giả định.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code nutritionPlanRepository.findById(1L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map(nutritionPlan, NutritionPlanDto.class)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test getNutritionPlanById - Success")
     void getNutritionPlanById_Success() {
@@ -563,6 +981,19 @@ class AdminServiceImplTest {
         verify(modelMapper, times(1)).map(nutritionPlan, NutritionPlanDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getNutritionPlanById} của {@link AdminServiceImpl} trong trường hợp không tìm thấy kế hoạch dinh dưỡng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code nutritionPlanRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy kế hoạch dinh dưỡng).
+     * 2. Gọi phương thức {@code getNutritionPlanById} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code nutritionPlanRepository.findById(99L)} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map} KHÔNG BAO GIỜ được gọi, vì không có kế hoạch dinh dưỡng để ánh xạ.
+     */
     @Test
     @DisplayName("Test getNutritionPlanById - Not Found")
     void getNutritionPlanById_NotFound() {
@@ -576,6 +1007,24 @@ class AdminServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code createNutritionPlan} của {@link AdminServiceImpl} trong trường hợp tạo kế hoạch dinh dưỡng thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link NutritionPlanDto} chứa thông tin kế hoạch dinh dưỡng mới và {@link User} ID.
+     * 2. Tạo các đối tượng {@link NutritionPlan} giả định để mô phỏng dữ liệu đã lưu.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code userRepository.findById(1L)} trả về đối tượng {@link User} giả định.
+     *    - {@code modelMapper.map(createRequest, NutritionPlan.class)} trả về đối tượng {@link NutritionPlan} mới.
+     *    - {@code nutritionPlanRepository.save(any(NutritionPlan.class))} trả về đối tượng {@link NutritionPlan} đã lưu.
+     *    - {@code modelMapper.map(savedPlan, NutritionPlanDto.class)} trả về đối tượng {@link NutritionPlanDto} đã lưu.
+     * 4. Gọi phương thức {@code createNutritionPlan} thực tế của {@code adminService} với {@link NutritionPlanDto}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link NutritionPlanDto} trả về không null và khớp với đối tượng giả định đã lưu.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code findById}, {@code map} và {@code save} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link NutritionPlan} được lưu trữ, đảm bảo
+     *      rằng tên kế hoạch và người dùng của kế hoạch dinh dưỡng đã được thiết lập chính xác.
+     */
     @Test
     @DisplayName("Test createNutritionPlan - Success")
     void createNutritionPlan_Success() {
@@ -605,6 +1054,18 @@ class AdminServiceImplTest {
         assertEquals(user, capturedPlan.getUser());
     }
 
+    /**
+     * Kiểm thử phương thức {@code createNutritionPlan} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng khi tạo kế hoạch dinh dưỡng.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link NutritionPlanDto} với một {@link User} ID không tồn tại (99L).
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 3. Gọi phương thức {@code createNutritionPlan} thực tế của {@code adminService} với {@link NutritionPlanDto}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code map} và {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test createNutritionPlan - User Not Found")
     void createNutritionPlan_UserNotFound() {
@@ -620,6 +1081,24 @@ class AdminServiceImplTest {
         verify(nutritionPlanRepository, never()).save(any(NutritionPlan.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateNutritionPlan} của {@link AdminServiceImpl} trong trường hợp cập nhật thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link NutritionPlanDto} chứa thông tin kế hoạch dinh dưỡng được cập nhật và {@link User} ID.
+     * 2. Tạo các đối tượng {@link NutritionPlan} và {@link NutritionPlanDto} giả định sau khi cập nhật.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code nutritionPlanRepository.findById(1L)} trả về đối tượng {@link NutritionPlan} ban đầu.
+     *    - {@code userRepository.findById(1L)} trả về đối tượng {@link User} giả định.
+     *    - {@code nutritionPlanRepository.save(any(NutritionPlan.class))} trả về đối tượng {@link NutritionPlan} đã cập nhật.
+     *    - {@code modelMapper.map(updatedPlanEntity, NutritionPlanDto.class))} trả về đối tượng {@link NutritionPlanDto} đã cập nhật.
+     * 4. Gọi phương thức {@code updateNutritionPlan} thực tế của {@code adminService}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link NutritionPlanDto} trả về không null và khớp với đối tượng giả định đã cập nhật.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo các phương thức {@code findById}, {@code save} và {@code map} đã được gọi đúng số lần.
+     *    - Sử dụng {@link ArgumentCaptor} để kiểm tra các giá trị của đối tượng {@link NutritionPlan} được lưu trữ, đảm bảo
+     *      rằng tên kế hoạch, mục tiêu dinh dưỡng và người dùng của kế hoạch dinh dưỡng đã được cập nhật chính xác.
+     */
     @Test
     @DisplayName("Test updateNutritionPlan - Success")
     void updateNutritionPlan_Success() {
@@ -649,6 +1128,18 @@ class AdminServiceImplTest {
         assertEquals(user, capturedPlan.getUser());
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateNutritionPlan} của {@link AdminServiceImpl} trong trường hợp không tìm thấy kế hoạch dinh dưỡng.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link NutritionPlanDto} chứa thông tin kế hoạch dinh dưỡng được cập nhật.
+     * 2. Thiết lập hành vi giả lập cho {@code nutritionPlanRepository}: khi {@code findById(anyLong())} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy kế hoạch dinh dưỡng).
+     * 3. Gọi phương thức {@code updateNutritionPlan} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code findById(user)} và {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test updateNutritionPlan - NutritionPlan Not Found")
     void updateNutritionPlan_NutritionPlanNotFound() {
@@ -664,6 +1155,19 @@ class AdminServiceImplTest {
         verify(nutritionPlanRepository, never()).save(any(NutritionPlan.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code updateNutritionPlan} của {@link AdminServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Tạo một {@link NutritionPlanDto} với một {@link User} ID không tồn tại (99L).
+     * 2. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code nutritionPlanRepository.findById(1L)} trả về đối tượng {@link NutritionPlan} ban đầu.
+     *    - {@code userRepository.findById(anyLong())} trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 3. Gọi phương thức {@code updateNutritionPlan} thực tế của {@code adminService} với ID kế hoạch 1L và {@link NutritionPlanDto}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng phương thức {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test updateNutritionPlan - User Not Found")
     void updateNutritionPlan_UserNotFound() {
@@ -680,6 +1184,16 @@ class AdminServiceImplTest {
         verify(nutritionPlanRepository, never()).save(any(NutritionPlan.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteNutritionPlan} của {@link AdminServiceImpl} trong trường hợp xóa thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code nutritionPlanRepository}:
+     *    - {@code existsById(1L)} trả về {@code true} (kế hoạch dinh dưỡng tồn tại).
+     *    - {@code doNothing().when(nutritionPlanRepository).deleteById(1L)} không làm gì cả.
+     * 2. Gọi phương thức {@code deleteNutritionPlan} thực tế của {@code adminService} với ID 1L.
+     * 3. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code nutritionPlanRepository.existsById(1L)} và {@code nutritionPlanRepository.deleteById(1L)} đã được gọi đúng 1 lần.
+     */
     @Test
     @DisplayName("Test deleteNutritionPlan - Success")
     void deleteNutritionPlan_Success() {
@@ -692,6 +1206,17 @@ class AdminServiceImplTest {
         verify(nutritionPlanRepository, times(1)).deleteById(1L);
     }
 
+    /**
+     * Kiểm thử phương thức {@code deleteNutritionPlan} của {@link AdminServiceImpl} trong trường hợp không tìm thấy kế hoạch dinh dưỡng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code nutritionPlanRepository}: khi {@code existsById(anyLong())} được gọi,
+     *    nó sẽ trả về {@code false} (không tìm thấy kế hoạch dinh dưỡng).
+     * 2. Gọi phương thức {@code deleteNutritionPlan} thực tế của {@code adminService} với ID 99L (không tồn tại).
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link ResourceNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code nutritionPlanRepository.deleteById} KHÔNG BAO GIỜ được gọi.
+     */
     @Test
     @DisplayName("Test deleteNutritionPlan - Not Found")
     void deleteNutritionPlan_NotFound() {

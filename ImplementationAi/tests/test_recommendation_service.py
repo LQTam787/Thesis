@@ -1,3 +1,9 @@
+# test_recommendation_service.py
+# Tệp này chứa các kiểm thử cho module 'recommendation_service.py', đảm bảo rằng
+# chức năng tạo khuyến nghị dinh dưỡng hoạt động chính xác dựa trên hồ sơ người dùng,
+# mục tiêu dinh dưỡng và sở thích ăn kiêng. Các kiểm thử sử dụng đối tượng giả lập
+# cho cơ sở dữ liệu thực phẩm và dịch vụ NLP để cô lập logic của dịch vụ đề xuất.
+
 import pytest
 import pandas as pd
 from unittest.mock import patch

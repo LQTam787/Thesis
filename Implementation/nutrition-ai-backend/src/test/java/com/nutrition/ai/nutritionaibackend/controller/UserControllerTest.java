@@ -24,6 +24,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
+/**
+ * Lớp kiểm thử `UserControllerTest` chịu trách nhiệm kiểm thử các điểm cuối API liên quan đến quản lý hồ sơ người dùng
+ * (xem và cập nhật hồ sơ) trong `UserController`.
+ * Nó sử dụng `@WebMvcTest` để tải ngữ cảnh ứng dụng Spring MVC tối thiểu, chỉ tập trung vào `UserController`.
+ * `@WithMockUser(username = "testuser")` giả lập một người dùng đã đăng nhập với tên người dùng "testuser",
+ * cho phép kiểm thử các điểm cuối yêu cầu xác thực và ủy quyền dựa trên tên người dùng trong đường dẫn.
+ * `MockMvc` được sử dụng để mô phỏng các yêu cầu HTTP và `Mockito` để giả lập (mock) `UserService` và `ModelMapper`,
+ * cho phép kiểm soát chặt chẽ hành vi của các phụ thuộc và cô lập logic của controller để kiểm thử.
+ */
 @WebMvcTest(UserController.class)
 @WithMockUser(username = "testuser") // Giả lập người dùng hiện tại, quan trọng cho việc kiểm tra quyền truy cập
 class UserControllerTest {
@@ -40,6 +49,16 @@ class UserControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy hồ sơ người dùng theo tên người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `username`, một đối tượng `User` giả lập và một `ProfileDto` mong đợi.
+     * 2. Giả lập `userService.findByUsername()` để trả về `Optional.of(user)`.
+     * 3. Giả lập `modelMapper.map(user, ProfileDto.class)` để chuyển đổi `User` sang `ProfileDto`.
+     * 4. Thực hiện yêu cầu GET đến `/api/users/{username}`.
+     * 5. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `fullName` trong JSON phản hồi khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetUserProfile_UserFound() throws Exception {
         String username = "testuser";
@@ -59,6 +78,15 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.fullName").value("Test User")); // Kiểm tra nội dung JSON
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi lấy hồ sơ theo tên người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `username` không tồn tại.
+     * 2. Giả lập `userService.findByUsername()` để trả về `Optional.empty()`.
+     * 3. Thực hiện yêu cầu GET đến `/api/users/{username}` với tên người dùng không tồn tại.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     */
     @Test
     void testGetUserProfile_UserNotFound() throws Exception {
         String username = "nonexistent";
@@ -71,6 +99,18 @@ class UserControllerTest {
                 .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi cập nhật hồ sơ người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `username`, một đối tượng `User` giả lập và một `ProfileDto` với dữ liệu cập nhật.
+     * 2. Giả lập `userService.findByUsername()` để trả về `Optional.of(user)`.
+     * 3. Giả lập `modelMapper.map(ProfileDto, User)` để ánh xạ dữ liệu DTO vào Entity (phương thức `void`).
+     * 4. Giả lập `userService.save()` để trả về `User` đã lưu.
+     * 5. Giả lập `modelMapper.map(User, ProfileDto)` để chuyển đổi `User` đã lưu sang `ProfileDto` phản hồi.
+     * 6. Thực hiện yêu cầu PUT đến `/api/users/{username}` với `ProfileDto` dưới dạng JSON và token CSRF.
+     * 7. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `fullName` trong JSON phản hồi đã được cập nhật.
+     */
     @Test
     void testUpdateUserProfile_Success() throws Exception {
         String username = "testuser";
@@ -96,6 +136,15 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.fullName").value("Updated Full Name")); // 6. Kiểm tra: Cập nhật thành công
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi cập nhật hồ sơ.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `username` không tồn tại và một `ProfileDto`.
+     * 2. Giả lập `userService.findByUsername()` để trả về `Optional.empty()`.
+     * 3. Thực hiện yêu cầu PUT đến `/api/users/{username}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     */
     @Test
     void testUpdateUserProfile_UserNotFound() throws Exception {
         String username = "nonexistent";

@@ -10,26 +10,46 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Lớp kiểm thử đơn vị cho lớp User.
+ * Lớp này kiểm tra các chức năng khác nhau của đối tượng User,
+ * bao gồm hàm tạo, getter/setter, thao tác vai trò,
+ * và các phương thức equals, hashCode, và toString.
+ */
 class UserTest {
 
     private User user;
 
+    /**
+     * Thiết lập đối tượng User kiểm thử trước mỗi lần kiểm thử.
+     * Khởi tạo một đối tượng User mới với các giá trị mặc định.
+     */
     @BeforeEach
     void setUp() {
         user = new User("testuser", "test@example.com", "password123");
     }
 
+    /**
+     * Kiểm tra hàm tạo của User với username, email và password.
+     * Đảm bảo rằng đối tượng được khởi tạo không null và các thuộc tính
+     * được đặt chính xác, và danh sách vai trò (roles) là rỗng.
+     */
     @Test
     void testUserConstructor() {
         assertNotNull(user);
         assertEquals("testuser", user.getUsername());
         assertEquals("test@example.com", user.getEmail());
         assertEquals("password123", user.getPassword());
-        assertNull(user.getId()); // ID should be null before persistence
+        assertNull(user.getId()); // ID phải là null trước khi lưu vào cơ sở dữ liệu
         assertNotNull(user.getRoles());
         assertTrue(user.getRoles().isEmpty());
     }
 
+    /**
+     * Kiểm tra hàm tạo không đối số của User.
+     * Đảm bảo rằng đối tượng được khởi tạo không null và tất cả các thuộc tính
+     * đều null, ngoại trừ danh sách vai trò (roles) là rỗng.
+     */
     @Test
     void testNoArgsConstructor() {
         User emptyUser = new User();
@@ -42,6 +62,11 @@ class UserTest {
         assertTrue(emptyUser.getRoles().isEmpty());
     }
 
+    /**
+     * Kiểm tra hàm tạo đầy đủ đối số của User.
+     * Đảm bảo rằng đối tượng được khởi tạo không null và tất cả các thuộc tính
+     * được đặt chính xác, bao gồm cả ID và danh sách vai trò (roles).
+     */
     @Test
     void testAllArgsConstructor() {
         Long id = 1L;
@@ -60,6 +85,10 @@ class UserTest {
         assertEquals(roles, allArgUser.getRoles());
     }
 
+    /**
+     * Kiểm tra các phương thức getter và setter của User.
+     * Đảm bảo rằng các thuộc tính có thể được đặt và lấy một cách chính xác.
+     */
     @Test
     void testGettersAndSetters() {
         user.setId(1L);
@@ -80,6 +109,10 @@ class UserTest {
         assertEquals(newRoles, user.getRoles());
     }
 
+    /**
+     * Kiểm tra các thao tác thêm, xóa và xóa tất cả các vai trò của User.
+     * Đảm bảo rằng danh sách vai trò (roles) hoạt động đúng như mong đợi.
+     */
     @Test
     void testRolesManipulation() {
         Role roleUser = new Role(null, ERole.ROLE_USER);
@@ -102,28 +135,36 @@ class UserTest {
         assertTrue(user.getRoles().isEmpty());
     }
 
+    /**
+     * Kiểm tra các phương thức equals và hashCode của User.
+     * Đảm bảo rằng hai đối tượng User có cùng thuộc tính được coi là bằng nhau
+     * và có cùng mã băm.
+     */
     @Test
     void testEqualsAndHashCode() {
         User user1 = new User("testuser", "test@example.com", "password123");
         User user2 = new User("testuser", "test@example.com", "password123");
         User user3 = new User("anotheruser", "another@example.com", "anotherpassword");
 
-        // Test equals
+        // Kiểm tra equals
         assertEquals(user1, user2);
         assertNotEquals(user1, user3);
         assertNotEquals(user1, null);
         assertNotEquals(user1, new Object());
 
-        // Test hashCode
+        // Kiểm tra hashCode
         assertEquals(user1.hashCode(), user2.hashCode());
         assertNotEquals(user1.hashCode(), user3.hashCode());
     }
 
+    /**
+     * Kiểm tra phương thức toString của User.
+     * Đảm bảo rằng biểu diễn chuỗi của đối tượng User chứa
+     * các thông tin cần thiết.
+     */
     @Test
     void testToString() {
-        String expectedToString = "User(id=null, username=testuser, email=test@example.com, password=password123, roles=[])";
-        // Since roles is a HashSet, the order might vary, so we'll do a partial check or reconstruct
-        // For simplicity, directly compare if the initial state is as expected
+        // Vì roles là một HashSet, thứ tự có thể thay đổi, nên chúng ta sẽ kiểm tra một phần
         assertTrue(user.toString().contains("testuser"));
         assertTrue(user.toString().contains("test@example.com"));
     }

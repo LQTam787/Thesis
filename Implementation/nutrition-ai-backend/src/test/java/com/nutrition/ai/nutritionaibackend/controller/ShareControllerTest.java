@@ -30,6 +30,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Lớp kiểm thử `ShareControllerTest` chịu trách nhiệm kiểm thử các điểm cuối API liên quan đến chức năng chia sẻ nội dung
+ * (chia sẻ, xem nội dung công khai, thích và bình luận) trong `ShareController`.
+ * Nó sử dụng `@WebMvcTest` để tải ngữ cảnh ứng dụng Spring MVC tối thiểu, chỉ tập trung vào `ShareController`.
+ * `@WithMockUser` giả lập một người dùng đã đăng nhập (với ID mặc định là 1L trong ngữ cảnh này nếu không khai báo rõ hơn),
+ * cho phép kiểm thử các điểm cuối yêu cầu xác thực.
+ * `MockMvc` được sử dụng để mô phỏng các yêu cầu HTTP và `Mockito` để giả lập (mock) `ShareService`,
+ * cho phép kiểm soát chặt chẽ hành vi của các phụ thuộc và cô lập logic của controller để kiểm thử.
+ */
 @WebMvcTest(ShareController.class)
 @WithMockUser // Giả lập người dùng đã đăng nhập (mặc định ID là 1L trong ngữ cảnh này nếu không khai báo rõ hơn)
 class ShareControllerTest {
@@ -43,6 +52,17 @@ class ShareControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    /**
+     * Kiểm thử kịch bản thành công khi chia sẻ nội dung.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `payload` (Map) chứa `contentId`, `contentType` và `visibility`.
+     * 2. Chuẩn bị một `SharedContentDto` mong đợi sau khi chia sẻ.
+     * 3. Giả lập `shareService.shareContent()` để trả về `SharedContentDto` đã chia sẻ, mô phỏng việc chia sẻ thành công.
+     *    `eq(1L)` được sử dụng để khớp với `userId` mặc định của `@WithMockUser`.
+     * 4. Thực hiện yêu cầu POST đến `/api/share` với `payload` dưới dạng JSON và token CSRF.
+     * 5. Xác minh rằng phản hồi có trạng thái HTTP 201 CREATED.
+     */
     @Test
     void testShareContent_Success() throws Exception {
         // 1. Chuẩn bị payload (dữ liệu đầu vào) cho yêu cầu POST
@@ -66,6 +86,15 @@ class ShareControllerTest {
                 .andExpect(status().isCreated()); // 4. Kiểm tra: Trạng thái 201 CREATED
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả nội dung công khai.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một danh sách `SharedContentDto` giả lập đại diện cho nội dung công khai.
+     * 2. Giả lập `shareService.getAllPublicContent()` để trả về danh sách giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/share/public`.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và nội dung JSON chứa dữ liệu nội dung công khai mong muốn.
+     */
     @Test
     void testGetPublicContent_Success() throws Exception {
         // 1. Chuẩn bị danh sách nội dung công khai giả lập
@@ -83,6 +112,15 @@ class ShareControllerTest {
                 .andExpect(jsonPath("$[1].contentType").value(ContentType.NUTRITION_PLAN.name())); // 4. Kiểm tra nội dung JSON
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi thích một nội dung.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `contentId`.
+     * 2. Giả lập `shareService.likeContent()` để không làm gì (doNothing) khi được gọi, vì đây là phương thức `void`.
+     * 3. Thực hiện yêu cầu POST đến `/api/share/{contentId}/like` với token CSRF.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK.
+     */
     @Test
     void testLikeContent_Success() throws Exception {
         Long contentId = 1L;
@@ -96,6 +134,17 @@ class ShareControllerTest {
                 .andExpect(status().isOk()); // 3. Kiểm tra: Trạng thái 200 OK
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi bình luận về một nội dung.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `contentId` và `commentText`.
+     * 2. Chuẩn bị một `payload` (Map) chứa `text` của bình luận.
+     * 3. Chuẩn bị một `ContentCommentDto` mong đợi sau khi bình luận.
+     * 4. Giả lập `shareService.commentOnContent()` để trả về `ContentCommentDto` đã tạo, mô phỏng việc bình luận thành công.
+     * 5. Thực hiện yêu cầu POST đến `/api/share/{contentId}/comment` với `payload` dưới dạng JSON và token CSRF.
+     * 6. Xác minh rằng phản hồi có trạng thái HTTP 201 CREATED.
+     */
     @Test
     void testCommentOnContent_Success() throws Exception {
         Long contentId = 1L;
@@ -118,7 +167,16 @@ class ShareControllerTest {
                 .andExpect(status().isCreated()); // 4. Kiểm tra: Trạng thái 201 CREATED
     }
 
-    // ... (testGetCommentsForContent_Success tuân theo nguyên lý GET/tìm kiếm)
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả các bình luận cho một nội dung cụ thể.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `contentId`.
+     * 2. Chuẩn bị một danh sách `ContentCommentDto` giả lập đại diện cho các bình luận.
+     * 3. Giả lập `shareService.getCommentsForContent()` để trả về danh sách bình luận giả lập.
+     * 4. Thực hiện yêu cầu GET đến `/api/share/{contentId}/comments`.
+     * 5. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và nội dung JSON chứa dữ liệu bình luận mong muốn.
+     */
     @Test
     void testGetCommentsForContent_Success() throws Exception {
         Long contentId = 1L;

@@ -18,21 +18,41 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * {@code NutritionPlanServiceImplTest} là một lớp kiểm thử đơn vị cho {@link NutritionPlanServiceImpl}.
+ * Lớp này sử dụng Mockito để mô phỏng các dependencies ({@link NutritionPlanRepository} và {@link UserRepository})
+ * và JUnit 5 để thực thi các trường hợp kiểm thử.
+ * Mục tiêu là đảm bảo rằng {@link NutritionPlanServiceImpl} hoạt động chính xác trong các tình huống khác nhau,
+ * bao gồm lưu, tìm, xóa và tìm kiếm các kế hoạch dinh dưỡng liên quan đến người dùng.
+ */
 @ExtendWith(MockitoExtension.class)
 class NutritionPlanServiceImplTest {
 
+    /**
+     * Mô phỏng {@link NutritionPlanRepository} để kiểm soát hành vi lưu trữ của {@link NutritionPlan}.
+     */
     @Mock
     private NutritionPlanRepository nutritionPlanRepository;
 
+    /**
+     * Mô phỏng {@link UserRepository} để kiểm soát hành vi lưu trữ của {@link User}.
+     */
     @Mock
     private UserRepository userRepository;
 
+    /**
+     * Tiêm {@link NutritionPlanServiceImpl} và tiêm các mock đã tạo ở trên vào đó.
+     */
     @InjectMocks
     private NutritionPlanServiceImpl nutritionPlanService;
 
     private User user;
     private NutritionPlan nutritionPlan;
 
+    /**
+     * Thiết lập dữ liệu kiểm thử chung trước mỗi phương thức kiểm thử.
+     * Khởi tạo một đối tượng {@link User} và một đối tượng {@link NutritionPlan} để sử dụng trong các kiểm thử.
+     */
     @BeforeEach
     void setUp() {
         user = new User();
@@ -45,6 +65,10 @@ class NutritionPlanServiceImplTest {
         nutritionPlan.setUser(user);
     }
 
+    /**
+     * Kiểm tra phương thức {@code save} khi người dùng tồn tại.
+     * Xác minh rằng {@link NutritionPlanRepository#save(Object)} được gọi và kế hoạch dinh dưỡng được lưu thành công.
+     */
     @Test
     void save_shouldSaveNutritionPlan_whenUserExists() {
         // Arrange
@@ -62,6 +86,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).save(nutritionPlan);
     }
 
+    /**
+     * Kiểm tra phương thức {@code save} khi người dùng không tồn tại.
+     * Xác minh rằng một {@link RuntimeException} được ném ra và phương thức lưu không được gọi.
+     */
     @Test
     void save_shouldThrowRuntimeException_whenUserDoesNotExist() {
         // Arrange
@@ -74,6 +102,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, never()).save(any(NutritionPlan.class));
     }
 
+    /**
+     * Kiểm tra phương thức {@code findAll} khi có các kế hoạch dinh dưỡng trong kho lưu trữ.
+     * Xác minh rằng tất cả các kế hoạch dinh dưỡng được trả về chính xác.
+     */
     @Test
     void findAll_shouldReturnAllNutritionPlans() {
         // Arrange
@@ -89,6 +121,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).findAll();
     }
 
+    /**
+     * Kiểm tra phương thức {@code findAll} khi không có kế hoạch dinh dưỡng nào trong kho lưu trữ.
+     * Xác minh rằng một danh sách trống được trả về.
+     */
     @Test
     void findAll_shouldReturnEmptyList_whenNoNutritionPlansExist() {
         // Arrange
@@ -103,6 +139,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).findAll();
     }
 
+    /**
+     * Kiểm tra phương thức {@code findOne} khi một kế hoạch dinh dưỡng được tìm thấy bằng ID của nó.
+     * Xác minh rằng {@link Optional} chứa kế hoạch dinh dưỡng được trả về.
+     */
     @Test
     void findOne_shouldReturnNutritionPlan_whenFound() {
         // Arrange
@@ -117,6 +157,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).findById(1L);
     }
 
+    /**
+     * Kiểm tra phương thức {@code findOne} khi không tìm thấy kế hoạch dinh dưỡng bằng ID của nó.
+     * Xác minh rằng một {@link Optional#empty()} được trả về.
+     */
     @Test
     void findOne_shouldReturnEmpty_whenNotFound() {
         // Arrange
@@ -130,6 +174,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).findById(2L);
     }
 
+    /**
+     * Kiểm tra phương thức {@code delete} để đảm bảo nó xóa một kế hoạch dinh dưỡng.
+     * Xác minh rằng {@link NutritionPlanRepository#deleteById(Object)} được gọi.
+     */
     @Test
     void delete_shouldDeleteNutritionPlan() {
         // Act
@@ -139,6 +187,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).deleteById(1L);
     }
 
+    /**
+     * Kiểm tra phương thức {@code findAllByUser} khi người dùng có kế hoạch dinh dưỡng.
+     * Xác minh rằng các kế hoạch dinh dưỡng liên quan đến người dùng được trả về chính xác.
+     */
     @Test
     void findAllByUser_shouldReturnNutritionPlans_whenUserHasPlans() {
         // Arrange
@@ -156,6 +208,10 @@ class NutritionPlanServiceImplTest {
         verify(nutritionPlanRepository, times(1)).findByUser(user);
     }
 
+    /**
+     * Kiểm tra phương thức {@code findAllByUser} khi người dùng không có kế hoạch dinh dưỡng.
+     * Xác minh rằng một danh sách trống được trả về.
+     */
     @Test
     void findAllByUser_shouldReturnEmptyList_whenUserHasNoPlans() {
         // Arrange

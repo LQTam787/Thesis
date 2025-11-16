@@ -25,6 +25,14 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+/**
+ * Lớp kiểm thử `FoodControllerTest` chịu trách nhiệm kiểm thử các điểm cuối API liên quan đến quản lý các mục thực phẩm
+ * trong `FoodController`.
+ * Nó sử dụng `@WebMvcTest` để tải ngữ cảnh ứng dụng Spring MVC tối thiểu, chỉ tập trung vào `FoodController`.
+ * `@WithMockUser` giả lập một người dùng đã đăng nhập, cho phép kiểm thử các điểm cuối được bảo mật.
+ * `MockMvc` được sử dụng để mô phỏng các yêu cầu HTTP và `Mockito` để giả lập (mock) `FoodService` và `ModelMapper`,
+ * cho phép kiểm soát chặt chẽ hành vi của các phụ thuộc và cô lập logic của controller để kiểm thử.
+ */
 @WebMvcTest(FoodController.class)
 @WithMockUser // Giả lập người dùng đã đăng nhập (cần thiết nếu Controller được bảo mật)
 class FoodControllerTest {
@@ -46,6 +54,10 @@ class FoodControllerTest {
     private FoodItem foodItem2;
     private FoodItemDto foodItemDto2;
 
+    /**
+     * Phương thức thiết lập ban đầu, chạy trước mỗi bài kiểm thử.
+     * Khởi tạo các đối tượng `FoodItem` và `FoodItemDto` giả lập để tái sử dụng trong các bài kiểm thử.
+     */
     @BeforeEach // Chạy trước mỗi bài kiểm thử
     void setUp() {
         // Khởi tạo các đối tượng Entity và DTO giả lập để tái sử dụng
@@ -62,6 +74,15 @@ class FoodControllerTest {
         foodItemDto2 = new FoodItemDto(2L, "Banana", 105.0, 1.3, 27.0, 0.3, "1 large", null);
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tạo một mục thực phẩm mới.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `ModelMapper` để chuyển đổi từ `FoodItemDto` sang `FoodItem` và ngược lại.
+     * 2. Giả lập `foodService.save()` để trả về `FoodItem` đã lưu.
+     * 3. Thực hiện yêu cầu POST đến `/api/foods` với `FoodItemDto` dưới dạng JSON và token CSRF.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `name` trong JSON phản hồi khớp với dữ liệu giả lập.
+     */
     @Test
     void testCreateFoodItem_Success() throws Exception {
         // 1. Mocking ModelMapper: Giả lập việc chuyển đổi DTO -> Entity và Entity -> DTO
@@ -80,6 +101,15 @@ class FoodControllerTest {
                 .andExpect(jsonPath("$.name").value("Apple")); // Kiểm tra nội dung phản hồi
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tìm thấy một mục thực phẩm theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `foodService.findOne()` để trả về `Optional.of(foodItem1)`.
+     * 2. Giả lập `ModelMapper` để chuyển đổi từ `FoodItem` sang `FoodItemDto`.
+     * 3. Thực hiện yêu cầu GET đến `/api/foods/{id}`.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `name` trong JSON phản hồi khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetFoodItem_Found() throws Exception {
         // 1. Mocking Service: Giả lập tìm thấy FoodItem
@@ -93,6 +123,14 @@ class FoodControllerTest {
                 .andExpect(jsonPath("$.name").value("Apple"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy mục thực phẩm theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `foodService.findOne()` để trả về `Optional.empty()`.
+     * 2. Thực hiện yêu cầu GET đến `/api/foods/{id}` với một ID không tồn tại.
+     * 3. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     */
     @Test
     void testGetFoodItem_NotFound() throws Exception {
         // 1. Mocking Service: Giả lập không tìm thấy FoodItem (trả về Optional.empty())
@@ -103,6 +141,16 @@ class FoodControllerTest {
                 .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả các mục thực phẩm.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một danh sách các `FoodItem` giả lập.
+     * 2. Giả lập `foodService.findAll()` để trả về danh sách `FoodItem` giả lập.
+     * 3. Giả lập `ModelMapper` để chuyển đổi từng `FoodItem` trong danh sách sang `FoodItemDto`.
+     * 4. Thực hiện yêu cầu GET đến `/api/foods`.
+     * 5. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và nội dung JSON chứa tên của các mục thực phẩm mong muốn.
+     */
     @Test
     void testGetAllFoodItems_Success() throws Exception {
         List<FoodItem> foodItems = Arrays.asList(foodItem1, foodItem2);
@@ -119,6 +167,18 @@ class FoodControllerTest {
                 .andExpect(jsonPath("$[1].name").value("Banana"));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi cập nhật một mục thực phẩm hiện có.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `FoodItemDto` với dữ liệu cập nhật và các đối tượng `FoodItem` giả lập tương ứng.
+     * 2. Giả lập `foodService.findOne()` để trả về `FoodItem` hiện có.
+     * 3. Giả lập `ModelMapper` để chuyển đổi DTO cập nhật sang Entity và Entity đã lưu sang DTO phản hồi.
+     * 4. Giả lập `foodService.save()` để trả về `FoodItem` đã cập nhật.
+     * 5. Thực hiện yêu cầu PUT đến `/api/foods/{id}` với dữ liệu cập nhật và token CSRF.
+     * 6. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `name` trong JSON phản hồi đã được cập nhật.
+     * 7. Xác minh rằng `foodService.findOne()` và `foodService.save()` đã được gọi chính xác một lần.
+     */
     @Test
     void testUpdateFoodItem_Success() throws Exception {
         // Chuẩn bị DTO với dữ liệu cập nhật
@@ -148,6 +208,16 @@ class FoodControllerTest {
         verify(foodService, times(1)).save(any(FoodItem.class)); // Xác minh rằng save được gọi
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy mục thực phẩm khi cập nhật.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `FoodItemDto` với dữ liệu cập nhật và một ID không tồn tại.
+     * 2. Giả lập `foodService.findOne()` để trả về `Optional.empty()`.
+     * 3. Thực hiện yêu cầu PUT đến `/api/foods/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     * 5. Xác minh rằng `foodService.findOne()` được gọi nhưng `foodService.save()` không được gọi.
+     */
     @Test
     void testUpdateFoodItem_NotFound() throws Exception {
         // Chuẩn bị DTO với dữ liệu cập nhật
@@ -167,6 +237,15 @@ class FoodControllerTest {
         verify(foodService, never()).save(any(FoodItem.class)); // Xác minh rằng save không được gọi
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi xóa một mục thực phẩm.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `foodService.delete()` để không làm gì (doNothing) khi được gọi.
+     * 2. Thực hiện yêu cầu DELETE đến `/api/foods/{id}` với token CSRF.
+     * 3. Xác minh rằng phản hồi có trạng thái HTTP 204 No Content.
+     * 4. Xác minh rằng `foodService.delete()` đã được gọi chính xác một lần.
+     */
     @Test
     void testDeleteFoodItem_Success() throws Exception {
         // 1. Mocking Service: Giả lập hành vi xóa

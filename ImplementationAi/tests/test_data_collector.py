@@ -1,4 +1,7 @@
-# tests/test_data_collector.py
+# test_data_collector.py
+# Tệp này chứa các kiểm thử cho module 'data_collector.py', đảm bảo rằng các hàm
+# thu thập dữ liệu mock hoạt động chính xác. Các kiểm thử này xác minh việc tạo ra
+# các tệp và thư mục dữ liệu giả định và kiểm tra nội dung của chúng.
 
 import os
 import shutil
@@ -12,6 +15,7 @@ from src.data_collector import (
 )
 
 # Đường dẫn thư mục dữ liệu mock cho các bài kiểm tra
+# Thư mục này được sử dụng để lưu trữ dữ liệu mock được tạo ra trong quá trình kiểm thử.
 TEST_DATA_DIR = "ImplementationAi/data/test_mock_data"
 
 

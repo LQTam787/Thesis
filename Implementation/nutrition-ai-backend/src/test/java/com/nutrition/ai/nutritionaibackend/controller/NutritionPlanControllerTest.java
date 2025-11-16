@@ -30,6 +30,15 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Lớp kiểm thử `NutritionPlanControllerTest` chịu trách nhiệm kiểm thử các điểm cuối API liên quan đến quản lý kế hoạch dinh dưỡng
+ * cho người dùng cụ thể trong `NutritionPlanController`.
+ * Nó sử dụng `@WebMvcTest` để tải ngữ cảnh ứng dụng Spring MVC tối thiểu, chỉ tập trung vào `NutritionPlanController`.
+ * `@WithMockUser(username = "testuser")` giả lập một người dùng đã đăng nhập với tên người dùng "testuser",
+ * cho phép kiểm thử các điểm cuối yêu cầu xác thực và ủy quyền.
+ * `MockMvc` được sử dụng để mô phỏng các yêu cầu HTTP và `Mockito` để giả lập (mock) `NutritionPlanService`, `UserRepository` và `ModelMapper`,
+ * cho phép kiểm soát chặt chẽ hành vi của các phụ thuộc và cô lập logic của controller để kiểm thử.
+ */
 @WebMvcTest(NutritionPlanController.class)
 @WithMockUser(username = "testuser") // Giả lập người dùng hiện tại là "testuser"
 class NutritionPlanControllerTest {
@@ -55,6 +64,10 @@ class NutritionPlanControllerTest {
     private NutritionPlan plan2;
     private NutritionPlanDto planDto2;
 
+    /**
+     * Phương thức thiết lập ban đầu, chạy trước mỗi bài kiểm thử.
+     * Khởi tạo các đối tượng `User`, `NutritionPlan` và `NutritionPlanDto` giả lập để tái sử dụng trong các bài kiểm thử.
+     */
     @BeforeEach
     void setUp() {
         // Chuẩn bị các đối tượng giả lập
@@ -78,6 +91,16 @@ class NutritionPlanControllerTest {
         planDto2.setPlanName("Plan B");
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tạo một kế hoạch dinh dưỡng mới cho một người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `userRepository.findByUsername()` để trả về `Optional.of(testUser)`.
+     * 2. Giả lập `modelMapper` để chuyển đổi từ DTO sang Entity và ngược lại.
+     * 3. Giả lập `nutritionPlanService.save()` để trả về `NutritionPlan` đã lưu.
+     * 4. Thực hiện yêu cầu POST đến `/api/users/{username}/nutrition-plans` với `NutritionPlanDto` dưới dạng JSON và token CSRF.
+     * 5. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `planName` trong JSON phản hồi khớp với dữ liệu giả lập.
+     */
     @Test
     void testCreateNutritionPlan_Success() throws Exception {
         // 1. Mocking UserRepository: Giả lập tìm thấy User theo username từ đường dẫn/Security Context
@@ -98,6 +121,14 @@ class NutritionPlanControllerTest {
                 .andExpect(jsonPath("$.planName").value("Plan A"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi tạo kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `userRepository.findByUsername()` để trả về `Optional.empty()`.
+     * 2. Thực hiện yêu cầu POST đến `/api/users/{nonexistentUsername}/nutrition-plans` với dữ liệu kế hoạch và token CSRF.
+     * 3. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     */
     @Test
     void testCreateNutritionPlan_UserNotFound() throws Exception {
         // 1. Mocking UserRepository: Giả lập không tìm thấy User
@@ -111,6 +142,16 @@ class NutritionPlanControllerTest {
                 .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả các kế hoạch dinh dưỡng của một người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `userRepository.findByUsername()` để trả về `Optional.of(testUser)`.
+     * 2. Giả lập `nutritionPlanService.findAllByUser()` để trả về danh sách `NutritionPlan` của người dùng đó.
+     * 3. Giả lập `modelMapper` để chuyển đổi từng `NutritionPlan` sang `NutritionPlanDto`.
+     * 4. Thực hiện yêu cầu GET đến `/api/users/{username}/nutrition-plans`.
+     * 5. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và nội dung JSON chứa tên của các kế hoạch dinh dưỡng mong muốn.
+     */
     @Test
     void testGetAllNutritionPlans_Success() throws Exception {
         List<NutritionPlan> plans = Arrays.asList(plan1, plan2);
@@ -129,6 +170,15 @@ class NutritionPlanControllerTest {
                 .andExpect(jsonPath("$[1].planName").value("Plan B"));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy một kế hoạch dinh dưỡng cụ thể theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `nutritionPlanService.findOne()` để trả về `Optional.of(plan1)`.
+     * 2. Giả lập `modelMapper` để chuyển đổi `NutritionPlan` sang `NutritionPlanDto`.
+     * 3. Thực hiện yêu cầu GET đến `/api/users/{username}/nutrition-plans/{id}`.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và trường `planName` trong JSON phản hồi khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetNutritionPlan_Success() throws Exception {
         // 1. Mocking Service: Giả lập tìm thấy kế hoạch theo ID
@@ -142,6 +192,14 @@ class NutritionPlanControllerTest {
                 .andExpect(jsonPath("$.planName").value("Plan A"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy kế hoạch dinh dưỡng theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `nutritionPlanService.findOne()` để trả về `Optional.empty()`.
+     * 2. Thực hiện yêu cầu GET đến `/api/users/{username}/nutrition-plans/{id}` với một ID không tồn tại.
+     * 3. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     */
     @Test
     void testGetNutritionPlan_NotFound() throws Exception {
         // 1. Mocking Service: Giả lập không tìm thấy kế hoạch
@@ -152,6 +210,14 @@ class NutritionPlanControllerTest {
                 .andExpect(status().isNotFound()); // 3. Kiểm tra: Trạng thái 404 NOT FOUND
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi lấy tất cả kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Giả lập `userRepository.findByUsername()` để trả về `Optional.empty()`.
+     * 2. Thực hiện yêu cầu GET với username không tồn tại
+     * 3. Xác minh rằng phản hồi có trạng thái HTTP 404 NOT FOUND.
+     */
     @Test
     void testGetAllNutritionPlans_UserNotFound() throws Exception {
         // 1. Mocking UserRepository: Giả lập không tìm thấy User

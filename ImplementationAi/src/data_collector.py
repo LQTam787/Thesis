@@ -17,9 +17,9 @@ def collect_mock_nlp_data(
         output_file (str): The path to the output CSV file.
     """
     print("Collecting mock NLP data...")
-    # Nguyên lý: Tạo DataFrame với các cặp (text, labels) giả lập.
-    # Luồng hoạt động: Dữ liệu này sẽ được data_preprocessor.py sử dụng để tiền xử lý.
-    # Hoạt động thu thập AI: Tạo dữ liệu thô (mock) cho mô hình NLP.
+    # Logic: Create a DataFrame with simulated (text, labels) pairs.
+    # Flow: This data will be used by data_preprocessor.py for preprocessing.
+    # AI Collection Activity: Generates raw (mock) data for the NLP model.
     data = {
         "text": [
             "I had a delicious apple for breakfast.",
@@ -52,9 +52,9 @@ def collect_mock_vision_data(
     """
     print("Collecting mock Vision data (simulated image files)...")
     os.makedirs(output_dir, exist_ok=True)
-    # Nguyên lý: Tạo các tệp giả lập (.jpg, .png) để mô phỏng hình ảnh thô.
-    # Luồng hoạt động: Tệp này chỉ chứa 'dummy data' nhưng mô phỏng sự tồn tại của dữ liệu hình ảnh.
-    # Hoạt động thu thập AI: Tạo dữ liệu thô (mock) cho mô hình Thị giác Máy tính (dạng tệp).
+    # Logic: Create dummy files (.jpg, .png) to simulate raw images.
+    # Flow: This file only contains 'dummy data' but simulates the existence of image data.
+    # AI Collection Activity: Generates raw (mock) data for the Computer Vision model (file-based).
     with open(os.path.join(output_dir, "apple.jpg"), "w", encoding="utf-8") as f:
         f.write("dummy image data for apple")
     with open(os.path.join(output_dir, "pizza.png"), "w", encoding="utf-8") as f:
@@ -70,9 +70,9 @@ def collect_mock_recommendation_data(
         output_file (str): The path to the output CSV file.
     """
     print("Collecting mock Recommendation data...")
-    # Nguyên lý: Tạo DataFrame với dữ liệu hồ sơ người dùng, mục tiêu và thói quen ăn uống giả lập.
-    # Luồng hoạt động: Dữ liệu này sẽ được dùng để huấn luyện/kiểm tra mô hình khuyến nghị.
-    # Hoạt động thu thập AI: Tạo dữ liệu thô (mock) cho mô hình Khuyến nghị (hồ sơ người dùng/mục tiêu).
+    # Logic: Create a DataFrame with simulated user profiles, goals, and eating habits.
+    # Flow: This data will be used to train/test the recommendation model.
+    # AI Collection Activity: Generates raw (mock) data for the Recommendation model (user profiles/goals).
     data = {
         "user_id": ["user1", "user2", "user3"],
         "age": [30, 24, 45],
@@ -94,7 +94,7 @@ def collect_mock_recommendation_data(
     print(f"Mock Recommendation data collected and saved to {output_file}")
 
 def main():
-    """Chạy tất cả các hàm thu thập dữ liệu mock."""
+    """Runs all mock data collection functions."""
     collect_mock_nlp_data()
     collect_mock_vision_data()
     collect_mock_recommendation_data()

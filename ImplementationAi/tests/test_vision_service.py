@@ -1,3 +1,9 @@
+# test_vision_service.py
+# Tệp này chứa các kiểm thử cho module 'vision_service.py', tập trung vào việc xác minh
+# chức năng nhận dạng thực phẩm trong hình ảnh. Các kiểm thử sử dụng đối tượng giả lập
+# cho pipeline TensorFlow MobileNetV2 để cô lập logic của dịch vụ thị giác máy tính
+# khỏi các phụ thuộc mô hình nặng.
+
 import pytest
 import numpy as np
 from unittest.mock import patch, MagicMock

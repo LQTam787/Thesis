@@ -16,32 +16,46 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Lớp kiểm thử đơn vị cho UserService (UserServiceImpl).
- * Sử dụng JUnit 5 và Mockito để kiểm thử các phương thức logic nghiệp vụ,
- * cô lập UserService khỏi các phụ thuộc bên ngoài như cơ sở dữ liệu và mã hóa mật khẩu.
+ * {@code UserServiceTest} là một lớp kiểm thử đơn vị cho {@link UserServiceImpl}.
+ * Lớp này sử dụng JUnit 5 và Mockito để kiểm thử các phương thức logic nghiệp vụ của dịch vụ người dùng,
+ * cô lập {@link UserServiceImpl} khỏi các phụ thuộc bên ngoài như cơ sở dữ liệu (thông qua {@link UserRepository})
+ * và mã hóa mật khẩu (thông qua {@link PasswordEncoder}).
+ * Mục tiêu chính là đảm bảo rằng các chức năng như tìm kiếm người dùng theo tên, kiểm tra sự tồn tại của người dùng/email,
+ * lưu người dùng, xác thực và đăng ký tài khoản người dùng mới hoạt động chính xác và xử lý các trường hợp biên.
  */
 class UserServiceTest {
 
-    // @Mock: Tạo một đối tượng giả (mock) cho UserRepository.
-    // Nguyên lý: Mockito sẽ thay thế đối tượng thực bằng một phiên bản
-    // có thể kiểm soát được hành vi (ví dụ: trả về dữ liệu giả).
+    /**
+     * Mô phỏng {@link UserRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link User}.
+     * Điều này cho phép kiểm thử {@link UserServiceImpl} mà không cần tương tác với cơ sở dữ liệu thực.
+     * Nguyên lý: Mockito sẽ thay thế đối tượng thực bằng một phiên bản có thể kiểm soát được hành vi
+     * (ví dụ: trả về dữ liệu giả hoặc xác minh các lệnh gọi phương thức).
+     */
     @Mock
     private UserRepository userRepository;
 
-    // @Mock: Tạo một đối tượng giả cho PasswordEncoder.
-    // Nguyên lý: Dùng để mô phỏng việc mã hóa và so sánh mật khẩu mà không cần
-    // chạy quá trình mã hóa thực tế, giúp kiểm thử nhanh hơn và độc lập.
+    /**
+     * Mô phỏng {@link PasswordEncoder} để kiểm soát hành vi mã hóa và so sánh mật khẩu.
+     * Điều này giúp kiểm thử các quy trình xác thực và đăng ký mà không cần thực hiện quá trình mã hóa mật khẩu thực tế,
+     * giúp tăng tốc độ kiểm thử và đảm bảo tính độc lập.
+     * Nguyên lý: Dùng để mô phỏng việc mã hóa và so sánh mật khẩu mà không cần chạy quá trình mã hóa thực tế,
+     * giúp kiểm thử nhanh hơn và độc lập.
+     */
     @Mock
     private PasswordEncoder passwordEncoder;
 
-    // @InjectMocks: Tạo một thể hiện (instance) của UserServiceImpl và tự động
-    // tiêm (inject) các đối tượng @Mock (userRepository, passwordEncoder) vào nó.
-    // Nguyên lý: Đây là đối tượng thực (sẽ được kiểm thử) với các phụ thuộc đã được giả lập.
+    /**
+     * Tiêm {@link UserServiceImpl} và tự động tiêm các đối tượng {@code @Mock} ({@code userRepository},
+     * {@code passwordEncoder}) vào các trường tương ứng của nó. Đây là đối tượng thực sẽ được kiểm thử.
+     * Nguyên lý: Đây là đối tượng thực (sẽ được kiểm thử) với các phụ thuộc đã được giả lập.
+     */
     @InjectMocks
     private UserServiceImpl userService; // Giả định UserServiceImpl triển khai UserService
 
     /**
-     * Phương thức thiết lập chạy trước mỗi bài kiểm thử (@Test).
+     * Phương thức thiết lập chạy trước mỗi bài kiểm thử (phương thức được chú thích bởi {@code @Test}).
+     * Phương thức này chịu trách nhiệm khởi tạo các đối tượng mock và tiêm chúng vào đối tượng {@code @InjectMocks}
+     * bằng cách gọi {@link MockitoAnnotations#openMocks(Object)}.
      * Nguyên lý: Khởi tạo các đối tượng @Mock và tiêm chúng vào đối tượng @InjectMocks.
      */
     @BeforeEach
@@ -50,13 +64,16 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức findByUsername khi tìm thấy người dùng.
+     * Kiểm thử phương thức {@code findByUsername} của {@link UserServiceImpl} khi người dùng được tìm thấy.
      * Luồng hoạt động:
-     * 1. Thiết lập đối tượng User giả định.
-     * 2. Thiết lập hành vi giả lập cho userRepository: khi gọi findByUsername("testuser"), trả về Optional chứa User giả.
-     * 3. Gọi phương thức thực tế của userService.
-     * 4. Xác minh kết quả: Kiểm tra Optional có chứa giá trị và username có đúng không.
-     * 5. Xác minh tương tác: Đảm bảo userRepository.findByUsername đã được gọi đúng 1 lần.
+     * 1. Tạo một đối tượng {@link User} giả định với tên người dùng "testuser".
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findByUsername("testuser")} được gọi,
+     *    nó sẽ trả về một {@link Optional} chứa đối tượng {@link User} giả định.
+     * 3. Gọi phương thức {@code findByUsername} thực tế của {@code userService} với tên người dùng "testuser".
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem {@link Optional} trả về có chứa giá trị hay không (isPresent).
+     *    - Kiểm tra xem tên người dùng của đối tượng {@link User} được trả về có chính xác là "testuser" hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng {@code userRepository.findByUsername("testuser")} đã được gọi đúng 1 lần.
      */
     @Test
     void testFindByUsername_UserFound() {
@@ -72,12 +89,14 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức findByUsername khi không tìm thấy người dùng.
+     * Kiểm thử phương thức {@code findByUsername} của {@link UserServiceImpl} khi không tìm thấy người dùng.
      * Luồng hoạt động:
-     * 1. Thiết lập hành vi giả lập cho userRepository: khi gọi findByUsername("nonexistent"), trả về Optional rỗng (empty).
-     * 2. Gọi phương thức thực tế của userService.
-     * 3. Xác minh kết quả: Kiểm tra Optional không chứa giá trị (isPresent là false).
-     * 4. Xác minh tương tác: Đảm bảo userRepository.findByUsername đã được gọi đúng 1 lần.
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findByUsername("nonexistent")} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (rỗng).
+     * 2. Gọi phương thức {@code findByUsername} thực tế của {@code userService} với tên người dùng "nonexistent".
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem {@link Optional} trả về không chứa giá trị (isPresent là false).
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code userRepository.findByUsername("nonexistent")} đã được gọi đúng 1 lần.
      */
     @Test
     void testFindByUsername_UserNotFound() {
@@ -90,12 +109,14 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức existsByUsername khi người dùng tồn tại.
+     * Kiểm thử phương thức {@code existsByUsername} của {@link UserServiceImpl} khi tên người dùng tồn tại.
      * Luồng hoạt động:
-     * 1. Thiết lập hành vi giả lập: khi gọi existsByUsername("testuser"), trả về true.
-     * 2. Gọi phương thức thực tế của userService.
-     * 3. Xác minh kết quả: Kiểm tra phương thức trả về true.
-     * 4. Xác minh tương tác: Đảm bảo userRepository.existsByUsername đã được gọi đúng 1 lần.
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code existsByUsername("testuser")} được gọi,
+     *    nó sẽ trả về {@code true}.
+     * 2. Gọi phương thức {@code existsByUsername} thực tế của {@code userService} với tên người dùng "testuser".
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code true} hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code userRepository.existsByUsername("testuser")} đã được gọi đúng 1 lần.
      */
     @Test
     void testExistsByUsername_UserExists() {
@@ -106,7 +127,14 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức existsByUsername khi người dùng không tồn tại.
+     * Kiểm thử phương thức {@code existsByUsername} của {@link UserServiceImpl} khi tên người dùng không tồn tại.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code existsByUsername("nonexistent")} được gọi,
+     *    nó sẽ trả về {@code false}.
+     * 2. Gọi phương thức {@code existsByUsername} thực tế của {@code userService} với tên người dùng "nonexistent".
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code false} hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code userRepository.existsByUsername("nonexistent")} đã được gọi đúng 1 lần.
      */
     @Test
     void testExistsByUsername_UserDoesNotExist() {
@@ -117,7 +145,14 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức existsByEmail khi email tồn tại.
+     * Kiểm thử phương thức {@code existsByEmail} của {@link UserServiceImpl} khi email tồn tại.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code existsByEmail("test@example.com")} được gọi,
+     *    nó sẽ trả về {@code true}.
+     * 2. Gọi phương thức {@code existsByEmail} thực tế của {@code userService} với email "test@example.com".
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code true} hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code userRepository.existsByEmail("test@example.com")} đã được gọi đúng 1 lần.
      */
     @Test
     void testExistsByEmail_UserExists() {
@@ -128,7 +163,14 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức existsByEmail khi email không tồn tại.
+     * Kiểm thử phương thức {@code existsByEmail} của {@link UserServiceImpl} khi email không tồn tại.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code existsByEmail("nonexistent@example.com")} được gọi,
+     *    nó sẽ trả về {@code false}.
+     * 2. Gọi phương thức {@code existsByEmail} thực tế của {@code userService} với email "nonexistent@example.com".
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code false} hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code userRepository.existsByEmail("nonexistent@example.com")} đã được gọi đúng 1 lần.
      */
     @Test
     void testExistsByEmail_UserDoesNotExist() {
@@ -139,12 +181,16 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức save.
+     * Kiểm thử phương thức {@code save} của {@link UserServiceImpl} để đảm bảo người dùng được lưu trữ chính xác.
      * Luồng hoạt động:
-     * 1. Thiết lập hành vi giả lập: khi gọi userRepository.save(user), trả về chính đối tượng user đó (mô phỏng lưu thành công).
-     * 2. Gọi phương thức thực tế của userService.
-     * 3. Xác minh kết quả: Kiểm tra đối tượng trả về không null và username đúng.
-     * 4. Xác minh tương tác: Đảm bảo userRepository.save đã được gọi đúng 1 lần với đối tượng user đó.
+     * 1. Tạo một đối tượng {@link User} mới với tên người dùng "newuser".
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code userRepository.save(user)} được gọi,
+     *    nó sẽ trả về chính đối tượng {@link User} đó (mô phỏng hành vi lưu thành công).
+     * 3. Gọi phương thức {@code save} thực tế của {@code userService} với đối tượng {@link User} mới.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link User} trả về có không null hay không.
+     *    - Kiểm tra xem tên người dùng của đối tượng đã lưu có chính xác là "newuser" hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng {@code userRepository.save(user)} đã được gọi đúng 1 lần.
      */
     @Test
     void testSave() {
@@ -160,13 +206,19 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức authenticate (đăng nhập) thành công.
+     * Kiểm thử phương thức {@code authenticate} của {@link UserServiceImpl} trong trường hợp xác thực thành công.
      * Luồng hoạt động:
-     * 1. Giả lập tìm thấy người dùng (userRepository.findByUsername -> Optional.of(user)).
-     * 2. Giả lập so sánh mật khẩu thành công (passwordEncoder.matches -> true).
-     * 3. Gọi phương thức authenticate.
-     * 4. Xác minh kết quả: Trả về true.
-     * 5. Xác minh tương tác: userRepository.findByUsername và passwordEncoder.matches đều được gọi 1 lần.
+     * 1. Tạo một đối tượng {@link User} giả định với tên người dùng "authuser" và mật khẩu đã mã hóa "encodedPassword".
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findByUsername("authuser")} được gọi,
+     *    nó sẽ trả về một {@link Optional} chứa {@link User} giả định.
+     * 3. Thiết lập hành vi giả lập cho {@code passwordEncoder}: khi {@code matches("rawPassword", "encodedPassword")}
+     *    được gọi, nó sẽ trả về {@code true} (mô phỏng mật khẩu khớp).
+     * 4. Gọi phương thức {@code authenticate} thực tế của {@code userService} với tên người dùng "authuser" và mật khẩu thô "rawPassword".
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code true} hay không (xác thực thành công).
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findByUsername("authuser")} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code passwordEncoder.matches("rawPassword", "encodedPassword")} đã được gọi đúng 1 lần.
      */
     @Test
     void testAuthenticate_Success() {
@@ -182,12 +234,15 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức authenticate khi không tìm thấy người dùng.
+     * Kiểm thử phương thức {@code authenticate} của {@link UserServiceImpl} trong trường hợp người dùng không được tìm thấy.
      * Luồng hoạt động:
-     * 1. Giả lập không tìm thấy người dùng (userRepository.findByUsername -> Optional.empty()).
-     * 2. Gọi phương thức authenticate.
-     * 3. Xác minh kết quả: Trả về false.
-     * 4. Xác minh tương tác: Đảm bảo passwordEncoder.matches KHÔNG BAO GIỜ được gọi, vì không có người dùng để so sánh mật khẩu.
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findByUsername("nonexistent")} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 2. Gọi phương thức {@code authenticate} thực tế của {@code userService} với tên người dùng "nonexistent" và mật khẩu thô "rawPassword".
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code false} hay không (xác thực thất bại).
+     * 4. Xác minh tương tác: Đảm bảo rằng {@code passwordEncoder.matches} KHÔNG BAO GIỜ được gọi, vì không có người dùng
+     *    để so sánh mật khẩu.
      */
     @Test
     void testAuthenticate_Failure_UserNotFound() {
@@ -199,12 +254,19 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức authenticate khi mật khẩu sai.
+     * Kiểm thử phương thức {@code authenticate} của {@link UserServiceImpl} trong trường hợp mật khẩu không khớp.
      * Luồng hoạt động:
-     * 1. Giả lập tìm thấy người dùng.
-     * 2. Giả lập so sánh mật khẩu thất bại (passwordEncoder.matches -> false).
-     * 3. Gọi phương thức authenticate.
-     * 4. Xác minh kết quả: Trả về false.
+     * 1. Tạo một đối tượng {@link User} giả định với tên người dùng "authuser" và mật khẩu đã mã hóa "encodedPassword".
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findByUsername("authuser")} được gọi,
+     *    nó sẽ trả về một {@link Optional} chứa {@link User} giả định.
+     * 3. Thiết lập hành vi giả lập cho {@code passwordEncoder}: khi {@code matches("wrongPassword", "encodedPassword")}
+     *    được gọi, nó sẽ trả về {@code false} (mô phỏng mật khẩu không khớp).
+     * 4. Gọi phương thức {@code authenticate} thực tế của {@code userService} với tên người dùng "authuser" và mật khẩu thô "wrongPassword".
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem phương thức có trả về {@code false} hay không (xác thực thất bại).
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findByUsername("authuser")} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code passwordEncoder.matches("wrongPassword", "encodedPassword")} đã được gọi đúng 1 lần.
      */
     @Test
     void testAuthenticate_Failure_WrongPassword() {
@@ -220,14 +282,21 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử phương thức registerNewUserAccount (đăng ký) thành công.
+     * Kiểm thử phương thức {@code registerNewUserAccount} của {@link UserServiceImpl} trong trường hợp đăng ký thành công.
      * Luồng hoạt động:
-     * 1. Giả lập: username và email chưa tồn tại (existsByUsername/Email -> false).
-     * 2. Giả lập: mã hóa mật khẩu (passwordEncoder.encode -> "encodedPassword").
-     * 3. Giả lập: lưu người dùng thành công (userRepository.save -> User đã lưu).
-     * 4. Gọi phương thức registerNewUserAccount.
-     * 5. Xác minh kết quả: Đối tượng DTO trả về không null và username đúng.
-     * 6. Xác minh tương tác: Tất cả các phương thức giả lập (existsByUsername, existsByEmail, encode, save) đều được gọi đúng 1 lần.
+     * 1. Tạo một đối tượng {@link UserDto} chứa thông tin đăng ký của người dùng mới.
+     * 2. Tạo một đối tượng {@link User} giả định để mô phỏng người dùng sau khi được lưu.
+     * 3. Thiết lập hành vi giả lập cho {@code userRepository}:
+     *    - {@code existsByUsername} và {@code existsByEmail} trả về {@code false} (tên người dùng và email chưa tồn tại).
+     *    - {@code save(any(User.class))} trả về đối tượng {@link User} giả định (mô phỏng lưu thành công).
+     * 4. Thiết lập hành vi giả lập cho {@code passwordEncoder}: khi {@code encode(userDto.getPassword())} được gọi,
+     *    nó sẽ trả về "encodedPassword" (mô phỏng mã hóa mật khẩu).
+     * 5. Gọi phương thức {@code registerNewUserAccount} thực tế của {@code userService} với {@link UserDto}.
+     * 6. Xác minh kết quả:
+     *    - Kiểm tra xem {@link UserDto} trả về có không null hay không.
+     *    - Kiểm tra xem tên người dùng của {@link UserDto} đã đăng ký có chính xác hay không.
+     * 7. Xác minh tương tác: Đảm bảo rằng tất cả các phương thức giả lập ({@code existsByUsername}, {@code existsByEmail},
+     *    {@code encode}, và {@code save}) đều được gọi đúng 1 lần với các đối số chính xác.
      */
     @Test
     void testRegisterNewUserAccount_Success() throws Exception {
@@ -259,12 +328,19 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử đăng ký thất bại do Username đã tồn tại.
+     * Kiểm thử phương thức {@code registerNewUserAccount} của {@link UserServiceImpl} trong trường hợp đăng ký thất bại
+     * do tên người dùng đã tồn tại.
      * Luồng hoạt động:
-     * 1. Giả lập: existsByUsername -> true.
-     * 2. Gọi phương thức đăng ký.
-     * 3. Xác minh kết quả: Ném ra một Exception và thông báo lỗi đúng.
-     * 4. Xác minh tương tác: existsByEmail, encode, và save KHÔNG ĐƯỢC gọi vì quy trình bị dừng ngay sau khi kiểm tra username.
+     * 1. Tạo một đối tượng {@link UserDto} với tên người dùng đã tồn tại ("existinguser").
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code existsByUsername} được gọi,
+     *    nó sẽ trả về {@code true}.
+     * 3. Gọi phương thức {@code registerNewUserAccount} thực tế của {@code userService} với {@link UserDto}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link Exception} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác là "Username already exists" hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng {@code existsByUsername} được gọi 1 lần, nhưng các phương thức
+     *    {@code existsByEmail}, {@code encode}, và {@code save} KHÔNG BAO GIỜ được gọi vì quy trình bị dừng ngay sau
+     *    khi kiểm tra tên người dùng.
      */
     @Test
     void testRegisterNewUserAccount_UsernameExists() {
@@ -288,13 +364,20 @@ class UserServiceTest {
     }
 
     /**
-     * Kiểm thử đăng ký thất bại do Email đã tồn tại (sau khi kiểm tra username thành công).
+     * Kiểm thử phương thức {@code registerNewUserAccount} của {@link UserServiceImpl} trong trường hợp đăng ký thất bại
+     * do email đã tồn tại (sau khi kiểm tra tên người dùng thành công).
      * Luồng hoạt động:
-     * 1. Giả lập: existsByUsername -> false.
-     * 2. Giả lập: existsByEmail -> true.
-     * 3. Gọi phương thức đăng ký.
-     * 4. Xác minh kết quả: Ném ra một Exception và thông báo lỗi đúng.
-     * 5. Xác minh tương tác: existsByUsername và existsByEmail được gọi 1 lần, nhưng encode và save KHÔNG ĐƯỢC gọi.
+     * 1. Tạo một đối tượng {@link UserDto} với email đã tồn tại ("existing@example.com").
+     * 2. Thiết lập hành vi giả lập cho {@code userRepository}:
+     *    - {@code existsByUsername} trả về {@code false} (tên người dùng chưa tồn tại).
+     *    - {@code existsByEmail} trả về {@code true} (email đã tồn tại).
+     * 3. Gọi phương thức {@code registerNewUserAccount} thực tế của {@code userService} với {@link UserDto}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link Exception} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác là "Email already exists" hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng {@code existsByUsername} và {@code existsByEmail} được gọi 1 lần,
+     *    nhưng các phương thức {@code encode} và {@code save} KHÔNG BAO GIỜ được gọi vì quy trình bị dừng ngay sau
+     *    khi kiểm tra email.
      */
     @Test
     void testRegisterNewUserAccount_EmailExists() {

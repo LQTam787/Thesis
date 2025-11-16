@@ -1,3 +1,9 @@
+# test_dataset_manager.py
+# Tệp này chứa các kiểm thử cho module 'dataset_manager.py', đảm bảo rằng các hàm
+# tải tập dữ liệu cho NLP, Vision và Recommendation hoạt động chính xác. Nó tập trung
+# vào việc xác minh rằng các tệp/thư mục được tải đúng cách và các trường hợp lỗi
+# (tệp không tìm thấy) được xử lý một cách duyên dáng.
+
 import pandas as pd
 from unittest.mock import patch
 
@@ -8,6 +14,9 @@ from src.dataset_manager import (
 )
 
 # Test for load_nlp_dataset
+# Các decoractor @patch được sử dụng để giả lập các hàm của hệ thống và thư viện Pandas
+# mà 'load_nlp_dataset' gọi. Điều này cho phép kiểm thử chức năng tải mà không cần
+# thực sự đọc từ hoặc ghi vào hệ thống tệp.
 @patch('src.dataset_manager.os.path.exists')
 @patch('src.dataset_manager.pd.read_csv')
 def test_load_nlp_dataset_exists(mock_read_csv, mock_exists):
@@ -53,6 +62,9 @@ def test_load_nlp_dataset_not_found(mock_exists, capsys):
     assert "Warning: NLP dataset not found" in captured.out
 
 # Test for load_vision_dataset
+# Tương tự như kiểm thử NLP, các hàm của hệ thống tệp được giả lập để kiểm soát
+# hành vi của việc tải tập dữ liệu hình ảnh. Kiểm thử này đảm bảo rằng chỉ các tệp
+# hình ảnh hợp lệ (có tiền tố 'processed_') được trả về.
 @patch('src.dataset_manager.os.path.exists')
 @patch('src.dataset_manager.os.listdir')
 def test_load_vision_dataset_exists(mock_listdir, mock_exists):
@@ -93,6 +105,8 @@ def test_load_vision_dataset_not_found(mock_exists, capsys):
     assert "Warning: Vision dataset not found" in captured.out
 
 # Test for load_recommendation_dataset (Tương tự NLP)
+# Kiểm thử cho chức năng tải tập dữ liệu đề xuất, với các giả lập tương tự
+# được sử dụng trong kiểm thử NLP để xác minh việc tải thành công và xử lý lỗi.
 @patch('src.dataset_manager.os.path.exists')
 @patch('src.dataset_manager.pd.read_csv')
 def test_load_recommendation_dataset_exists(mock_read_csv, mock_exists):

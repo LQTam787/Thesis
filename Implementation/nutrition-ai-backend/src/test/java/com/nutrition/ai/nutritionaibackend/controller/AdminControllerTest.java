@@ -34,6 +34,15 @@ import com.nutrition.ai.nutritionaibackend.dto.NutritionPlanDto;
 import java.util.Collections;
 import com.nutrition.ai.nutritionaibackend.exception.ResourceNotFoundException;
 
+/**
+ * Lớp kiểm thử `AdminControllerTest` chịu trách nhiệm kiểm thử các điểm cuối (endpoints) API dành cho quản trị viên
+ * trong `AdminController`.
+ * Nó sử dụng `@WebMvcTest` để tập trung vào kiểm thử lớp controller và không tải toàn bộ ứng dụng Spring.
+ * `@WithMockUser(roles = "ADMIN")` giả lập một người dùng có vai trò ADMIN, đảm bảo rằng các kiểm thử
+ * được thực thi với quyền hạn thích hợp để truy cập các tài nguyên quản trị.
+ * Các phương thức kiểm thử sử dụng `MockMvc` để thực hiện các yêu cầu HTTP giả lập và `Mockito` để
+ * giả lập (mock) các phụ thuộc như `AdminService`, đảm bảo rằng chỉ logic của controller được kiểm thử.
+ */
 @WebMvcTest(AdminController.class)
 @WithMockUser(roles = "ADMIN") // Giả lập người dùng có vai trò ADMIN để kiểm tra bảo mật (authorization)
 class AdminControllerTest {
@@ -48,6 +57,15 @@ class AdminControllerTest {
     private ObjectMapper objectMapper;
 
     // --- User Management Tests ---
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một danh sách `UserResponseDto` giả lập.
+     * 2. Cấu hình `adminService.getAllUsers()` để trả về danh sách giả lập khi được gọi.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/users`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung JSON phản hồi chứa dữ liệu người dùng mong muốn.
+     */
     @Test
     void testGetAllUsers_Success() throws Exception {
         // 1. Chuẩn bị dữ liệu danh sách người dùng giả lập
@@ -65,6 +83,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$[1].email").value("user2@example.com")); // Kiểm tra nội dung JSON của phần tử thứ hai
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy người dùng theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `userId` và một `UserResponseDto` giả lập.
+     * 2. Cấu hình `adminService.getUserById(userId)` để trả về người dùng giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/users/{id}` với `userId`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `username` trong phản hồi JSON khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetUserById_Success() throws Exception {
         Long userId = 1L;
@@ -79,6 +106,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.username").value("testuser")); // Kiểm tra trường username trong phản hồi
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi lấy người dùng theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một `userId` không tồn tại.
+     * 2. Cấu hình `adminService.getUserById(userId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/users/{id}` với `userId`.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testGetUserById_NotFound() throws Exception {
         Long userId = 99L; // ID của người dùng không tồn tại
@@ -88,6 +124,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound()); // Kiểm tra: Trạng thái 404 Not Found
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi cập nhật thông tin người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `userId`, `UpdateUserRequestDto` cho yêu cầu và `UserResponseDto` mong đợi sau khi cập nhật.
+     * 2. Cấu hình `adminService.updateUser()` để trả về `UserResponseDto` đã cập nhật.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/users/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `username` trong phản hồi JSON đã được cập nhật.
+     */
     @Test
     void testUpdateUser_Success() throws Exception {
         Long userId = 1L;
@@ -106,6 +151,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.username").value("updatedUser"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi cập nhật thông tin người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `userId` không tồn tại và `UpdateUserRequestDto`.
+     * 2. Cấu hình `adminService.updateUser()` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/users/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testUpdateUser_NotFound() throws Exception {
         Long userId = 99L;
@@ -120,6 +174,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi xóa người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `userId`.
+     * 2. Cấu hình `adminService.deleteUser(userId)` để không làm gì (doNothing) khi được gọi.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/users/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung phản hồi là thông báo thành công.
+     */
     @Test
     void testDeleteUser_Success() throws Exception {
         Long userId = 1L;
@@ -133,6 +196,15 @@ class AdminControllerTest {
                 .andExpect(content().string("User deleted successfully!")); // Kiểm tra thông báo thành công
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy người dùng khi xóa người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `userId` không tồn tại.
+     * 2. Cấu hình `adminService.deleteUser(userId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/users/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testDeleteUser_NotFound() throws Exception {
         Long userId = 99L;
@@ -144,6 +216,15 @@ class AdminControllerTest {
     }
 
     // --- Recipe Management Tests ---
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả công thức.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một danh sách `RecipeDto` giả lập.
+     * 2. Cấu hình `adminService.getAllRecipes()` để trả về danh sách giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/recipes`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung JSON phản hồi chứa dữ liệu công thức mong muốn.
+     */
     @Test
     void testGetAllRecipes_Success() throws Exception {
         RecipeDto recipe1 = new RecipeDto(1L, "Recipe 1 instructions", 30, 101L);
@@ -158,6 +239,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$[1].preparationTime").value(45));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy công thức theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `recipeId` và `RecipeDto` giả lập.
+     * 2. Cấu hình `adminService.getRecipeById(recipeId)` để trả về công thức giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/recipes/{id}`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `instructions` trong phản hồi JSON khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetRecipeById_Success() throws Exception {
         Long recipeId = 1L;
@@ -170,6 +260,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.instructions").value("Test Recipe instructions"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy công thức khi lấy công thức theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `recipeId` không tồn tại.
+     * 2. Cấu hình `adminService.getRecipeById(recipeId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/recipes/{id}`.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testGetRecipeById_NotFound() throws Exception {
         Long recipeId = 99L;
@@ -179,6 +278,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tạo công thức mới.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `RecipeRequestDto` cho yêu cầu tạo và `RecipeDto` mong đợi sau khi tạo.
+     * 2. Cấu hình `adminService.createRecipe()` để trả về công thức đã tạo.
+     * 3. Thực hiện yêu cầu POST đến `/api/admin/recipes` với dữ liệu tạo và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `instructions` trong phản hồi JSON khớp với dữ liệu đã tạo.
+     */
     @Test
     void testCreateRecipe_Success() throws Exception {
         RecipeRequestDto createRequest = new RecipeRequestDto("New Food Item", 500.0, 50.0, 60.0, 20.0, "1 serving", "New Recipe instructions", 20);
@@ -194,6 +302,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.instructions").value("New Recipe instructions"));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi cập nhật công thức.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `recipeId`, `RecipeRequestDto` cho yêu cầu cập nhật và `RecipeDto` mong đợi sau khi cập nhật.
+     * 2. Cấu hình `adminService.updateRecipe()` để trả về công thức đã cập nhật.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/recipes/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `instructions` trong phản hồi JSON đã được cập nhật.
+     */
     @Test
     void testUpdateRecipe_Success() throws Exception {
         Long recipeId = 1L;
@@ -210,6 +327,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.instructions").value("Updated Recipe instructions"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy công thức khi cập nhật công thức.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `recipeId` không tồn tại và `RecipeRequestDto`.
+     * 2. Cấu hình `adminService.updateRecipe()` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/recipes/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testUpdateRecipe_NotFound() throws Exception {
         Long recipeId = 99L;
@@ -224,6 +350,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi xóa công thức.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `recipeId`.
+     * 2. Cấu hình `adminService.deleteRecipe(recipeId)` để không làm gì.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/recipes/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung phản hồi là thông báo thành công.
+     */
     @Test
     void testDeleteRecipe_Success() throws Exception {
         Long recipeId = 1L;
@@ -235,6 +370,15 @@ class AdminControllerTest {
                 .andExpect(content().string("Recipe deleted successfully!"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy công thức khi xóa công thức.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `recipeId` không tồn tại.
+     * 2. Cấu hình `adminService.deleteRecipe(recipeId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/recipes/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testDeleteRecipe_NotFound() throws Exception {
         Long recipeId = 99L;
@@ -246,6 +390,15 @@ class AdminControllerTest {
     }
 
     // --- Goal Management Tests ---
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả mục tiêu.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một danh sách `GoalDto` giả lập.
+     * 2. Cấu hình `adminService.getAllGoals()` để trả về danh sách giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/goals`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung JSON phản hồi chứa dữ liệu mục tiêu mong muốn.
+     */
     @Test
     void testGetAllGoals_Success() throws Exception {
         GoalDto goal1 = new GoalDto(1L, 70.0, LocalDate.of(2026, 1, 1), EGoalType.WEIGHT_LOSS, "ACTIVE", 1L, "Lose 5kg by Jan 2026");
@@ -260,6 +413,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$[1].goalType").value("MAINTAIN_WEIGHT"));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy mục tiêu theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `goalId` và `GoalDto` giả lập.
+     * 2. Cấu hình `adminService.getGoalById(goalId)` để trả về mục tiêu giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/goals/{id}`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `targetWeight` trong phản hồi JSON khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetGoalById_Success() throws Exception {
         Long goalId = 1L;
@@ -272,6 +434,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.targetWeight").value(70.0));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy mục tiêu khi lấy mục tiêu theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `goalId` không tồn tại.
+     * 2. Cấu hình `adminService.getGoalById(goalId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/goals/{id}`.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testGetGoalById_NotFound() throws Exception {
         Long goalId = 99L;
@@ -281,6 +452,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tạo mục tiêu mới.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `GoalDto` cho yêu cầu tạo và `GoalDto` mong đợi sau khi tạo.
+     * 2. Cấu hình `adminService.createGoal()` để trả về mục tiêu đã tạo.
+     * 3. Thực hiện yêu cầu POST đến `/api/admin/goals` với dữ liệu tạo và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `targetWeight` trong phản hồi JSON khớp với dữ liệu đã tạo.
+     */
     @Test
     void testCreateGoal_Success() throws Exception {
         GoalDto createRequest = new GoalDto(null, 65.0, LocalDate.of(2026, 6, 1), EGoalType.WEIGHT_LOSS, "PENDING", 1L, "Reach 65kg by June 2026");
@@ -296,6 +476,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.targetWeight").value(65.0));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi cập nhật mục tiêu.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `goalId`, `GoalDto` cho yêu cầu cập nhật và `GoalDto` mong đợi sau khi cập nhật.
+     * 2. Cấu hình `adminService.updateGoal()` để trả về mục tiêu đã cập nhật.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/goals/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `targetWeight` trong phản hồi JSON đã được cập nhật.
+     */
     @Test
     void testUpdateGoal_Success() throws Exception {
         Long goalId = 1L;
@@ -312,6 +501,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.targetWeight").value(68.0));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy mục tiêu khi cập nhật mục tiêu.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `goalId` không tồn tại và `GoalDto`.
+     * 2. Cấu hình `adminService.updateGoal()` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/goals/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testUpdateGoal_NotFound() throws Exception {
         Long goalId = 99L;
@@ -326,6 +524,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi xóa mục tiêu.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `goalId`.
+     * 2. Cấu hình `adminService.deleteGoal(goalId)` để không làm gì.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/goals/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung phản hồi là thông báo thành công.
+     */
     @Test
     void testDeleteGoal_Success() throws Exception {
         Long goalId = 1L;
@@ -337,6 +544,15 @@ class AdminControllerTest {
                 .andExpect(content().string("Goal deleted successfully!"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy mục tiêu khi xóa mục tiêu.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `goalId` không tồn tại.
+     * 2. Cấu hình `adminService.deleteGoal(goalId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/goals/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testDeleteGoal_NotFound() throws Exception {
         Long goalId = 99L;
@@ -348,6 +564,15 @@ class AdminControllerTest {
     }
 
     // --- Nutrition Plan Management Tests ---
+    /**
+     * Kiểm thử kịch bản thành công khi lấy tất cả kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một danh sách `NutritionPlanDto` giả lập.
+     * 2. Cấu hình `adminService.getAllNutritionPlans()` để trả về danh sách giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/plans`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung JSON phản hồi chứa dữ liệu kế hoạch dinh dưỡng mong muốn.
+     */
     @Test
     void testGetAllNutritionPlans_Success() throws Exception {
         NutritionPlanDto plan1 = new NutritionPlanDto(1L, "Plan A", LocalDate.of(2025, 1, 1), LocalDate.of(2025, 1, 31), "Weight Loss", 1L, Collections.emptyList());
@@ -362,6 +587,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$[1].nutritionGoal").value("Muscle Gain"));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi lấy kế hoạch dinh dưỡng theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `planId` và `NutritionPlanDto` giả lập.
+     * 2. Cấu hình `adminService.getNutritionPlanById(planId)` để trả về kế hoạch dinh dưỡng giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/plans/{id}`.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `planName` trong phản hồi JSON khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetNutritionPlanById_Success() throws Exception {
         Long planId = 1L;
@@ -374,6 +608,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.planName").value("Test Plan"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy kế hoạch dinh dưỡng khi lấy kế hoạch dinh dưỡng theo ID.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `planId` không tồn tại.
+     * 2. Cấu hình `adminService.getNutritionPlanById(planId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu GET đến `/api/admin/plans/{id}`.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testGetNutritionPlanById_NotFound() throws Exception {
         Long planId = 99L;
@@ -383,6 +626,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tạo kế hoạch dinh dưỡng mới.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `NutritionPlanDto` cho yêu cầu tạo và `NutritionPlanDto` mong đợi sau khi tạo.
+     * 2. Cấu hình `adminService.createNutritionPlan()` để trả về kế hoạch đã tạo.
+     * 3. Thực hiện yêu cầu POST đến `/api/admin/plans` với dữ liệu tạo và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `planName` trong phản hồi JSON khớp với dữ liệu đã tạo.
+     */
     @Test
     void testCreateNutritionPlan_Success() throws Exception {
         NutritionPlanDto createRequest = new NutritionPlanDto(null, "New Plan", LocalDate.of(2025, 4, 1), LocalDate.of(2025, 4, 30), "Bulking", 1L, Collections.emptyList());
@@ -398,6 +650,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.planName").value("New Plan"));
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi cập nhật kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `planId`, `NutritionPlanDto` cho yêu cầu cập nhật và `NutritionPlanDto` mong đợi sau khi cập nhật.
+     * 2. Cấu hình `adminService.updateNutritionPlan()` để trả về kế hoạch đã cập nhật.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/plans/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và trường `planName` trong phản hồi JSON đã được cập nhật.
+     */
     @Test
     void testUpdateNutritionPlan_Success() throws Exception {
         Long planId = 1L;
@@ -414,6 +675,15 @@ class AdminControllerTest {
                 .andExpect(jsonPath("$.planName").value("Updated Plan"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy kế hoạch dinh dưỡng khi cập nhật kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `planId` không tồn tại và `NutritionPlanDto`.
+     * 2. Cấu hình `adminService.updateNutritionPlan()` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu PUT đến `/api/admin/plans/{id}` với dữ liệu cập nhật và token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testUpdateNutritionPlan_NotFound() throws Exception {
         Long planId = 99L;
@@ -428,6 +698,15 @@ class AdminControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi xóa kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `planId`.
+     * 2. Cấu hình `adminService.deleteNutritionPlan(planId)` để không làm gì.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/plans/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 200 OK và nội dung phản hồi là thông báo thành công.
+     */
     @Test
     void testDeleteNutritionPlan_Success() throws Exception {
         Long planId = 1L;
@@ -439,6 +718,15 @@ class AdminControllerTest {
                 .andExpect(content().string("Nutrition plan deleted successfully!"));
     }
 
+    /**
+     * Kiểm thử kịch bản không tìm thấy kế hoạch dinh dưỡng khi xóa kế hoạch dinh dưỡng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị `planId` không tồn tại.
+     * 2. Cấu hình `adminService.deleteNutritionPlan(planId)` để ném ra `ResourceNotFoundException`.
+     * 3. Thực hiện yêu cầu DELETE đến `/api/admin/plans/{id}` với token CSRF.
+     * 4. Xác minh rằng trạng thái HTTP là 404 Not Found.
+     */
     @Test
     void testDeleteNutritionPlan_NotFound() throws Exception {
         Long planId = 99L;

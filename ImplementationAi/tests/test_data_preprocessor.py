@@ -1,4 +1,9 @@
 
+# test_data_preprocessor.py
+# Tệp này chứa các kiểm thử cho module 'data_preprocessor.py', đảm bảo rằng các hàm
+# tiền xử lý dữ liệu cho NLP, Vision và Recommendation hoạt động chính xác.
+# Nó kiểm tra các trường hợp cơ bản, trường hợp rỗng và xử lý các giá trị đặc biệt.
+
 import os
 import pandas as pd
 import pytest
@@ -12,6 +17,8 @@ from src.data_preprocessor import (
 )
 
 # Đường dẫn đến thư mục dữ liệu giả lập
+# Các biến này định nghĩa đường dẫn đến các tệp và thư mục dữ liệu đầu vào và đầu ra
+# giả lập được sử dụng trong quá trình kiểm thử.
 MOCK_DATA_DIR = "ImplementationAi/data"
 MOCK_NLP_INPUT = os.path.join(MOCK_DATA_DIR, "test_mock_nlp_data.csv")
 MOCK_NLP_OUTPUT = os.path.join(MOCK_DATA_DIR, "test_processed_nlp_data.csv")
@@ -26,6 +33,9 @@ MOCK_VISION_OUTPUT_DIR = os.path.join(MOCK_DATA_DIR, "test_processed_vision_data
 @pytest.fixture(autouse=True)
 def setup_and_teardown():
     # Setup: Đảm bảo thư mục dữ liệu giả lập tồn tại
+    # Fixture này thiết lập môi trường kiểm thử bằng cách tạo các thư mục cần thiết
+    # trước khi mỗi kiểm thử chạy. Nó đảm bảo rằng các đường dẫn file đầu vào và đầu ra
+    # đã sẵn sàng cho các hàm tiền xử lý.
     os.makedirs(MOCK_DATA_DIR, exist_ok=True)
     os.makedirs(MOCK_VISION_INPUT_DIR, exist_ok=True)
     os.makedirs(MOCK_VISION_OUTPUT_DIR, exist_ok=True)
@@ -33,6 +43,9 @@ def setup_and_teardown():
     yield
 
     # Teardown: Xóa tất cả các file và thư mục giả lập sau khi test
+    # Sau khi các kiểm thử hoàn tất, phần teardown này sẽ dọn dẹp môi trường
+    # bằng cách xóa tất cả các tệp và thư mục dữ liệu giả lập đã được tạo ra.
+    # Điều này giúp đảm bảo tính độc lập và sạch sẽ giữa các lần chạy kiểm thử.
     for f in [
         MOCK_NLP_INPUT,
         MOCK_NLP_OUTPUT,
@@ -53,6 +66,9 @@ def setup_and_teardown():
 
 def test_preprocess_nlp_data():
     # Test case 1: Dữ liệu NLP cơ bản
+    # Kiểm thử này xác minh hàm preprocess_nlp_data với dữ liệu văn bản mẫu.
+    # Nó kiểm tra việc làm sạch văn bản, bao gồm loại bỏ dấu câu, chuyển đổi chữ thường,
+    # và xử lý khoảng trắng.
     df_nlp = pd.DataFrame({"text": ["Hello, World!", "Python is great.", "  leading/trailing spaces ",
                                   "Mixed Case and Punctuation!@#$"]})
     df_nlp.to_csv(MOCK_NLP_INPUT, index=False)
@@ -70,6 +86,8 @@ def test_preprocess_nlp_data():
     ]
 
     # Test case 2: File input rỗng
+    # Kiểm thử này đảm bảo rằng hàm preprocess_nlp_data xử lý đúng cách các tệp đầu vào rỗng,
+    # tạo ra một DataFrame rỗng.
     df_empty = pd.DataFrame({"text": []})
     df_empty.to_csv(MOCK_NLP_INPUT, index=False)
     preprocess_nlp_data(input_file=MOCK_NLP_INPUT, output_file=MOCK_NLP_OUTPUT)
@@ -79,6 +97,9 @@ def test_preprocess_nlp_data():
 
 def test_preprocess_vision_data():
     # Tạo các file ảnh giả
+    # Kiểm thử này xác minh hàm preprocess_vision_data, tập trung vào việc xử lý các tệp hình ảnh.
+    # Nó tạo ra các tệp hình ảnh giả trong thư mục đầu vào và đảm bảo rằng chỉ các tệp hình ảnh
+    # được xử lý và sao chép vào thư mục đầu ra, trong khi các tệp không phải hình ảnh bị bỏ qua.
     with open(os.path.join(MOCK_VISION_INPUT_DIR, "image1.jpg"), "w") as f:
         f.write("dummy jpg content")
     with open(os.path.join(MOCK_VISION_INPUT_DIR, "image2.png"), "w") as f:
@@ -96,7 +117,7 @@ def test_preprocess_vision_data():
     assert len(processed_files) == 2
 
     # Test case: Thư mục input rỗng
-    # Xóa các file đã tạo để đảm bảo thư mục rỗng
+    # Kiểm thử này xử lý trường hợp thư mục đầu vào rỗng, đảm bảo rằng thư mục đầu ra cũng rỗng.
     for f in os.listdir(MOCK_VISION_INPUT_DIR):
         os.remove(os.path.join(MOCK_VISION_INPUT_DIR, f))
     # Dọn dẹp thư mục output trước khi test trường hợp rỗng
@@ -110,6 +131,9 @@ def test_preprocess_vision_data():
 
 def test_preprocess_recommendation_data():
     # Test case 1: Dữ liệu khuyến nghị cơ bản
+    # Kiểm thử này xác minh hàm preprocess_recommendation_data. Nó tạo dữ liệu giả lập
+    # cho sở thích ăn kiêng và mục tiêu sức khỏe, sau đó áp dụng mã hóa one-hot
+    # để chuyển đổi các cột phân loại thành định dạng số.
     df_rec = pd.DataFrame(
         {
             "user_id": [1, 2, 3],
@@ -147,6 +171,8 @@ def test_preprocess_recommendation_data():
     assert processed_df["goal_maintain_weight"].iloc[2] == 1
 
     # Test case 2: File input rỗng
+    # Kiểm thử này đảm bảo rằng hàm preprocess_recommendation_data xử lý đúng cách các tệp đầu vào rỗng,
+    # tạo ra một DataFrame rỗng.
     df_empty = pd.DataFrame(
         {"user_id": [], "dietary_preferences": [], "health_goals": [], "food_item": []}
     )
@@ -159,6 +185,8 @@ def test_preprocess_recommendation_data():
     assert processed_df_empty.empty
 
     # Test case 3: Dữ liệu với các giá trị NA
+    # Kiểm thử này xác minh khả năng của hàm xử lý các giá trị thiếu (None) trong các cột phân loại,
+    # đảm bảo rằng chúng không tạo ra các cột mới không mong muốn trong đầu ra đã xử lý.
     df_na = pd.DataFrame({
         "user_id": [4],
         "dietary_preferences": [None],
@@ -177,6 +205,10 @@ def test_preprocess_recommendation_data():
 
 def test_main_execution(mocker):
     # Sử dụng tempfile để tạo các tệp tạm thời cho input và output
+    # Kiểm thử này mô phỏng việc thực thi hàm `run_all_preprocessing` (thường được gọi từ main).
+    # Nó tạo các tệp đầu vào giả lập trong một thư mục tạm thời và sử dụng `mocker.patch.dict`
+    # để ghi đè các biến môi trường mà hàm này sử dụng. Cuối cùng, nó xác minh rằng
+    # tất cả các tệp đầu ra đã xử lý được tạo ra thành công.
     with tempfile.TemporaryDirectory() as temp_dir:
         # Mock NLP data
         nlp_input_file = os.path.join(temp_dir, "mock_nlp_data.csv")

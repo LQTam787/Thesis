@@ -1,3 +1,8 @@
+# conftest.py
+# Tệp này chứa các pytest fixtures dùng chung cho toàn bộ suite kiểm thử.
+# Các fixtures này cung cấp dữ liệu hoặc cấu hình được sử dụng lại bởi nhiều kiểm thử,
+# giúp duy trì tính nhất quán và giảm trùng lặp mã.
+
 """Fixtures for testing."""
 import base64
 import io

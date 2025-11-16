@@ -21,10 +21,10 @@ def preprocess_nlp_data(
     """
     print("Preprocessing NLP data...")
     df = pd.read_csv(input_file)
-    # Nguyên lý: Làm sạch văn bản (lowercase và loại bỏ ký tự không phải chữ/số/khoảng trắng) để chuẩn hóa đầu vào cho mô hình NLP.
-    # Luồng hoạt động: Tạo cột 'text_cleaned' mới trong DataFrame.
-    # Hoạt động tiền xử lý AI: Chuẩn bị dữ liệu văn bản để sử dụng trong mô hình NLP.
-    df["text_cleaned"] = df["text"].str.lower().str.replace(r"[^\w\s]", "", regex=True)
+    # Logic: Clean text (lowercase and remove non-alphanumeric/whitespace characters) to standardize input for the NLP model.
+    # Flow: Creates a new 'text_cleaned' column in the DataFrame.
+    # AI Preprocessing Activity: Prepares text data for use in the NLP model.
+    df["text_cleaned"] = df["text"].str.lower().str.replace(r"[^\\w\\s]", "", regex=True)
     df.to_csv(output_file, index=False)
     print(f"Processed NLP data saved to {output_file}")
 
@@ -40,9 +40,9 @@ def preprocess_vision_data(
     """
     print("Preprocessing Vision data...")
     os.makedirs(output_dir, exist_ok=True)
-    # Nguyên lý: Mô phỏng các bước tiền xử lý hình ảnh thực tế (ví dụ: thay đổi kích thước, chuẩn hóa)
-    # Luồng hoạt động: Tạo các tệp đầu ra giả lập với tiền tố 'processed_' cho dữ liệu hình ảnh.
-    # Hoạt động tiền xử lý AI: Mô phỏng việc thay đổi kích thước/chuẩn hóa dữ liệu hình ảnh.
+    # Logic: Simulates real image preprocessing steps (e.g., resizing, normalization).
+    # Flow: Creates dummy output files with a 'processed_' prefix for image data.
+    # AI Preprocessing Activity: Simulates resizing/normalizing image data.
     for filename in os.listdir(input_dir):
         if filename.endswith((".jpg", ".png")):
             # In a real scenario, this would involve resizing, normalization, etc.
@@ -64,9 +64,9 @@ def preprocess_recommendation_data(
     """
     print("Preprocessing Recommendation data...")
     df = pd.read_csv(input_file)
-    # Nguyên lý: Sử dụng mã hóa one-hot cho các biến phân loại (dietary_preferences, health_goals).
-    # Luồng hoạt động: Chuẩn bị dữ liệu cho mô hình học máy yêu cầu đầu vào số hóa.
-    # Hoạt động tiền xử lý AI: Mã hóa one-hot các biến phân loại để tạo features số hóa cho mô hình Khuyến nghị.
+    # Logic: Uses one-hot encoding for categorical variables (dietary_preferences, health_goals).
+    # Flow: Prepares data for machine learning models that require numerical inputs.
+    # AI Preprocessing Activity: One-hot encodes categorical variables to create numerical features for the Recommendation model.
     df = pd.get_dummies(
         df, columns=["dietary_preferences", "health_goals"], prefix=["diet", "goal"]
     )
@@ -74,7 +74,7 @@ def preprocess_recommendation_data(
     print(f"Processed Recommendation data saved to {output_file}")
 
 def run_all_preprocessing():
-    # Luồng hoạt động: Khi chạy trực tiếp, thực hiện tiền xử lý cho tất cả các tập dữ liệu.
+    # Flow: When run directly, performs preprocessing for all datasets.
     preprocess_nlp_data(
         input_file=os.getenv("NLP_INPUT_FILE", "ImplementationAi/data/mock_nlp_data.csv"),
         output_file=os.getenv("NLP_OUTPUT_FILE", "ImplementationAi/data/processed_nlp_data.csv"),

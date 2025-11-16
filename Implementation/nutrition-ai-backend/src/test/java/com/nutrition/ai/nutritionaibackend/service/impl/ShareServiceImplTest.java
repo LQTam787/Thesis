@@ -24,23 +24,47 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Unit tests for the {@link ShareServiceImpl} class.
- * Đảm bảo 100% coverage cho tất cả các phương thức.
+ * {@code ShareServiceImplTest} là một lớp kiểm thử đơn vị cho {@link ShareServiceImpl}.
+ * Lớp này sử dụng JUnit 5 và Mockito để kiểm thử các phương thức logic nghiệp vụ của dịch vụ chia sẻ nội dung,
+ * cô lập {@link ShareServiceImpl} khỏi các phụ thuộc bên ngoài như cơ sở dữ liệu thông qua các repository mock
+ * ({@link SharedContentRepository}, {@link ContentLikeRepository}, {@link ContentCommentRepository}, {@link UserRepository})
+ * và ánh xạ đối tượng thông qua {@link ModelMapper}.
+ * Mục tiêu chính là đảm bảo rằng các chức năng chia sẻ nội dung, thích nội dung, bình luận nội dung
+ * và lấy bình luận hoạt động chính xác và xử lý các trường hợp biên như không tìm thấy tài nguyên.
  */
 @ExtendWith(MockitoExtension.class)
 class ShareServiceImplTest {
 
+    /**
+     * Mô phỏng {@link SharedContentRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link SharedContent}.
+     */
     @Mock
     private SharedContentRepository sharedContentRepository;
+    /**
+     * Mô phỏng {@link ContentLikeRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link ContentLike}.
+     */
     @Mock
     private ContentLikeRepository contentLikeRepository;
+    /**
+     * Mô phỏng {@link ContentCommentRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link ContentComment}.
+     */
     @Mock
     private ContentCommentRepository contentCommentRepository;
+    /**
+     * Mô phỏng {@link UserRepository} để kiểm soát hành vi truy cập dữ liệu của đối tượng {@link User}.
+     */
     @Mock
     private UserRepository userRepository;
+    /**
+     * Mô phỏng {@link ModelMapper} để kiểm soát hành vi ánh xạ giữa các đối tượng DTO và Domain.
+     */
     @Mock
     private ModelMapper modelMapper;
 
+    /**
+     * Tiêm {@link ShareServiceImpl} và tự động tiêm các đối tượng {@code @Mock} vào các trường tương ứng của nó.
+     * Đây là đối tượng thực sẽ được kiểm thử.
+     */
     @InjectMocks
     private ShareServiceImpl shareService;
 
@@ -50,6 +74,11 @@ class ShareServiceImplTest {
     private ContentComment testContentComment;
     private ContentCommentDto testContentCommentDto;
 
+    /**
+     * Phương thức thiết lập chạy trước mỗi bài kiểm thử (phương thức được chú thích bởi {@code @Test}).
+     * Phương thức này chịu trách nhiệm khởi tạo các đối tượng dữ liệu giả định như {@link User}, {@link SharedContent},
+     * {@link SharedContentDto}, {@link ContentComment} và {@link ContentCommentDto} để sử dụng trong các kiểm thử.
+     */
     @BeforeEach
     void setUp() {
         testUser = User.builder()
@@ -89,6 +118,19 @@ class ShareServiceImplTest {
         testContentCommentDto.setText("This is a comment.");
     }
 
+    /**
+     * Kiểm thử phương thức {@code shareContent} của {@link ShareServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho các repository và mapper để mô phỏng người dùng tồn tại,
+     *    lưu nội dung chia sẻ thành công và ánh xạ đối tượng.
+     * 2. Gọi phương thức {@code shareContent} thực tế của {@code shareService}.
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link SharedContentDto} trả về không null và khớp với đối tượng giả định.
+     * 4. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code userRepository.findById}, {@code sharedContentRepository.save},
+     *    {@code modelMapper.map}, {@code contentLikeRepository.countBySharedContentId}
+     *    và {@code contentCommentRepository.countBySharedContentId} đã được gọi đúng 1 lần.
+     */
     @DisplayName("Test shareContent - Success")
     @Test
     void shareContent_Success() {
@@ -115,6 +157,18 @@ class ShareServiceImplTest {
         verify(contentCommentRepository, times(1)).countBySharedContentId(testSharedContent.getId());
     }
 
+    /**
+     * Kiểm thử phương thức {@code shareContent} của {@link ShareServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code userRepository}: khi {@code findById(nonExistentUserId)} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 2. Gọi phương thức {@code shareContent} thực tế của {@code shareService} với ID người dùng không tồn tại.
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link EntityNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng các phương thức {@code save}, {@code map}, {@code countBySharedContentId} KHÔNG BAO GIỜ
+     *    được gọi.
+     */
     @DisplayName("Test shareContent - User Not Found")
     @Test
     void shareContent_UserNotFound_ThrowsException() {
@@ -134,6 +188,22 @@ class ShareServiceImplTest {
         verify(contentCommentRepository, never()).countBySharedContentId(anyLong());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllPublicContent} của {@link ShareServiceImpl} trong trường hợp trả về nội dung công khai.
+     * Luồng hoạt động:
+     * 1. Tạo các đối tượng {@link SharedContent} giả định, bao gồm cả nội dung công khai và nội dung riêng tư.
+     * 2. Tạo các đối tượng {@link SharedContentDto} giả định cho nội dung công khai.
+     * 3. Thiết lập hành vi giả lập cho các repository và mapper để mô phỏng việc tìm tất cả nội dung,
+     *    ánh xạ nội dung công khai và đếm lượt thích/bình luận.
+     * 4. Gọi phương thức {@code getAllPublicContent} thực tế của {@code shareService}.
+     * 5. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và có kích thước là 2.
+     *    - Kiểm tra xem danh sách có chứa các nội dung công khai và không chứa nội dung riêng tư.
+     * 6. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code sharedContentRepository.findAll()} đã được gọi đúng 1 lần.
+     *    - Đảm bảo rằng {@code modelMapper.map}, {@code contentLikeRepository.countBySharedContentId}
+     *    và {@code contentCommentRepository.countBySharedContentId} đã được gọi đúng số lần cho nội dung công khai.
+     */
     @DisplayName("Test getAllPublicContent - Returns Public Content")
     @Test
     void getAllPublicContent_ReturnsPublicContent() {
@@ -176,6 +246,18 @@ class ShareServiceImplTest {
         verify(contentCommentRepository, times(1)).countBySharedContentId(publicContent2.getId());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllPublicContent} của {@link ShareServiceImpl} khi không có nội dung công khai.
+     * Luồng hoạt động:
+     * 1. Tạo các đối tượng {@link SharedContent} giả định chỉ chứa nội dung riêng tư.
+     * 2. Thiết lập hành vi giả lập cho {@code sharedContentRepository}: khi {@code findAll()} được gọi,
+     *    nó sẽ trả về danh sách các nội dung riêng tư.
+     * 3. Gọi phương thức {@code getAllPublicContent} thực tế của {@code shareService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và là một danh sách trống.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code map}, {@code countBySharedContentId} KHÔNG BAO GIỜ
+     *    được gọi.
+     */
     @DisplayName("Test getAllPublicContent - Returns Empty List if No Public Content")
     @Test
     void getAllPublicContent_ReturnsEmptyList_NoPublicContent() {
@@ -196,6 +278,17 @@ class ShareServiceImplTest {
         verify(contentCommentRepository, never()).countBySharedContentId(anyLong());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getAllPublicContent} của {@link ShareServiceImpl} khi không có nội dung nào trong kho lưu trữ.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code sharedContentRepository}: khi {@code findAll()} được gọi,
+     *    nó sẽ trả về một danh sách trống.
+     * 2. Gọi phương thức {@code getAllPublicContent} thực tế của {@code shareService}.
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và là một danh sách trống.
+     * 4. Xác minh tương tác: Đảm bảo rằng các phương thức {@code map}, {@code countBySharedContentId} KHÔNG BAO GIỜ
+     *    được gọi.
+     */
     @DisplayName("Test getAllPublicContent - Returns Empty List if No Content")
     @Test
     void getAllPublicContent_ReturnsEmptyList_NoContent() {
@@ -213,6 +306,15 @@ class ShareServiceImplTest {
         verify(contentCommentRepository, never()).countBySharedContentId(anyLong());
     }
 
+    /**
+     * Kiểm thử phương thức {@code likeContent} của {@link ShareServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho các repository để mô phỏng nội dung chia sẻ và người dùng tồn tại.
+     * 2. Gọi phương thức {@code likeContent} thực tế của {@code shareService}.
+     * 3. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code sharedContentRepository.findById}, {@code userRepository.findById}
+     *    và {@code contentLikeRepository.save} đã được gọi đúng 1 lần.
+     */
     @DisplayName("Test likeContent - Success")
     @Test
     void likeContent_Success() {
@@ -226,6 +328,17 @@ class ShareServiceImplTest {
         verify(contentLikeRepository, times(1)).save(any(ContentLike.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code likeContent} của {@link ShareServiceImpl} trong trường hợp không tìm thấy nội dung chia sẻ.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho {@code sharedContentRepository}: khi {@code findById(nonExistentSharedContentId)} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy nội dung).
+     * 2. Gọi phương thức {@code likeContent} thực tế của {@code shareService} với ID nội dung không tồn tại.
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link EntityNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng các phương thức {@code findById(user)} và {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @DisplayName("Test likeContent - SharedContent Not Found")
     @Test
     void likeContent_SharedContentNotFound_ThrowsException() {
@@ -243,6 +356,18 @@ class ShareServiceImplTest {
         verify(contentLikeRepository, never()).save(any(ContentLike.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code likeContent} của {@link ShareServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code sharedContentRepository.findById(testSharedContent.getId())} trả về đối tượng {@link SharedContent} giả định.
+     *    - {@code userRepository.findById(nonExistentUserId)} trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 2. Gọi phương thức {@code likeContent} thực tế của {@code shareService} với ID người dùng không tồn tại.
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link EntityNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 4. Xác minh tương tác: Đảm bảo rằng phương thức {@code save} KHÔNG BAO GIỜ được gọi.
+     */
     @DisplayName("Test likeContent - User Not Found")
     @Test
     void likeContent_UserNotFound_ThrowsException() {
@@ -261,6 +386,19 @@ class ShareServiceImplTest {
         verify(contentLikeRepository, never()).save(any(ContentLike.class));
     }
 
+    /**
+     * Kiểm thử phương thức {@code commentOnContent} của {@link ShareServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Tạo một chuỗi bình luận.
+     * 2. Thiết lập hành vi giả lập cho các repository và mapper để mô phỏng nội dung chia sẻ và người dùng tồn tại,
+     *    lưu bình luận thành công và ánh xạ đối tượng.
+     * 3. Gọi phương thức {@code commentOnContent} thực tế của {@code shareService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem đối tượng {@link ContentCommentDto} trả về không null và khớp với đối tượng giả định.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code sharedContentRepository.findById}, {@code userRepository.findById},
+     *    {@code contentCommentRepository.save} và {@code modelMapper.map} đã được gọi đúng 1 lần.
+     */
     @DisplayName("Test commentOnContent - Success")
     @Test
     void commentOnContent_Success() {
@@ -286,6 +424,19 @@ class ShareServiceImplTest {
         verify(modelMapper, times(1)).map(testContentComment, ContentCommentDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code commentOnContent} của {@link ShareServiceImpl} trong trường hợp không tìm thấy nội dung chia sẻ.
+     * Luồng hoạt động:
+     * 1. Tạo một chuỗi bình luận và ID nội dung chia sẻ không tồn tại.
+     * 2. Thiết lập hành vi giả lập cho {@code sharedContentRepository}: khi {@code findById(nonExistentSharedContentId)} được gọi,
+     *    nó sẽ trả về một {@link Optional#empty()} (không tìm thấy nội dung).
+     * 3. Gọi phương thức {@code commentOnContent} thực tế của {@code shareService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link EntityNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code findById(user)}, {@code save} và {@code map} KHÔNG BAO GIỜ
+     *    được gọi.
+     */
     @DisplayName("Test commentOnContent - SharedContent Not Found")
     @Test
     void commentOnContent_SharedContentNotFound_ThrowsException() {
@@ -305,6 +456,19 @@ class ShareServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code commentOnContent} của {@link ShareServiceImpl} trong trường hợp không tìm thấy người dùng.
+     * Luồng hoạt động:
+     * 1. Tạo một chuỗi bình luận và ID người dùng không tồn tại.
+     * 2. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code sharedContentRepository.findById(testSharedContent.getId())} trả về đối tượng {@link SharedContent} giả định.
+     *    - {@code userRepository.findById(nonExistentUserId)} trả về một {@link Optional#empty()} (không tìm thấy người dùng).
+     * 3. Gọi phương thức {@code commentOnContent} thực tế của {@code shareService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link EntityNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code save} và {@code map} KHÔNG BAO GIỜ được gọi.
+     */
     @DisplayName("Test commentOnContent - User Not Found")
     @Test
     void commentOnContent_UserNotFound_ThrowsException() {
@@ -325,6 +489,22 @@ class ShareServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getCommentsForContent} của {@link ShareServiceImpl} trong trường hợp thành công.
+     * Luồng hoạt động:
+     * 1. Tạo các đối tượng {@link ContentComment} và {@link ContentCommentDto} giả định.
+     * 2. Thiết lập hành vi giả lập cho các repository và mapper:
+     *    - {@code sharedContentRepository.existsById(testSharedContent.getId())} trả về {@code true}.
+     *    - {@code contentCommentRepository.findAll()} trả về danh sách các bình luận giả định.
+     *    - {@code modelMapper.map} ánh xạ các đối tượng {@link ContentComment} thành {@link ContentCommentDto}.
+     * 3. Gọi phương thức {@code getCommentsForContent} thực tế của {@code shareService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và có kích thước là 2.
+     *    - Kiểm tra xem danh sách có chứa các đối tượng {@link ContentCommentDto} giả định.
+     * 5. Xác minh tương tác:
+     *    - Đảm bảo rằng {@code sharedContentRepository.existsById}, {@code contentCommentRepository.findAll}
+     *    và {@code modelMapper.map} đã được gọi đúng số lần.
+     */
     @DisplayName("Test getCommentsForContent - Success")
     @Test
     void getCommentsForContent_Success() {
@@ -359,6 +539,18 @@ class ShareServiceImplTest {
         verify(modelMapper, times(1)).map(anotherComment, ContentCommentDto.class);
     }
 
+    /**
+     * Kiểm thử phương thức {@code getCommentsForContent} của {@link ShareServiceImpl} trong trường hợp không tìm thấy nội dung chia sẻ.
+     * Luồng hoạt động:
+     * 1. Tạo một ID nội dung chia sẻ không tồn tại.
+     * 2. Thiết lập hành vi giả lập cho {@code sharedContentRepository}: khi {@code existsById(nonExistentSharedContentId)} được gọi,
+     *    nó sẽ trả về {@code false} (không tìm thấy nội dung).
+     * 3. Gọi phương thức {@code getCommentsForContent} thực tế của {@code shareService}.
+     * 4. Xác minh kết quả:
+     *    - Kiểm tra xem một {@link EntityNotFoundException} có được ném ra hay không.
+     *    - Kiểm tra xem thông báo lỗi của ngoại lệ có chính xác hay không.
+     * 5. Xác minh tương tác: Đảm bảo rằng các phương thức {@code findAll} và {@code map} KHÔNG BAO GIỜ được gọi.
+     */
     @DisplayName("Test getCommentsForContent - SharedContent Not Found")
     @Test
     void getCommentsForContent_SharedContentNotFound_ThrowsException() {
@@ -376,6 +568,18 @@ class ShareServiceImplTest {
         verify(modelMapper, never()).map(any(), any());
     }
 
+    /**
+     * Kiểm thử phương thức {@code getCommentsForContent} của {@link ShareServiceImpl} trong trường hợp không có bình luận nào
+     * cho nội dung chia sẻ tồn tại.
+     * Luồng hoạt động:
+     * 1. Thiết lập hành vi giả lập cho các repository:
+     *    - {@code sharedContentRepository.existsById(testSharedContent.getId())} trả về {@code true}.
+     *    - {@code contentCommentRepository.findAll()} trả về một danh sách trống.
+     * 2. Gọi phương thức {@code getCommentsForContent} thực tế của {@code shareService}.
+     * 3. Xác minh kết quả:
+     *    - Kiểm tra xem danh sách kết quả không null và là một danh sách trống.
+     * 4. Xác minh tương tác: Đảm bảo rằng phương thức {@code map} KHÔNG BAO GIỜ được gọi.
+     */
     @DisplayName("Test getCommentsForContent - No Comments for Existing SharedContent")
     @Test
     void getCommentsForContent_NoCommentsForExistingSharedContent() {

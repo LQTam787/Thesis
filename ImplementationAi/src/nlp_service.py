@@ -7,9 +7,9 @@ For a production system, this would be replaced with a more sophisticated model 
 from transformers import pipeline
 from typing import Dict, Any
 
-# Nguyên lý: Tải một mô hình NLP tiền huấn luyện (ở đây là sentiment-analysis) từ thư viện Hugging Face.
-# Luồng hoạt động: Mô hình này sẽ được gọi mỗi khi API NLP nhận yêu cầu.
-# Luồng dữ liệu AI: Mô hình được tải đã được huấn luyện trên một tập dữ liệu lớn về phân tích tình cảm.
+# Logic: Load a pre-trained NLP model (here, sentiment-analysis) from the Hugging Face library.
+# Flow: This pipeline will be called each time the NLP API receives a request.
+# AI Data Flow: The loaded model is pre-trained on a large dataset for sentiment analysis.
 nlp_pipeline = pipeline("sentiment-analysis") # Using a sentiment analysis model as an example
 
 def process_text_for_nutrition_analysis(text: str):
@@ -28,18 +28,18 @@ def process_text_for_nutrition_analysis(text: str):
     """
     print(f"Processing NLP for text: {text}")
     
-    # Luồng hoạt động: Đưa văn bản vào pipeline để lấy kết quả phân tích tình cảm (LABEL và SCORE).
+    # Flow: Pass the text to the pipeline to get sentiment analysis results (LABEL and SCORE).
     sentiment_result = nlp_pipeline(text)[0]
     
-    # Nguyên lý: Mô phỏng việc trích xuất thực thể/món ăn (Entity Extraction).
-    # Luồng hoạt động: Trong môi trường thực tế sẽ dùng mô hình NER (Named Entity Recognition) chuyên biệt.
+    # Logic: Simulate entity/food item extraction.
+    # Flow: In a real environment, a specialized NER (Named Entity Recognition) model would be used.
     detected_food_items = []
     if "apple" in text.lower():
         detected_food_items.append("apple")
     if "chicken breast" in text.lower():
         detected_food_items.append("chicken breast")
         
-    # Luồng hoạt động: Trả về kết quả phân tích tổng hợp.
+    # Flow: Return the aggregated analysis result.
     analysis_result = {
         "original_text": text,
         "detected_food_items": detected_food_items,

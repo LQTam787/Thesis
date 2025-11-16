@@ -10,9 +10,9 @@ from PIL import Image
 import numpy as np
 from tensorflow.keras.applications.mobilenet_v2 import MobileNetV2, preprocess_input, decode_predictions
 
-# Nguyên lý: Tải mô hình phân loại hình ảnh MobileNetV2 đã được huấn luyện trên tập dữ liệu ImageNet.
-# Luồng hoạt động: Mô hình này sẽ nhận diện đối tượng trong hình ảnh.
-# Luồng dữ liệu AI: Tải mô hình đã được huấn luyện với kiến thức từ tập dữ liệu ImageNet.
+# Logic: Load the MobileNetV2 image classification model, pre-trained on the ImageNet dataset.
+# Flow: This model will recognize objects in the image.
+# AI Data Flow: Loads a model pre-trained with knowledge from the ImageNet dataset.
 model = MobileNetV2(weights='imagenet')
 
 def analyze_image_for_food_recognition(image_data: str):
@@ -32,25 +32,25 @@ def analyze_image_for_food_recognition(image_data: str):
     print("Analyzing image for food recognition.")
     
     try:
-        # Luồng hoạt động: Giải mã Base64 thành dữ liệu byte, sau đó mở bằng PIL.
-        # Luồng dữ liệu AI: Chuyển đổi dữ liệu hình ảnh (input) thô thành định dạng có thể xử lý.
+        # Flow: Decode Base64 to byte data, then open with PIL.
+        # AI Data Flow: Converts raw image data (input) into a processable format.
         image_bytes = base64.b64decode(image_data)
         image = Image.open(io.BytesIO(image_bytes))
-        # Nguyên lý: Thay đổi kích thước hình ảnh về chuẩn đầu vào (224x224) của MobileNetV2.
+        # Logic: Resize the image to the standard input size (224x224) for MobileNetV2.
         image = image.resize((224, 224)) # MobileNetV2 input size
         
-        # Luồng hoạt động: Chuyển đổi sang mảng Numpy, thêm chiều batch, và tiền xử lý theo yêu cầu của mô hình.
-        # Luồng dữ liệu AI: Chuẩn hóa và định hình dữ liệu hình ảnh đầu vào (pre-processing).
+        # Flow: Convert to Numpy array, add batch dimension, and preprocess as required by the model.
+        # AI Data Flow: Normalizes and shapes input image data (pre-processing).
         image_array = np.array(image)
         image_array = np.expand_dims(image_array, axis=0)
         image_array = preprocess_input(image_array)
         
-        # Luồng hoạt động: Thực hiện dự đoán và giải mã 3 dự đoán hàng đầu.
+        # Flow: Perform prediction and decode the top 3 predictions.
         predictions = model.predict(image_array)
         decoded_predictions = decode_predictions(predictions, top=3)[0]
         
         detected_foods = []
-        # Luồng hoạt động: Định dạng kết quả dự đoán thành danh sách các món ăn và độ tin cậy.
+        # Flow: Format prediction results into a list of food items and confidence scores.
         detected_foods = [{"name": label, "confidence": float(score)} for _, label, score in decoded_predictions]
 
         recognition_result = {
@@ -58,7 +58,7 @@ def analyze_image_for_food_recognition(image_data: str):
             "nutritional_estimate": "Estimates would require a specialized food recognition model with nutritional data."
         }
     except Exception as e:
-        # Luồng hoạt động: Xử lý lỗi nếu việc giải mã hoặc xử lý hình ảnh thất bại.
+        # Flow: Handle errors if image decoding or processing fails.
         recognition_result = {"error": str(e), "message": "Failed to process image."}
         
     return recognition_result

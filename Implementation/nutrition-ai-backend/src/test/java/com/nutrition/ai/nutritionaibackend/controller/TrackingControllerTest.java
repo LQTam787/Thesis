@@ -24,6 +24,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Lớp kiểm thử `TrackingControllerTest` chịu trách nhiệm kiểm thử các điểm cuối API liên quan đến chức năng theo dõi
+ * (ghi nhật ký thực phẩm, ghi nhật ký hoạt động và tạo báo cáo tiến độ) trong `TrackingController`.
+ * Nó sử dụng `@WebMvcTest` để tải ngữ cảnh ứng dụng Spring MVC tối thiểu, chỉ tập trung vào `TrackingController`.
+ * `@WithMockUser` giả lập một người dùng đã đăng nhập, cho phép kiểm thử các điểm cuối yêu cầu xác thực.
+ * `MockMvc` được sử dụng để mô phỏng các yêu cầu HTTP và `Mockito` để giả lập (mock) `TrackingService`,
+ * cho phép kiểm soát chặt chẽ hành vi của các phụ thuộc và cô lập logic của controller để kiểm thử.
+ */
 @WebMvcTest(TrackingController.class)
 @WithMockUser
 class TrackingControllerTest {
@@ -39,6 +47,15 @@ class TrackingControllerTest {
 
     private final String userId = "123"; // ID người dùng giả lập trong đường dẫn
 
+    /**
+     * Kiểm thử kịch bản thành công khi ghi nhật ký thực phẩm cho người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một đối tượng `FoodLogDto` đầu vào và một đối tượng `FoodLogDto` phản hồi (có ID đã tạo).
+     * 2. Giả lập `trackingService.logFood()` để trả về `FoodLogDto` đã lưu, mô phỏng việc ghi nhật ký thành công.
+     * 3. Thực hiện yêu cầu POST đến `/api/v1/tracking/food/{userId}` với `FoodLogDto` dưới dạng JSON và token CSRF.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK.
+     */
     @Test
     void testLogFood_Success() throws Exception {
         // 1. Chuẩn bị DTO đầu vào và DTO phản hồi (có ID)
@@ -56,6 +73,15 @@ class TrackingControllerTest {
                 .andExpect(status().isOk()); // 4. Kiểm tra: Trạng thái 200 OK
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi ghi nhật ký hoạt động cho người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một đối tượng `ActivityLogDto` đầu vào và một đối tượng `ActivityLogDto` phản hồi (có ID đã tạo).
+     * 2. Giả lập `trackingService.logActivity()` để trả về `ActivityLogDto` đã lưu, mô phỏng việc ghi nhật ký thành công.
+     * 3. Thực hiện yêu cầu POST đến `/api/v1/tracking/activity/{userId}` với `ActivityLogDto` dưới dạng JSON và token CSRF.
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK.
+     */
     @Test
     void testLogActivity_Success() throws Exception {
         // Nguyên lý tương tự như testLogFood_Success, nhưng cho ActivityLog
@@ -71,6 +97,15 @@ class TrackingControllerTest {
                 .andExpect(status().isOk());
     }
 
+    /**
+     * Kiểm thử kịch bản thành công khi tạo và lấy báo cáo tiến độ cho người dùng.
+     * <p>
+     * Luồng hoạt động:
+     * 1. Chuẩn bị một đối tượng `ProgressReportDto` giả lập.
+     * 2. Giả lập `trackingService.generateProgressReport()` để trả về báo cáo tiến độ giả lập.
+     * 3. Thực hiện yêu cầu GET đến `/api/v1/tracking/report/{userId}` với tham số truy vấn `type` (ví dụ: "weekly").
+     * 4. Xác minh rằng phản hồi có trạng thái HTTP 200 OK và các trường `reportType` và `summary` trong JSON phản hồi khớp với dữ liệu giả lập.
+     */
     @Test
     void testGetProgressReport_Success() throws Exception {
         // 1. Chuẩn bị DTO báo cáo giả lập

@@ -11,20 +11,20 @@ from flask import Flask, jsonify
 from flasgger import Swagger
 from flask_pydantic import validate
 
-# Luồng hoạt động: Nhập các hàm logic nghiệp vụ từ các dịch vụ AI.
+# Logic: Import business logic functions from AI services.
 from src.nlp_service import process_text_for_nutrition_analysis
 from src.vision_service import analyze_image_for_food_recognition
 from src.recommendation_service import generate_nutrition_recommendations
-# Luồng hoạt động: Nhập các schema Pydantic để xác thực yêu cầu API.
+# Logic: Import Pydantic schemas for API request validation.
 from src.schemas import NlpRequest, VisionRequest, RecommendationRequest
 
 app = Flask(__name__)
-# Nguyên lý: Khởi tạo Flasgger để tự động tạo tài liệu Swagger/OpenAPI từ docstring của các route.
+# Logic: Initialize Flasgger to automatically generate Swagger/OpenAPI documentation from route docstrings.
 swagger = Swagger(app)
 
-# Luồng hoạt động: Định nghĩa endpoint cho dịch vụ NLP.
+# Logic: Define endpoint for the NLP service.
 @app.route('/api/ai/nlp/analyze', methods=['POST'])
-# Nguyên lý: Decorator @validate() từ Flask-Pydantic tự động xác thực body yêu cầu theo schema NlpRequest.
+# Logic: The @validate() decorator from Flask-Pydantic automatically validates the request body against the NlpRequest schema.
 @validate()
 def nlp_analyze(body: NlpRequest):
     """
@@ -40,12 +40,12 @@ def nlp_analyze(body: NlpRequest):
       200:
         description: Analysis result
     """
-    # Luồng hoạt động: Gọi hàm xử lý chính và trả về kết quả dưới dạng JSON.
-    # Luồng dữ liệu API: Nhận văn bản đầu vào từ body, chuyển đến process_text_for_nutrition_analysis.
+    # Flow: Call the main processing function and return the result as JSON.
+    # Data Flow API: Receives text input from the body, passes it to process_text_for_nutrition_analysis.
     result = process_text_for_nutrition_analysis(body.text)
     return jsonify(result)
 
-# Luồng hoạt động: Định nghĩa endpoint cho dịch vụ Vision.
+# Logic: Define endpoint for the Vision service.
 @app.route('/api/ai/vision/analyze', methods=['POST'])
 @validate()
 def vision_analyze(body: VisionRequest):
@@ -62,12 +62,12 @@ def vision_analyze(body: VisionRequest):
       200:
         description: Recognition result
     """
-    # Luồng hoạt động: Gọi hàm xử lý hình ảnh và trả về kết quả dưới dạng JSON.
-    # Luồng dữ liệu API: Nhận dữ liệu hình ảnh Base64, chuyển đến analyze_image_for_food_recognition.
+    # Flow: Call the image processing function and return the result as JSON.
+    # Data Flow API: Receives Base64 image data, passes it to analyze_image_for_food_recognition.
     result = analyze_image_for_food_recognition(body.image_data)
     return jsonify(result)
 
-# Luồng hoạt động: Định nghĩa endpoint cho dịch vụ Khuyến nghị.
+# Logic: Define endpoint for the Recommendation service.
 @app.route('/api/ai/recommendation/generate', methods=['POST'])
 @validate()
 def recommendation_generate(body: RecommendationRequest):
@@ -84,8 +84,8 @@ def recommendation_generate(body: RecommendationRequest):
       200:
         description: Recommendation result
     """
-    # Luồng hoạt động: Gọi hàm tạo khuyến nghị với các tham số từ body.
-    # Luồng dữ liệu API: Nhận hồ sơ người dùng, sở thích, mục tiêu, chuyển đến generate_nutrition_recommendations.
+    # Flow: Call the recommendation generation function with parameters from the body.
+    # Data Flow API: Receives user profile, dietary preferences, and natural language nutrition goal, passes them to generate_nutrition_recommendations.
     recommendations = generate_nutrition_recommendations(
         body.user_profile,
         body.dietary_preferences,
@@ -94,5 +94,5 @@ def recommendation_generate(body: RecommendationRequest):
     return jsonify(recommendations)
 
 if __name__ == '__main__':
-    # Luồng hoạt động: Khởi chạy máy chủ web Flask ở chế độ gỡ lỗi (debug) trên cổng 5000.
+    # Flow: Start the Flask web server in debug mode on port 5000.
     app.run(debug=True, port=5000)

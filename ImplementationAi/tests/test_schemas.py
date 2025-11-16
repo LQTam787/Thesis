@@ -1,3 +1,8 @@
+# test_schemas.py
+# Tệp này chứa các kiểm thử cho các Pydantic schema được định nghĩa trong 'src/schemas.py'.
+# Các kiểm thử này đảm bảo rằng các schema xử lý đúng cách dữ liệu đầu vào hợp lệ và
+# không hợp lệ, đặc biệt là các trường hợp thiếu trường bắt buộc hoặc trường rỗng.
+
 import pytest
 from pydantic import ValidationError
 from src.schemas import NlpRequest, VisionRequest, RecommendationRequest
