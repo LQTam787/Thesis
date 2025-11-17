@@ -18,6 +18,7 @@ project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..
 sys.path.insert(0, project_root)
 # Thêm thư mục 'src' vào sys.path để các import trực tiếp như 'from src.module import ...' hoạt động
 sys.path.insert(0, os.path.join(project_root, 'ImplementationAi'))
+sys.path.insert(0, os.path.join(project_root, 'ImplementationAi', 'src'))
 
 
 @pytest.fixture(scope="session")
