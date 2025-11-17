@@ -11,12 +11,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pytest
 from flask import json
 from unittest.mock import patch
-
-try:
-    from src.app import app
-except ImportError:
-    # Attempt relative import fallback if running tests in different context
-    from app import app
+from src.app import app
 
 # Cấu hình client kiểm thử cho ứng dụng Flask
 # Fixture này cung cấp một client kiểm thử để gửi các yêu cầu HTTP đến ứng dụng Flask.
