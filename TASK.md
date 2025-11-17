@@ -92,7 +92,7 @@
     - [x] Soạn thảo Kế hoạch Kiểm thử Tích hợp (Integration Test Plan).
     - [x] Viết Integration Test cho luồng xác thực (Authentication Flow).
     - [x] Viết Integration Test cho các luồng nghiệp vụ chính (VD: tạo và quản lý kế hoạch dinh dưỡng).
-    - [x] Viết Integration Test cho các luồng tương tác với module AI trong giai đoạn kiểm thử một hệ thống ứng dụng hỗ trợ dinh dưỡng có tích hợp AI.
+    - [x] Viết Integration Test cho các luồng tương tác với module AI trong giai đoạn kiểm thử một hệ thống ứng dụng ứng dụng dinh dưỡng có tích hợp AI.
 
 ### **VIII. Giai đoạn Hoàn thiện (Finalization)**
 

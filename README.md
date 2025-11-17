@@ -46,6 +46,8 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 ├── Design/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
 ├── Implementation/   # Mã nguồn Backend (Java Spring Boot)
 ├── ImplementationAi/ # Mã nguồn AI/ML (Python Flask)
+│   ├── data/           # Dữ liệu giả lập và dữ liệu đã tiền xử lý cho các mô hình AI
+│   └── src/            # Mã nguồn các dịch vụ AI (NLP, Vision, Recommendation) và các script quản lý dữ liệu
 ├── Requirements/     # Tài liệu yêu cầu nghiệp vụ và use case
 ├── Testing/          # Kế hoạch và kịch bản kiểm thử
 ├── PLANNING.md       # Kế hoạch và định hướng tổng thể của dự án
