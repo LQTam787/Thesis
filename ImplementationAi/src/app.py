@@ -12,11 +12,11 @@ from flasgger import Swagger
 from flask_pydantic import validate
 
 # Logic: Import business logic functions from AI services.
-from src.nlp_service import process_text_for_nutrition_analysis
-from src.vision_service import analyze_image_for_food_recognition
-from src.recommendation_service import generate_nutrition_recommendations
+from nlp_service import process_text_for_nutrition_analysis
+from vision_service import analyze_image_for_food_recognition
+from recommendation_service import generate_nutrition_recommendations
 # Logic: Import Pydantic schemas for API request validation.
-from src.schemas import NlpRequest, VisionRequest, RecommendationRequest
+from schemas import NlpRequest, VisionRequest, RecommendationRequest
 
 app = Flask(__name__)
 # Logic: Initialize Flasgger to automatically generate Swagger/OpenAPI documentation from route docstrings.

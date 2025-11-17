@@ -6,9 +6,18 @@
 """Fixtures for testing."""
 import base64
 import io
+import os
+import sys
 
 import pytest
 from PIL import Image
+
+# Thêm thư mục gốc của dự án vào sys.path
+# Điều này đảm bảo Python có thể tìm thấy các mô-đun trong 'src' và các thư mục cấp cao hơn.
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+sys.path.insert(0, project_root)
+# Thêm thư mục 'src' vào sys.path để các import trực tiếp như 'from src.module import ...' hoạt động
+sys.path.insert(0, os.path.join(project_root, 'ImplementationAi'))
 
 
 @pytest.fixture(scope="session")
