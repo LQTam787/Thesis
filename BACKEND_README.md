@@ -8,7 +8,7 @@ Dự án này là một nền tảng ứng dụng web giúp người dùng quả
 
 Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bảo tính linh hoạt, bảo mật và hiệu suất cao.
 
-- **Lớp Giao diện (Presentation Layer)**: Ứng dụng di động/web với giao diện chat thân thiện để người dùng tương tác.
+- **Lớp Giao diện (Presentation Layer)**: Giao diện với chat thân thiện để người dùng tương tác.
 - **Lớp Logic Ứng dụng (Application Layer)**: Backend Spring Boot xử lý logic nghiệp vụ cốt lõi như quản lý người dùng, kế hoạch dinh dưỡng.
 - **Lớp Xử lý AI/ML (AI/ML Processing Layer)**: Dịch vụ Python riêng biệt chứa các mô hình NLP (phân tích yêu cầu), Vision (nhận dạng món ăn) và Recommendation (gợi ý thực đơn).
 - **Lớp Dữ liệu (Data Layer)**: Sử dụng MySQL để lưu trữ dữ liệu có cấu trúc như thông tin người dùng, công thức, và kế hoạch.

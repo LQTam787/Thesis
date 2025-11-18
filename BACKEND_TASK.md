@@ -9,7 +9,7 @@
 - [x] **Thiết kế Động (Dynamic Design - Scenarios, Activity & Sequence Diagrams)**
 - [x] **Thiết kế Biểu đồ Triển khai (Deployment Diagram)**
 
-*Ghi chú: Toàn bộ các hạng mục trong giai đoạn I đã hoàn thành và tài liệu được lưu trữ trong thư mục `Analysis` và `Design`.*
+*Ghi chú: Toàn bộ các hạng mục trong giai đoạn I đã hoàn thành và tài liệu được lưu trữ trong thư mục `BackendRequirements`, `BackendAnalysis` và `BackendDesign`.*
 
 ### **II. Giai đoạn Khởi tạo và Cài đặt (Setup & Initialization)**
 
@@ -97,7 +97,7 @@
 ### **VIII. Giai đoạn Hoàn thiện (Finalization)**
 
 - [x] **Tài liệu hóa API**: Sử dụng Swagger/OpenAPI để tạo tài liệu cho các endpoint, bao gồm cả các API của AI Service.
-- [x] **Cập nhật README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API, đặc biệt là hướng dẫn cài đặt và chạy module AI.
+- [x] **Cập nhật BACKEND_README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API, đặc biệt là hướng dẫn cài đặt và chạy module AI.
 - [x] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.
     - [x] **Backend**: Tối ưu hóa `NutritionPlanService` bằng cách thay thế phương thức lọc dữ liệu trong bộ nhớ bằng truy vấn trực tiếp tới CSDL (`findByUser`), giúp cải thiện hiệu suất.
     - [x] **AI Service**: Tích hợp `Pydantic` để xác thực dữ liệu đầu vào cho các API endpoint, giúp mã nguồn an toàn, dễ đọc và dễ bảo trì hơn.

@@ -7,7 +7,6 @@
 # **II. Tầm hướng Thiết kế Hệ thống (System Design Overview)**
 
 - **Lớp Giao diện (Presentation Layer)**:
-    - Ứng dụng di động/Web.
     - Chịu trách nhiệm hiển thị giao diện, đặc biệt là giao diện **Chatbox/NLP** thân thiện để người dùng nhập liệu, đặt câu hỏi và nhận tư vấn.
     - Cung cấp trải nghiệm **Tư vấn chế độ dinh dưỡng** và **Theo dõi/Đánh giá** dễ dàng.
 - **Lớp Logic Ứng dụng (Application/Service Layer)**:
