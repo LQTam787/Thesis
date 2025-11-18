@@ -42,16 +42,16 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 
 ```
 .
-├── Analysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
-├── Design/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
+├── BackendAnalysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
+├── BackendDesign/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
 ├── Implementation/   # Mã nguồn Backend (Java Spring Boot)
 ├── ImplementationAi/ # Mã nguồn AI/ML (Python Flask)
 │   ├── data/           # Dữ liệu giả lập và dữ liệu đã tiền xử lý cho các mô hình AI
 │   └── src/            # Mã nguồn các dịch vụ AI (NLP, Vision, Recommendation) và các script quản lý dữ liệu
-├── Requirements/     # Tài liệu yêu cầu nghiệp vụ và use case
-├── Testing/          # Kế hoạch và kịch bản kiểm thử
-├── PLANNING.md       # Kế hoạch và định hướng tổng thể của dự án
-└── TASK.md           # Danh sách các công việc cần thực hiện
+├── BackendRequirements/     # Tài liệu yêu cầu nghiệp vụ và use case
+├── BackendTesting/          # Kế hoạch và kịch bản kiểm thử
+├── BACKEND_PLANNING.md       # Kế hoạch và định hướng tổng thể của dự án
+└── BACKEND_TASK.md           # Danh sách các công việc cần thực hiện
 ```
 
 ## G. Tài liệu Phân tích & Thiết kế Hệ thống (System Analysis & Design Documents)
@@ -60,122 +60,122 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 
 #### a. Tài liệu mô hình nghiệp vụ (Business Model Documents)
 
-- [`BusinessModel.docx`: Yêu cầu nghiệp vụ theo định dạng Word.](./Requirements/NaturalLanguage/BusinessModel.docx)
-- [`BusinessModel.md`: Yêu cầu nghiệp vụ theo định dạng Markdown.](./Requirements/NaturalLanguage/BusinessModel.md)
+- [`BusinessModel.docx`: Yêu cầu nghiệp vụ theo định dạng Word.](./BackendRequirements/NaturalLanguage/BusinessModel.docx)
+- [`BusinessModel.md`: Yêu cầu nghiệp vụ theo định dạng Markdown.](./BackendRequirements/NaturalLanguage/BusinessModel.md)
 
 #### b. Biểu đồ Use Case (Use Case Diagrams)
 
-- [`BaseUseCase.png`: Biểu đồ use case tổng quan.](./Requirements/UmlPictures/BaseUseCase.png)
-- [`AuthUseCase.png`: Biểu đồ chi tiết cho chức năng xác thực.](./Requirements/UmlPictures/AuthUseCase.png)
-- [`NutritionAdviceUseCase.png`: Biểu đồ chi tiết cho chức năng tư vấn dinh dưỡng.](./Requirements/UmlPictures/NutritionAdviceUseCase.png)
-- [`NutritionPlanUseCase.png`: Biểu đồ chi tiết cho chức năng quản lý kế hoạch dinh dưỡng.](./Requirements/UmlPictures/NutritionPlanUseCase.png)
-- [`ProgressReviewUseCase.png`: Biểu đồ chi tiết cho chức năng theo dõi và đánh giá.](./Requirements/UmlPictures/ProgressReviewUseCase.png)
-- [`ProfileUseCase.png`: Biểu đồ chi tiết cho chức năng quản lý hồ sơ.](./Requirements/UmlPictures/ProfileUseCase.png)
-- [`ShareUseCase.png`: Biểu đồ chi tiết cho chức năng chia sẻ.](./Requirements/UmlPictures/ShareUseCase.png)
-- [`AdminUseCase.png`: Biểu đồ chi tiết cho chức năng của quản trị viên.](./Requirements/UmlPictures/AdminUseCase.png)
+- [`BaseUseCase.png`: Biểu đồ use case tổng quan.](./BackendRequirements/UmlPictures/BaseUseCase.png)
+- [`AuthUseCase.png`: Biểu đồ chi tiết cho chức năng xác thực.](./BackendRequirements/UmlPictures/AuthUseCase.png)
+- [`NutritionAdviceUseCase.png`: Biểu đồ chi tiết cho chức năng tư vấn dinh dưỡng.](./BackendRequirements/UmlPictures/NutritionAdviceUseCase.png)
+- [`NutritionPlanUseCase.png`: Biểu đồ chi tiết cho chức năng quản lý kế hoạch dinh dưỡng.](./BackendRequirements/UmlPictures/NutritionPlanUseCase.png)
+- [`ProgressReviewUseCase.png`: Biểu đồ chi tiết cho chức năng theo dõi và đánh giá.](./BackendRequirements/UmlPictures/ProgressReviewUseCase.png)
+- [`ProfileUseCase.png`: Biểu đồ chi tiết cho chức năng quản lý hồ sơ.](./BackendRequirements/UmlPictures/ProfileUseCase.png)
+- [`ShareUseCase.png`: Biểu đồ chi tiết cho chức năng chia sẻ.](./BackendRequirements/UmlPictures/ShareUseCase.png)
+- [`AdminUseCase.png`: Biểu đồ chi tiết cho chức năng của quản trị viên.](./BackendRequirements/UmlPictures/AdminUseCase.png)
 
 ### 2. Tài liệu Phân tích (Analysis Documents)
 
 #### a. Tài liệu kịch bản (Scenario Documents)
 
-- [`Scenarios.docx`: Các kịch bản người dùng theo định dạng Word.](./Analysis/Scenarios/Scenarios.docx)
-- [`Scenarios.md`: Các kịch bản người dùng theo định dạng Markdown.](./Analysis/Scenarios/Scenarios.md)
+- [`Scenarios.docx`: Các kịch bản người dùng theo định dạng Word.](./BackendAnalysis/Scenarios/Scenarios.docx)
+- [`Scenarios.md`: Các kịch bản người dùng theo định dạng Markdown.](./BackendAnalysis/Scenarios/Scenarios.md)
 
 #### b. Biểu đồ lớp thực thể (Entity Class Diagrams)
 
-- [`EntityClassDiagram.png`: Biểu đồ lớp thực thể pha phân tích, trích xuất từ các kịch bản người dùng.](./Analysis/Entity/UmlPictures/EntityClassDiagram.png)
+- [`EntityClassDiagram.png`: Biểu đồ lớp thực thể pha phân tích, trích xuất từ các kịch bản người dùng.](./BackendAnalysis/Entity/UmlPictures/EntityClassDiagram.png)
 
 #### c. Biểu đồ lớp phân tích (Analysis Class Diagrams)
 
-- [`AuthModule.png`: Biểu đồ lớp phân tích cho module Xác thực.](./Analysis/Class/UmlPictures/AuthModule.png)
-- [`NutritionAdviceModule.png`: Biểu đồ lớp phân tích cho module Tư vấn Dinh dưỡng.](./Analysis/Class/UmlPictures/NutritionAdviceModule.png)
-- [`NutritionPlanModule.png`: Biểu đồ lớp phân tích cho module Quản lý Kế hoạch Dinh dưỡng.](./Analysis/Class/UmlPictures/NutritionPlanModule.png)
-- [`TrackingAndReviewModule.png`: Biểu đồ lớp phân tích cho module Theo dõi và Đánh giá.](./Analysis/Class/UmlPictures/TrackingAndReviewModule.png)
-- [`ProfileManagementModule.png`: Biểu đồ lớp phân tích cho module Quản lý Hồ sơ.](./Analysis/Class/UmlPictures/ProfileManagementModule.png)
-- [`ShareModule.png`: Biểu đồ lớp phân tích cho module Chia sẻ.](./Analysis/Class/UmlPictures/ShareModule.png)
-- [`AdminFunctionsModule.png`: Biểu đồ lớp phân tích cho module Quản trị viên.](./Analysis/Class/UmlPictures/AdminFunctionsModule.png)
+- [`AuthModule.png`: Biểu đồ lớp phân tích cho module Xác thực.](./BackendAnalysis/Class/UmlPictures/AuthModule.png)
+- [`NutritionAdviceModule.png`: Biểu đồ lớp phân tích cho module Tư vấn Dinh dưỡng.](./BackendAnalysis/Class/UmlPictures/NutritionAdviceModule.png)
+- [`NutritionPlanModule.png`: Biểu đồ lớp phân tích cho module Quản lý Kế hoạch Dinh dưỡng.](./BackendAnalysis/Class/UmlPictures/NutritionPlanModule.png)
+- [`TrackingAndReviewModule.png`: Biểu đồ lớp phân tích cho module Theo dõi và Đánh giá.](./BackendAnalysis/Class/UmlPictures/TrackingAndReviewModule.png)
+- [`ProfileManagementModule.png`: Biểu đồ lớp phân tích cho module Quản lý Hồ sơ.](./BackendAnalysis/Class/UmlPictures/ProfileManagementModule.png)
+- [`ShareModule.png`: Biểu đồ lớp phân tích cho module Chia sẻ.](./BackendAnalysis/Class/UmlPictures/ShareModule.png)
+- [`AdminFunctionsModule.png`: Biểu đồ lớp phân tích cho module Quản trị viên.](./BackendAnalysis/Class/UmlPictures/AdminFunctionsModule.png)
 
 #### d. Biểu đồ trạng thái (State Diagrams)
 
-- [`AuthenticationStateDiagram.png`: Biểu đồ trạng thái cho module Xác thực.](./Analysis/State/UmlPictures/AuthenticationStateDiagram.png)
-- [`NutritionAdviceStateDiagram.png`: Biểu đồ trạng thái cho module Tư vấn Dinh dưỡng.](./Analysis/State/UmlPictures/NutritionAdviceStateDiagram.png)
-- [`NutritionPlanStateDiagram.png`: Biểu đồ trạng thái cho module Quản lý Kế hoạch Dinh dưỡng.](./Analysis/State/UmlPictures/NutritionPlanStateDiagram.png)
-- [`TrackingAndEvaluationState.png`: Biểu đồ trạng thái cho module Theo dõi và Đánh giá.](./Analysis/State/UmlPictures/TrackingAndEvaluationState.png)
-- [`ProfileManagementStateDiagram.png`: Biểu đồ trạng thái cho module Quản lý Hồ sơ.](./Analysis/State/UmlPictures/ProfileManagementStateDiagram.png)
-- [`ShareStateDiagram.png`: Biểu đồ trạng thái cho module Chia sẻ.](./Analysis/State/UmlPictures/ShareStateDiagram.png)
-- [`AdminState.png`: Biểu đồ trạng thái cho luồng chính của Quản trị viên.](./Analysis/State/UmlPictures/AdminState.png)
-- [`ObjectManagementState.png`: Biểu đồ trạng thái cho module Đối tượng.](./Analysis/State/UmlPictures/ObjectManagementState.png)
+- [`AuthenticationStateDiagram.png`: Biểu đồ trạng thái cho module Xác thực.](./BackendAnalysis/State/UmlPictures/AuthenticationStateDiagram.png)
+- [`NutritionAdviceStateDiagram.png`: Biểu đồ trạng thái cho module Tư vấn Dinh dưỡng.](./BackendAnalysis/State/UmlPictures/NutritionAdviceStateDiagram.png)
+- [`NutritionPlanStateDiagram.png`: Biểu đồ trạng thái cho module Quản lý Kế hoạch Dinh dưỡng.](./BackendAnalysis/State/UmlPictures/NutritionPlanStateDiagram.png)
+- [`TrackingAndEvaluationState.png`: Biểu đồ trạng thái cho module Theo dõi và Đánh giá.](./BackendAnalysis/State/UmlPictures/TrackingAndEvaluationState.png)
+- [`ProfileManagementStateDiagram.png`: Biểu đồ trạng thái cho module Quản lý Hồ sơ.](./BackendAnalysis/State/UmlPictures/ProfileManagementStateDiagram.png)
+- [`ShareStateDiagram.png`: Biểu đồ trạng thái cho module Chia sẻ.](./BackendAnalysis/State/UmlPictures/ShareStateDiagram.png)
+- [`AdminState.png`: Biểu đồ trạng thái cho luồng chính của Quản trị viên.](./BackendAnalysis/State/UmlPictures/AdminState.png)
+- [`ObjectManagementState.png`: Biểu đồ trạng thái cho module Đối tượng.](./BackendAnalysis/State/UmlPictures/ObjectManagementState.png)
 
 #### e. Biểu đồ tuần tự (Sequence Diagrams)
 
-- [`RegistrationSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Đăng ký.](./Analysis/Sequence/UmlPictures/RegistrationSequenceDiagram.png)
-- [`LoginSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Đăng nhập.](./Analysis/Sequence/UmlPictures/LoginSequenceDiagram.png)
-- [`NutritionAdviceSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Tư vấn Dinh dưỡng.](./Analysis/Sequence/UmlPictures/NutritionAdviceSequenceDiagram.png)
-- [`TrackingAndEvaluationSequence.png`: Biểu đồ tuần tự cho chức năng Theo dõi và Đánh giá.](./Analysis/Sequence/UmlPictures/TrackingAndEvaluationSequence.png)
-- [`ProfileManagementSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Cập nhật Hồ sơ.](./Analysis/Sequence/UmlPictures/ProfileManagementSequenceDiagram.png)
-- [`ShareSequence.png`: Biểu đồ tuần tự cho chức năng Chia sẻ.](./Analysis/Sequence/UmlPictures/ShareSequence.png)
-- [`AdminAddObjectSequence.png`: Biểu đồ tuần tự cho chức năng Thêm đối tượng của Quản trị viên.](./Analysis/Sequence/UmlPictures/AdminAddObjectSequence.png)
-- [`AdminEditDeleteObjectSequence.png`: Biểu đồ tuần tự cho chức năng Sửa/Xóa đối tượng của Quản trị viên.](./Analysis/Sequence/UmlPictures/AdminEditDeleteObjectSequence.png)
+- [`RegistrationSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Đăng ký.](./BackendAnalysis/Sequence/UmlPictures/RegistrationSequenceDiagram.png)
+- [`LoginSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Đăng nhập.](./BackendAnalysis/Sequence/UmlPictures/LoginSequenceDiagram.png)
+- [`NutritionAdviceSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Tư vấn Dinh dưỡng.](./BackendAnalysis/Sequence/UmlPictures/NutritionAdviceSequenceDiagram.png)
+- [`TrackingAndEvaluationSequence.png`: Biểu đồ tuần tự cho chức năng Theo dõi và Đánh giá.](./BackendAnalysis/Sequence/UmlPictures/TrackingAndEvaluationSequence.png)
+- [`ProfileManagementSequenceDiagram.png`: Biểu đồ tuần tự cho chức năng Cập nhật Hồ sơ.](./BackendAnalysis/Sequence/UmlPictures/ProfileManagementSequenceDiagram.png)
+- [`ShareSequence.png`: Biểu đồ tuần tự cho chức năng Chia sẻ.](./BackendAnalysis/Sequence/UmlPictures/ShareSequence.png)
+- [`AdminAddObjectSequence.png`: Biểu đồ tuần tự cho chức năng Thêm đối tượng của Quản trị viên.](./BackendAnalysis/Sequence/UmlPictures/AdminAddObjectSequence.png)
+- [`AdminEditDeleteObjectSequence.png`: Biểu đồ tuần tự cho chức năng Sửa/Xóa đối tượng của Quản trị viên.](./BackendAnalysis/Sequence/UmlPictures/AdminEditDeleteObjectSequence.png)
 
 ### 3. Tài liệu Thiết kế (Design Documents)
 
 #### a. Biểu đồ lớp thực thể (Entity Class Diagrams)
 
-- [`DesignEntityDiagram.png`: Biểu đồ lớp thực thể pha thiết kế, trích xuất từ biểu đồ lớp thực thể pha phân tích.](./Design/Entity/UmlPictures/DesignEntityDiagram.png)
+- [`DesignEntityDiagram.png`: Biểu đồ lớp thực thể pha thiết kế, trích xuất từ biểu đồ lớp thực thể pha phân tích.](./BackendDesign/Entity/UmlPictures/DesignEntityDiagram.png)
 
 #### b. Biểu đồ quan hệ thực thể CSDL (Entity - Relationship Database Diagrams)
 
-- [`DatabaseEntityClassDiagram.png`: Biểu đồ lớp thực thể cho cơ sở dữ liệu.](./Design/Database/UmlPictures/DatabaseEntityClassDiagram.png)
+- [`DatabaseEntityClassDiagram.png`: Biểu đồ lớp thực thể cho cơ sở dữ liệu.](./BackendDesign/Database/UmlPictures/DatabaseEntityClassDiagram.png)
 
 #### c. Biểu đồ lớp thiết kế (Design Class Diagrams)
 
-- [`AuthenticationModule_Design.png`: Biểu đồ lớp thiết kế cho module Xác thực.](./Design/Static/UmlPictures/AuthenticationModule_Design.png)
-- [`DesignClassDiagram_NutritionAdvice.png`: Biểu đồ lớp thiết kế cho module Tư vấn Dinh dưỡng.](./Design/Static/UmlPictures/DesignClassDiagram_NutritionAdvice.png)
-- [`DesignClassDiagram_NutritionPlan.png`: Biểu đồ lớp thiết kế cho module Quản lý Kế hoạch Dinh dưỡng.](./Design/Static/UmlPictures/DesignClassDiagram_NutritionPlan.png)
-- [`DesignClassDiagram_TrackingAndReview.png`: Biểu đồ lớp thiết kế cho module Theo dõi và Đánh giá.](./Design/Static/UmlPictures/DesignClassDiagram_TrackingAndReview.png)
-- [`ProfileManagementDesignClassDiagram.png`: Biểu đồ lớp thiết kế cho module Quản lý Hồ sơ.](./Design/Static/UmlPictures/ProfileManagementDesignClassDiagram.png)
-- [`SharingModuleStaticClassDiagram.png`: Biểu đồ lớp thiết kế cho module Chia sẻ.](./Design/Static/UmlPictures/SharingModuleStaticClassDiagram.png)
-- [`AdminModuleStaticClassDiagram.png`: Biểu đồ lớp thiết kế cho module Quản trị viên.](./Design/Static/UmlPictures/AdminModuleStaticClassDiagram.png)
+- [`AuthenticationModule_Design.png`: Biểu đồ lớp thiết kế cho module Xác thực.](./BackendDesign/Static/UmlPictures/AuthenticationModule_Design.png)
+- [`DesignClassDiagram_NutritionAdvice.png`: Biểu đồ lớp thiết kế cho module Tư vấn Dinh dưỡng.](./BackendDesign/Static/UmlPictures/DesignClassDiagram_NutritionAdvice.png)
+- [`DesignClassDiagram_NutritionPlan.png`: Biểu đồ lớp thiết kế cho module Quản lý Kế hoạch Dinh dưỡng.](./BackendDesign/Static/UmlPictures/DesignClassDiagram_NutritionPlan.png)
+- [`DesignClassDiagram_TrackingAndReview.png`: Biểu đồ lớp thiết kế cho module Theo dõi và Đánh giá.](./BackendDesign/Static/UmlPictures/DesignClassDiagram_TrackingAndReview.png)
+- [`ProfileManagementDesignClassDiagram.png`: Biểu đồ lớp thiết kế cho module Quản lý Hồ sơ.](./BackendDesign/Static/UmlPictures/ProfileManagementDesignClassDiagram.png)
+- [`SharingModuleStaticClassDiagram.png`: Biểu đồ lớp thiết kế cho module Chia sẻ.](./BackendDesign/Static/UmlPictures/SharingModuleStaticClassDiagram.png)
+- [`AdminModuleStaticClassDiagram.png`: Biểu đồ lớp thiết kế cho module Quản trị viên.](./BackendDesign/Static/UmlPictures/AdminModuleStaticClassDiagram.png)
 
 #### d. Biểu đồ Triển khai (Deployment Diagrams)
 
-- [`DeploymentDiagram.png`: Biểu đồ triển khai hệ thống.](./Design/Deployment/UmlPictures/DeploymentDiagram.png)
+- [`DeploymentDiagram.png`: Biểu đồ triển khai hệ thống.](./BackendDesign/Deployment/UmlPictures/DeploymentDiagram.png)
 
 #### e. Biểu đồ hoạt động (Activity Diagrams)
 
-- [`AuthenticationActivity.png`: Biểu đồ hoạt động cho module Xác thực.](./Design/Dynamic/Activity/UmlPictures/AuthenticationActivity.png)
-- [`NutritionAdviceActivityDiagram.png`: Biểu đồ hoạt động cho module Tư vấn Dinh dưỡng.](./Design/Dynamic/Activity/UmlPictures/NutritionAdviceActivityDiagram.png)
-- [`NutritionPlanManagementActivity.png`: Biểu đồ hoạt động cho module Quản lý Kế hoạch Dinh dưỡng.](./Design/Dynamic/Activity/UmlPictures/NutritionPlanManagementActivity.png)
-- [`TrackingAndReviewActivityDiagram.png`: Biểu đồ hoạt động cho module Theo dõi và Đánh giá.](./Design/Dynamic/Activity/UmlPictures/TrackingAndReviewActivityDiagram.png)
-- [`UserProfileManagementActivity.png`: Biểu đồ hoạt động cho module Quản lý Hồ sơ.](./Design/Dynamic/Activity/UmlPictures/UserProfileManagementActivity.png)
-- [`ShareActivity.png`: Biểu đồ hoạt động cho module Chia sẻ.](./Design/Dynamic/Activity/UmlPictures/ShareActivity.png)
-- [`AdminActivityDiagram.png`: Biểu đồ hoạt động cho module Quản trị viên.](./Design/Dynamic/Activity/UmlPictures/AdminActivityDiagram.png)
+- [`AuthenticationActivity.png`: Biểu đồ hoạt động cho module Xác thực.](./BackendDesign/Dynamic/Activity/UmlPictures/AuthenticationActivity.png)
+- [`NutritionAdviceActivityDiagram.png`: Biểu đồ hoạt động cho module Tư vấn Dinh dưỡng.](./BackendDesign/Dynamic/Activity/UmlPictures/NutritionAdviceActivityDiagram.png)
+- [`NutritionPlanManagementActivity.png`: Biểu đồ hoạt động cho module Quản lý Kế hoạch Dinh dưỡng.](./BackendDesign/Dynamic/Activity/UmlPictures/NutritionPlanManagementActivity.png)
+- [`TrackingAndReviewActivityDiagram.png`: Biểu đồ hoạt động cho module Theo dõi và Đánh giá.](./BackendDesign/Dynamic/Activity/UmlPictures/TrackingAndReviewActivityDiagram.png)
+- [`UserProfileManagementActivity.png`: Biểu đồ hoạt động cho module Quản lý Hồ sơ.](./BackendDesign/Dynamic/Activity/UmlPictures/UserProfileManagementActivity.png)
+- [`ShareActivity.png`: Biểu đồ hoạt động cho module Chia sẻ.](./BackendDesign/Dynamic/Activity/UmlPictures/ShareActivity.png)
+- [`AdminActivityDiagram.png`: Biểu đồ hoạt động cho module Quản trị viên.](./BackendDesign/Dynamic/Activity/UmlPictures/AdminActivityDiagram.png)
 
 #### g. Tài liệu kịch bản người dùng (Scenario Documents)
 
-- [`Scenarios_V3.docx`: Các kịch bản người dùng (phiên bản 3) theo định dạng Word](./Design/Dynamic/Scenarios/Scenarios_V3.docx)
-- [`Scenarios_V3.md`: Các kịch bản người dùng (phiên bản 3) theo định dạng Markdown](./Design/Dynamic/Scenarios/Scenarios_V3.md)
+- [`Scenarios_V3.docx`: Các kịch bản người dùng (phiên bản 3) theo định dạng Word](./BackendDesign/Dynamic/Scenarios/Scenarios_V3.docx)
+- [`Scenarios_V3.md`: Các kịch bản người dùng (phiên bản 3) theo định dạng Markdown](./BackendDesign/Dynamic/Scenarios/Scenarios_V3.md)
 
 #### h. Biểu đồ tuần tự (Sequence Diagrams)
 
-- [`AuthenticationSequence.png`: Biểu đồ tuần tự cho module Xác thực.](./Design/Dynamic/Sequence/UmlPictures/AuthenticationSequence.png)
-- [`NutritionAdviceSequenceDiagram.png`: Biểu đồ tuần tự cho module Tư vấn Dinh dưỡng.](./Design/Dynamic/Sequence/UmlPictures/NutritionAdviceSequenceDiagram.png)
-- [`NutritionPlanManagementSequenceDiagram.png`: Biểu đồ tuần tự cho module Quản lý Kế hoạch Dinh dưỡng.](./Design/Dynamic/Sequence/UmlPictures/NutritionPlanManagementSequenceDiagram.png)
-- [`TrackingAndReviewSequenceDiagram.png`: Biểu đồ tuần tự cho module Theo dõi và Đánh giá.](./Design/Dynamic/Sequence/UmlPictures/TrackingAndReviewSequenceDiagram.png)
-- [`UserProfileManagementSequence.png`: Biểu đồ tuần tự cho module Quản lý Hồ sơ.](./Design/Dynamic/Sequence/UmlPictures/UserProfileManagementSequence.png)
-- [`ShareSequence.png`: Biểu đồ tuần tự cho module Chia sẻ.](./Design/Dynamic/Sequence/UmlPictures/ShareSequence.png)
-- [`AdminSequenceDiagram.png`: Biểu đồ tuần tự cho module Quản trị viên.](./Design/Dynamic/Sequence/UmlPictures/AdminSequenceDiagram.png)
+- [`AuthenticationSequence.png`: Biểu đồ tuần tự cho module Xác thực.](./BackendDesign/Dynamic/Sequence/UmlPictures/AuthenticationSequence.png)
+- [`NutritionAdviceSequenceDiagram.png`: Biểu đồ tuần tự cho module Tư vấn Dinh dưỡng.](./BackendDesign/Dynamic/Sequence/UmlPictures/NutritionAdviceSequenceDiagram.png)
+- [`NutritionPlanManagementSequenceDiagram.png`: Biểu đồ tuần tự cho module Quản lý Kế hoạch Dinh dưỡng.](./BackendDesign/Dynamic/Sequence/UmlPictures/NutritionPlanManagementSequenceDiagram.png)
+- [`TrackingAndReviewSequenceDiagram.png`: Biểu đồ tuần tự cho module Theo dõi và Đánh giá.](./BackendDesign/Dynamic/Sequence/UmlPictures/TrackingAndReviewSequenceDiagram.png)
+- [`UserProfileManagementSequence.png`: Biểu đồ tuần tự cho module Quản lý Hồ sơ.](./BackendDesign/Dynamic/Sequence/UmlPictures/UserProfileManagementSequence.png)
+- [`ShareSequence.png`: Biểu đồ tuần tự cho module Chia sẻ.](./BackendDesign/Dynamic/Sequence/UmlPictures/ShareSequence.png)
+- [`AdminSequenceDiagram.png`: Biểu đồ tuần tự cho module Quản trị viên.](./BackendDesign/Dynamic/Sequence/UmlPictures/AdminSequenceDiagram.png)
 
 #### i. Giao diện Tĩnh (Static Interfaces)
 
-- [`LoginPage.html`: Giao diện trang Đăng nhập.](./Design/Static/Html/LoginPage.html)
-- [`RegisterPage.html`: Giao diện trang Đăng ký.](./Design/Static/Html/RegisterPage.html)
-- [`NutritionAdvice.html`: Giao diện tư vấn dinh dưỡng.](./Design/Static/Html/NutritionAdvice.html)
-- [`NutritionPlan.html`: Giao diện quản lý kế hoạch dinh dưỡng.](./Design/Static/Html/NutritionPlan.html)
-- [`TrackingAndReview.html`: Giao diện theo dõi và đánh giá.](./Design/Static/Html/TrackingAndReview.html)
-- [`ProfileManagementPage.html`: Giao diện quản lý hồ sơ.](./Design/Static/Html/ProfileManagementPage.html)
-- [`SharingModule.html`: Giao diện module Chia sẻ.](./Design/Static/Html/SharingModule.html)
-- [`AdminDashboard.html`: Giao diện module Quản trị viên.](./Design/Static/Html/AdminDashboard.html)
+- [`LoginPage.html`: Giao diện trang Đăng nhập.](./BackendDesign/Static/Html/LoginPage.html)
+- [`RegisterPage.html`: Giao diện trang Đăng ký.](./BackendDesign/Static/Html/RegisterPage.html)
+- [`NutritionAdvice.html`: Giao diện tư vấn dinh dưỡng.](./BackendDesign/Static/Html/NutritionAdvice.html)
+- [`NutritionPlan.html`: Giao diện quản lý kế hoạch dinh dưỡng.](./BackendDesign/Static/Html/NutritionPlanManagement.html)
+- [`TrackingAndReview.html`: Giao diện theo dõi và đánh giá.](./BackendDesign/Static/Html/TrackingAndReview.html)
+- [`ProfileManagementPage.html`: Giao diện quản lý hồ sơ.](./BackendDesign/Static/Html/ProfileManagementPage.html)
+- [`SharingModule.html`: Giao diện module Chia sẻ.](./BackendDesign/Static/Html/SharingModule.html)
+- [`AdminDashboard.html`: Giao diện module Quản trị viên.](./BackendDesign/Static/Html/AdminDashboard.html)
 
 ## H. Hướng dẫn cài đặt và chạy
 
