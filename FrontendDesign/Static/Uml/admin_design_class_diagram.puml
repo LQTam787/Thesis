@@ -1,0 +1,119 @@
+@startuml admin_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+' Lớp thực thể từ pha phân tích
+class NguoiDung {
+  +tenThat
+  +email
+  +tenTaiKhoan
+  +matKhau
+}
+
+class QuanTriVien {
+}
+
+class NoiDungChiaSe {
+  +tieuDe
+  +noiDung
+  +trangThaiChiaSe
+  +luotXem
+  +luotThich
+  +luotBinhLuan
+  +luotLuu
+}
+
+' Các lớp giao diện (Frontend Views)
+class AdminDashboardView {
+  +hienThiTongQuan()
+  +dieuHuongQuanLyNguoiDung()
+  +dieuHuongQuanLyNoiDungChiaSe()
+}
+
+class UserManagementView {
+  +danhSachNguoiDung: List<NguoiDung>
+  +nguoiDungDuocChon: NguoiDung
+  ---
+  +hienThiDanhSachNguoiDung(nguoiDung: List<NguoiDung>)
+  +hienThiChiTietNguoiDung(nguoiDung: NguoiDung)
+  +moFormThemNguoiDung()
+  +moFormSuaNguoiDung(nguoiDungId: String)
+  +hienThiThongBao(tinNhan: String)
+}
+
+class SharedContentManagementView {
+  +danhSachNoiDung: List<NoiDungChiaSe>
+  +noiDungDuocChon: NoiDungChiaSe
+  ---
+  +hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+  +hienThiChiTietNoiDung(noiDung: NoiDungChiaSe)
+  +locNoiDungTheoTrangThai(trangThai: String)
+  +timKiemNoiDung(tuKhoa: String)
+  +hienThiThongBao(tinNhan: String)
+}
+
+' Các lớp truy xuất dữ liệu (DAO Interfaces)
+interface INguoiDungDAO {
+  +layTatCaNguoiDung(): List<NguoiDung>
+  +layNguoiDungTheoId(id: String): NguoiDung
+  +themNguoiDung(nguoiDung: NguoiDung): boolean
+  +capNhatNguoiDung(nguoiDung: NguoiDung): boolean
+  +xoaNguoiDung(id: String): boolean
+}
+
+interface INoiDungChiaSeDAO {
+  +layTatCaNoiDungChiaSe(): List<NoiDungChiaSe>
+  +layNoiDungChiaSeTheoId(id: String): NoiDungChiaSe
+  +capNhatTrangThaiNoiDung(id: String, trangThai: String): boolean
+  +xoaNoiDungChiaSe(id: String): boolean
+  +locNoiDungTheoTrangThai(trangThai: String): List<NoiDungChiaSe>
+  +timKiemNoiDung(tuKhoa: String): List<NoiDungChiaSe>
+}
+
+' Quan hệ giữa các lớp
+QuanTriVien <|-- NguoiDung : QuanTriVien là một loại NguoiDung
+
+AdminDashboardView ..> UserManagementView : điều_hướng
+AdminDashboardView ..> SharedContentManagementView : điều_hướng
+
+UserManagementView ..> INguoiDungDAO : sử_dụng
+SharedContentManagementView ..> INoiDungChiaSeDAO : sử_dụng
+
+NguoiDung -- INguoiDungDAO : <dao>
+NoiDungChiaSe -- INoiDungChiaSeDAO : <dao>
+
+' Các lớp controller (giả định) để xử lý logic giữa View và DAO
+class UserManagementController {
+  -nguoiDungDAO: INguoiDungDAO
+  -view: UserManagementView
+  ---
+  +khoiTao(view: UserManagementView, nguoiDungDAO: INguoiDungDAO)
+  +taiDanhSachNguoiDung()
+  +xuLyThemNguoiDung(nguoiDung: NguoiDung)
+  +xuLySuaNguoiDung(nguoiDung: NguoiDung)
+  +xuLyXoaNguoiDung(id: String)
+}
+
+class SharedContentManagementController {
+  -noiDungChiaSeDAO: INoiDungChiaSeDAO
+  -view: SharedContentManagementView
+  ---
+  +khoiTao(view: SharedContentManagementView, noiDungChiaSeDAO: INoiDungChiaSeDAO)
+  +taiDanhSachNoiDung()
+  +xuLyLocNoiDung(trangThai: String)
+  +xuLyTimKiemNoiDung(tuKhoa: String)
+  +xuLyDuyetNoiDung(id: String)
+  +xuLyTuChoiNoiDung(id: String)
+  +xuLyXoaNoiDung(id: String)
+}
+
+UserManagementView ..> UserManagementController : gọi_hành_động
+UserManagementController ..> INguoiDungDAO : thực_hiện_thao_tác
+
+SharedContentManagementView ..> SharedContentManagementController : gọi_hành_động
+SharedContentManagementController ..> INoiDungChiaSeDAO : thực_hiện_thao_tác
+
+@enduml

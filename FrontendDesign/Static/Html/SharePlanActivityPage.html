@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chia Sẻ Kế Hoạch & Hoạt Động</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: bold;
+        }
+        .form-group input[type="text"],
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .checkbox-group input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .actions button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .actions .btn-share {
+            background-color: #28a745;
+            color: white;
+        }
+        .actions .btn-cancel {
+            background-color: #6c757d;
+            color: white;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            display: none;
+        }
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chia Sẻ Kế Hoạch & Hoạt Động</h1>
+        <form id="shareForm">
+            <div class="form-group">
+                <label for="title">Tiêu đề:</label>
+                <input type="text" id="title" name="title" placeholder="Nhập tiêu đề nội dung chia sẻ" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Nội dung:</label>
+                <textarea id="content" name="content" placeholder="Viết nội dung chia sẻ của bạn ở đây" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="nutritionPlan">Liên kết với Kế hoạch Dinh dưỡng (Tùy chọn):</label>
+                <select id="nutritionPlan" name="nutritionPlan">
+                    <option value="">-- Chọn kế hoạch dinh dưỡng --</option>
+                    <option value="plan1">Kế hoạch Giảm cân tháng 10</option>
+                    <option value="plan2">Kế hoạch Tăng cơ bắp</option>
+                    <option value="plan3">Kế hoạch Duy trì cân nặng</option>
+                </select>
+            </div>
+            <div class="checkbox-group">
+                <input type="checkbox" id="publicShare" name="publicShare">
+                <label for="publicShare">Chia sẻ công khai</label>
+            </div>
+            <div class="actions">
+                <button type="submit" class="btn-share">Chia Sẻ</button>
+                <button type="button" class="btn-cancel" onclick="window.history.back()">Hủy</button>
+            </div>
+        </form>
+        <div id="messageBox" class="message"></div>
+    </div>
+
+    <script>
+        document.getElementById('shareForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const title = document.getElementById('title').value;
+            const content = document.getElementById('content').value;
+            const nutritionPlan = document.getElementById('nutritionPlan').value;
+            const publicShare = document.getElementById('publicShare').checked;
+            const messageBox = document.getElementById('messageBox');
+
+            // Simulate API call
+            console.log('Đang chia sẻ:', { title, content, nutritionPlan, publicShare });
+
+            // In a real application, you would send this data to a server
+            // For now, we just show a success message
+            messageBox.className = 'message success';
+            messageBox.textContent = 'Nội dung của bạn đã được chia sẻ thành công!';
+            messageBox.style.display = 'block';
+
+            // Optionally clear the form or redirect
+            // this.reset();
+            // setTimeout(() => window.location.href = 'ViewSharedContentPage.html', 2000);
+        });
+    </script>
+</body>
+</html>

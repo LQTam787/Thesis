@@ -1,0 +1,211 @@
+@startuml theo_doi_danh_gia_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+' Lớp giao diện (UI Classes)
+class DailyLogInputPage {
+  +thoiGianBuaAn: String
+  +tenMonAn: String
+  +dinhLuongMonAn: Float
+  +tenHoatDong: String
+  +thoiLuongHoatDong: Int
+  +cuongDoHoatDong: String
+  --
+  +hienThiFormNhapLieu()
+  +themMonAn(monAn: ThucPham, dinhLuong: Float)
+  +themHoatDong(hoatDong: HoatDongTheChat, thoiLuong: Int, cuongDo: String)
+  +luuDuLieuHangNgay()
+}
+
+class ProgressReportPage {
+  +canNangHienTai: Float
+  +chiSoCoThe: String
+  +phanTramMucTieuDatDuoc: Float
+  +macroTieuThu: Map<String, Float>
+  +microNutrientTieuThu: Map<String, Float>
+  +noiDungGoiY: String
+  --
+  +hienThiBieuDoTienDo()
+  +hienThiBaoCaoDinhDuong()
+  +hienThiGoiYDieuChinh()
+  +taiLaiBaoCao()
+}
+
+' Lớp truy xuất dữ liệu (DAO Interfaces)
+interface IDuLieuThucTeDAO {
+  +luuDuLieu(duLieu: DuLieuThucTe): Boolean
+  +layDuLieuTheoNgay(ngay: Date): DuLieuThucTe
+  +capNhatDuLieu(duLieu: DuLieuThucTe): Boolean
+  +xoaDuLieu(duLieuId: String): Boolean
+}
+
+interface IHoatDongTheChatDAO {
+  +themHoatDong(hoatDong: HoatDongTheChat): Boolean
+  +capNhatHoatDong(hoatDong: HoatDongTheChat): Boolean
+  +xoaHoatDong(hoatDongId: String): Boolean
+  +layHoatDongTheoNguoiDung(nguoiDungId: String): List<HoatDongTheChat>
+}
+
+interface IThucPhamDAO {
+  +timKiemThucPham(ten: String): List<ThucPham>
+  +layThongTinThucPham(thucPhamId: String): ThucPham
+}
+
+interface IKeHoachDinhDuongDAO {
+  +layKeHoachHienTai(nguoiDungId: String): KeHoachDinhDuong
+}
+
+interface IReportDAO {
+  +taoBieuDoTienDo(keHoachId: String, duLieuThucTe: List<DuLieuThucTe>): BieuDoTienDo
+  +taoBaoCaoDinhDuong(keHoachId: String, duLieuThucTe: DuLieuThucTe): BaoCaoDinhDuong
+  +taoGoiYDieuChinh(baoCao: BaoCaoDinhDuong, mucTieu: MucTieuDinhDuong): GoiYDieuChinh
+}
+
+' Lớp thực thể liên quan (từ pha phân tích, giữ nguyên quan hệ)
+class NguoiDung { 
+  +tenThat
+  +email
+  +tenTaiKhoan
+  +matKhau
+}
+
+class MucTieuDinhDuong {
+  +giamCan
+  +tangCan
+  +tangCo
+  +duyTriCanNang
+  +phucHoiSucKhoe
+  +thoiGian
+}
+
+class ThucPham {
+  +tenThucPham
+  +moTa
+  +calo
+  +protein
+  +carb
+  +fat
+}
+
+class CongThucNauAn {
+  +tenCongThuc
+  +huongDan
+}
+
+class ThucDon {
+  +tenThucDon
+  +dinhLuongTong
+  +lyDoDeXuat
+}
+
+class BuaAn {
+  +tenBuaAn
+  +thoiGianAn
+}
+
+class KeHoachDinhDuong {
+  +tenKeHoach
+  +tongCaloMucTieu
+  +tongMacroMucTieu
+  +canhBaoChenhLech
+}
+
+class Checklist {
+  +danhSachMuaSam
+  +meo
+  +loiNhacHangNgay
+}
+
+class HoatDongTheChat {
+  +tenHoatDong
+  +caloriesTieuHao
+}
+
+class DuLieuThucTe {
+  +thoiGianNhap
+}
+
+class ChiTietBuaAn {
+  +dinhLuong
+  +congThuc
+}
+
+class ThanhPhanCongThuc {
+  +soLuong
+}
+
+class ChiTietDuLieuThucTe {
+  +dinhLuongThucTe
+}
+
+class ChiTietHoatDongThucTe {
+  +thoiGianThucHien
+  +cuongDo
+}
+
+class BieuDoTienDo {
+  +canNangHienTai
+  +chiSoCoThe
+  +phanTramMucTieuDatDuoc
+}
+
+class BaoCaoDinhDuong {
+  +macroTieuThu
+  +microNutrientTieuThu
+}
+
+class GoiYDieuChinh {
+  +noiDungGoiY
+}
+
+' Quan hệ (giữ nguyên từ pha phân tích)
+NguoiDung "1" -- "0..*" KeHoachDinhDuong : có
+NguoiDung "1" -- "0..*" HoatDongTheChat : thực hiện
+NguoiDung "1" -- "0..*" DuLieuThucTe : nhập
+
+KeHoachDinhDuong "1" *-- "1..*" ThucDon : bao gồm
+ThucDon "1" *-- "1..*" BuaAn : chứa
+
+BuaAn "1" -- "1..*" ChiTietBuaAn
+ChiTietBuaAn "0..*" -- "1" ThucPham
+
+CongThucNauAn "1" -- "1..*" ThanhPhanCongThuc
+ThanhPhanCongThuc "0..*" -- "1" ThucPham
+
+KeHoachDinhDuong "1" *-- "1" Checklist : có
+
+DuLieuThucTe "1" -- "0..*" ChiTietDuLieuThucTe
+ChiTietDuLieuThucTe "0..*" -- "1" ThucPham
+
+DuLieuThucTe "1" -- "0..*" ChiTietHoatDongThucTe
+ChiTietHoatDongThucTe "0..*" -- "1" HoatDongTheChat
+
+KeHoachDinhDuong "1" -- "0..*" DuLieuThucTe : theo dõi bằng
+
+KeHoachDinhDuong "1" -- "0..*" BieuDoTienDo : tạo ra
+KeHoachDinhDuong "1" -- "0..*" BaoCaoDinhDuong : tạo ra
+KeHoachDinhDuong "1" -- "0..*" GoiYDieuChinh : đưa ra
+
+' Quan hệ giữa các lớp thiết kế
+DailyLogInputPage ..> IDuLieuThucTeDAO : sử dụng
+DailyLogInputPage ..> IHoatDongTheChatDAO : sử dụng
+DailyLogInputPage ..> IThucPhamDAO : sử dụng
+
+ProgressReportPage ..> IReportDAO : sử dụng
+ProgressReportPage ..> IKeHoachDinhDuongDAO : sử dụng
+
+IDuLieuThucTeDAO ..> DuLieuThucTe
+IHoatDongTheChatDAO ..> HoatDongTheChat
+IThucPhamDAO ..> ThucPham
+IKeHoachDinhDuongDAO ..> KeHoachDinhDuong
+
+IReportDAO ..> BieuDoTienDo
+IReportDAO ..> BaoCaoDinhDuong
+IReportDAO ..> GoiYDieuChinh
+IReportDAO ..> MucTieuDinhDuong
+
+
+@enduml

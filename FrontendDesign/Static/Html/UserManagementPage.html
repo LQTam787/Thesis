@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý người dùng</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 10px 0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+        .user-management-section {
+            padding: 20px 0;
+        }
+        .user-management-section h2 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 20px;
+        }
+        .actions button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        .actions button:hover {
+            background-color: #45a049;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #555;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-buttons button {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .action-buttons button.delete {
+            background-color: #f44336;
+        }
+        .action-buttons button:hover {
+            opacity: 0.9;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #777;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bảng điều khiển quản trị viên</h1>
+        </header>
+        <nav>
+            <a href="AdminDashboardPage.html">Trang chủ</a>
+            <a href="UserManagementPage.html">Quản lý người dùng</a>
+            <a href="SharedContentManagementPage.html">Quản lý nội dung chia sẻ</a>
+            <a href="#">Cài đặt</a>
+            <a href="LoginPage.html">Đăng xuất</a>
+        </nav>
+        <main>
+            <section class="user-management-section">
+                <h2>Quản lý người dùng</h2>
+                <div class="actions">
+                    <button onclick="addUser()">Thêm người dùng mới</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tên tài khoản</th>
+                                <th>Email</th>
+                                <th>Tên thật</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dữ liệu người dùng sẽ được tải ở đây bằng JavaScript -->
+                            <tr>
+                                <td>1</td>
+                                <td>admin_user</td>
+                                <td>admin@example.com</td>
+                                <td>Quản trị viên</td>
+                                <td class="action-buttons">
+                                    <button onclick="editUser(1)">Sửa</button>
+                                    <button class="delete" onclick="deleteUser(1)">Xóa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>john_doe</td>
+                                <td>john.doe@example.com</td>
+                                <td>John Doe</td>
+                                <td class="action-buttons">
+                                    <button onclick="editUser(2)">Sửa</button>
+                                    <button class="delete" onclick="deleteUser(2)">Xóa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td>jane_smith</td>
+                                <td>jane.smith@example.com</td>
+                                <td>Jane Smith</td>
+                                <td class="action-buttons">
+                                    <button onclick="editUser(3)">Sửa</button>
+                                    <button class="delete" onclick="deleteUser(3)">Xóa</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 Hệ thống Quản lý Dinh dưỡng. Tất cả quyền được bảo lưu.</p>
+        </footer>
+    </div>
+
+    <script>
+        function addUser() {
+            alert('Chức năng thêm người dùng mới');
+            // Logic để hiển thị form thêm người dùng hoặc điều hướng đến trang thêm mới
+        }
+
+        function editUser(userId) {
+            alert('Chức năng sửa người dùng ID: ' + userId);
+            // Logic để hiển thị form sửa người dùng hoặc điều hướng đến trang sửa
+        }
+
+        function deleteUser(userId) {
+            if (confirm('Bạn có chắc chắn muốn xóa người dùng này không?')) {
+                alert('Xóa người dùng ID: ' + userId);
+                // Logic để gửi yêu cầu xóa người dùng đến backend
+            }
+        }
+    </script>
+</body>
+</html>

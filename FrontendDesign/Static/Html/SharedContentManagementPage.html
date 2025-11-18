@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý nội dung chia sẻ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2em;
+        }
+        nav {
+            display: flex;
+            justify-content: center;
+            background-color: #333;
+            padding: 10px 0;
+            border-radius: 4px;
+            margin-bottom: 20px;
+        }
+        nav a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        nav a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+        .content-management-section {
+            padding: 20px 0;
+        }
+        .content-management-section h2 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .filters {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            align-items: center;
+        }
+        .filters select, .filters input {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            font-size: 1em;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #555;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-buttons button {
+            background-color: #2196F3;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .action-buttons button.approve {
+            background-color: #4CAF50;
+        }
+        .action-buttons button.reject {
+            background-color: #FFC107;
+        }
+        .action-buttons button.delete {
+            background-color: #f44336;
+        }
+        .action-buttons button:hover {
+            opacity: 0.9;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #777;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Bảng điều khiển quản trị viên</h1>
+        </header>
+        <nav>
+            <a href="AdminDashboardPage.html">Trang chủ</a>
+            <a href="UserManagementPage.html">Quản lý người dùng</a>
+            <a href="SharedContentManagementPage.html">Quản lý nội dung chia sẻ</a>
+            <a href="#">Cài đặt</a>
+            <a href="LoginPage.html">Đăng xuất</a>
+        </nav>
+        <main>
+            <section class="content-management-section">
+                <h2>Quản lý nội dung chia sẻ</h2>
+                <div class="filters">
+                    <div>
+                        <label for="status-filter">Trạng thái:</label>
+                        <select id="status-filter" onchange="filterContent()">
+                            <option value="all">Tất cả</option>
+                            <option value="pending">Chờ duyệt</option>
+                            <option value="approved">Đã duyệt</option>
+                            <option value="rejected">Đã từ chối</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="search-input">Tìm kiếm:</label>
+                        <input type="text" id="search-input" placeholder="Tìm kiếm theo tiêu đề..." onkeyup="filterContent()">
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Tiêu đề</th>
+                                <th>Người tạo</th>
+                                <th>Trạng thái</th>
+                                <th>Lượt xem</th>
+                                <th>Lượt thích</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Dữ liệu nội dung chia sẻ sẽ được tải ở đây bằng JavaScript -->
+                            <tr>
+                                <td>101</td>
+                                <td>Bí quyết ăn kiêng hiệu quả</td>
+                                <td>john_doe</td>
+                                <td>pending</td>
+                                <td>150</td>
+                                <td>25</td>
+                                <td class="action-buttons">
+                                    <button onclick="viewContent(101)">Xem</button>
+                                    <button class="approve" onclick="approveContent(101)">Duyệt</button>
+                                    <button class="reject" onclick="rejectContent(101)">Từ chối</button>
+                                    <button class="delete" onclick="deleteContent(101)">Xóa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>102</td>
+                                <td>Thực đơn tăng cơ giảm mỡ</td>
+                                <td>jane_smith</td>
+                                <td>approved</td>
+                                <td>300</td>
+                                <td>50</td>
+                                <td class="action-buttons">
+                                    <button onclick="viewContent(102)">Xem</button>
+                                    <button class="delete" onclick="deleteContent(102)">Xóa</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>103</td>
+                                <td>Bài tập Cardio tại nhà</td>
+                                <td>admin_user</td>
+                                <td>rejected</td>
+                                <td>80</td>
+                                <td>10</td>
+                                <td class="action-buttons">
+                                    <button onclick="viewContent(103)">Xem</button>
+                                    <button class="approve" onclick="approveContent(103)">Duyệt</button>
+                                    <button class="delete" onclick="deleteContent(103)">Xóa</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 Hệ thống Quản lý Dinh dưỡng. Tất cả quyền được bảo lưu.</p>
+        </footer>
+    </div>
+
+    <script>
+        function filterContent() {
+            const status = document.getElementById('status-filter').value;
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const rows = document.querySelector('tbody').getElementsByTagName('tr');
+
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const contentStatus = row.children[3].textContent; // Trạng thái
+                const title = row.children[1].textContent.toLowerCase(); // Tiêu đề
+                
+                const statusMatch = (status === 'all' || contentStatus === status);
+                const searchMatch = title.includes(searchTerm);
+
+                if (statusMatch && searchMatch) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            }
+        }
+
+        function viewContent(contentId) {
+            alert('Chức năng xem nội dung chia sẻ ID: ' + contentId);
+            // Logic để hiển thị chi tiết nội dung hoặc điều hướng đến trang xem chi tiết
+        }
+
+        function approveContent(contentId) {
+            if (confirm('Bạn có chắc chắn muốn duyệt nội dung này không?')) {
+                alert('Duyệt nội dung ID: ' + contentId);
+                // Logic để gửi yêu cầu duyệt nội dung đến backend
+            }
+        }
+
+        function rejectContent(contentId) {
+            if (confirm('Bạn có chắc chắn muốn từ chối nội dung này không?')) {
+                alert('Từ chối nội dung ID: ' + contentId);
+                // Logic để gửi yêu cầu từ chối nội dung đến backend
+            }
+        }
+
+        function deleteContent(contentId) {
+            if (confirm('Bạn có chắc chắn muốn xóa nội dung này không?')) {
+                alert('Xóa nội dung ID: ' + contentId);
+                // Logic để gửi yêu cầu xóa nội dung đến backend
+            }
+        }
+    </script>
+</body>
+</html>

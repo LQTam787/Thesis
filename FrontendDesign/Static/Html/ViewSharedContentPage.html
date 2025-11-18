@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nội Dung Chia Sẻ</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .post {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .post-header .author {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .post-header .date {
+            font-size: 0.9em;
+            color: #666;
+        }
+        .post-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .post-content {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .post-plan-link a {
+            color: #28a745;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .post-plan-link a:hover {
+            text-decoration: underline;
+        }
+        .post-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .post-actions button {
+            background: none;
+            border: none;
+            color: #666;
+            cursor: pointer;
+            font-size: 1em;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .post-actions button:hover {
+            color: #007bff;
+        }
+        .post-actions button.liked {
+            color: #dc3545;
+        }
+        .comments-section {
+            margin-top: 25px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .comments-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        .comment {
+            background-color: #f0f0f0;
+            padding: 10px 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .comment-author {
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .comment-text {
+            color: #555;
+            line-height: 1.4;
+        }
+        .comment-input-area {
+            display: flex;
+            margin-top: 20px;
+            gap: 10px;
+        }
+        .comment-input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        .comment-input-area button {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .comment-input-area button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nội Dung Chia Sẻ Của Cộng Đồng</h1>
+
+        <!-- Example Shared Post 1 -->
+        <div class="post">
+            <div class="post-header">
+                <span class="author">Nguyễn Văn A</span>
+                <span class="date">15 tháng 11, 2025</span>
+            </div>
+            <h2 class="post-title">Kế hoạch dinh dưỡng giảm cân hiệu quả trong 1 tháng</h2>
+            <p class="post-content">
+                Chào mọi người, tôi muốn chia sẻ kế hoạch dinh dưỡng mà tôi đã áp dụng để giảm 5kg trong một tháng qua. Kế hoạch này tập trung vào việc cắt giảm carb xấu và tăng cường protein cùng rau xanh. Hy vọng nó sẽ hữu ích cho những ai đang muốn giảm cân!
+            </p>
+            <div class="post-plan-link">
+                <p>Kế hoạch liên quan: <a href="#">Kế hoạch Giảm cân tháng 10</a></p>
+            </div>
+            <div class="post-actions">
+                <button class="like-btn" data-post-id="1"><span role="img" aria-label="like">👍</span> Thích (120)</button>
+                <button class="comment-btn" data-post-id="1"><span role="img" aria-label="comment">💬</span> Bình luận (35)</button>
+                <button class="save-btn" data-post-id="1"><span role="img" aria-label="save">💾</span> Lưu (50)</button>
+            </div>
+
+            <div class="comments-section">
+                <h3>Bình luận</h3>
+                <div class="comment">
+                    <p class="comment-author">Trần Thị B</p>
+                    <p class="comment-text">Kế hoạch rất hay, mình sẽ thử áp dụng xem sao!</p>
+                </div>
+                <div class="comment">
+                    <p class="comment-author">Lê Văn C</p>
+                    <p class="comment-text">Bạn có thể chia sẻ thêm về các món ăn cụ thể không?</p>
+                </div>
+                <div class="comment-input-area">
+                    <input type="text" placeholder="Viết bình luận của bạn...">
+                    <button>Gửi</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Example Shared Post 2 -->
+        <div class="post">
+            <div class="post-header">
+                <span class="author">Phạm Thị D</span>
+                <span class="date">10 tháng 11, 2025</span>
+            </div>
+            <h2 class="post-title">Hoạt động thể chất tăng cường sức bền</h2>
+            <p class="post-content">
+                Tôi muốn giới thiệu chuỗi bài tập giúp tăng cường sức bền mà tôi thực hiện hàng ngày. Bao gồm chạy bộ 30 phút, 15 phút đạp xe và một số bài tập cardio cường độ cao. Cảm thấy tràn đầy năng lượng sau mỗi buổi tập!
+            </p>
+            <div class="post-actions">
+                <button class="like-btn" data-post-id="2"><span role="img" aria-label="like">👍</span> Thích (80)</button>
+                <button class="comment-btn" data-post-id="2"><span role="img" aria-label="comment">💬</span> Bình luận (15)</button>
+                <button class="save-btn" data-post-id="2"><span role="img" aria-label="save">💾</span> Lưu (30)</button>
+            </div>
+
+            <div class="comments-section">
+                <h3>Bình luận</h3>
+                <div class="comment">
+                    <p class="comment-author">Võ Văn E</p>
+                    <p class="comment-text">Nghe có vẻ hay đó, mình sẽ thử tập theo.</p>
+                </div>
+                <div class="comment-input-area">
+                    <input type="text" placeholder="Viết bình luận của bạn...">
+                    <button>Gửi</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            document.querySelectorAll('.like-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.classList.toggle('liked');
+                    const currentLikes = parseInt(this.textContent.match(/\(([^)]+)\)/)[1]);
+                    if (this.classList.contains('liked')) {
+                        this.textContent = `👍 Thích (${currentLikes + 1})`;
+                    } else {
+                        this.textContent = `👍 Thích (${currentLikes - 1})`;
+                    }
+                });
+            });
+        </script>
+    </div>
+</body>
+</html>

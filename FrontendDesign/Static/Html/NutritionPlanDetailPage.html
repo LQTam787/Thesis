@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Kế hoạch Dinh dưỡng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .detail-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .detail-item {
+            margin-bottom: 10px;
+        }
+        .detail-item strong {
+            color: #555;
+            display: inline-block;
+            width: 150px;
+        }
+        .meal-plan {
+            margin-top: 20px;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+        }
+        .meal {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+        .meal h3 {
+            color: #3498db;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        .food-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .food-item:last-child {
+            border-bottom: none;
+        }
+        .food-item span {
+            flex-grow: 1;
+        }
+        .food-item .macros {
+            font-size: 0.9em;
+            color: #777;
+            margin-left: 15px;
+        }
+        .btn-back {
+            display: inline-block;
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chi tiết Kế hoạch Dinh dưỡng</h1>
+
+        <div class="detail-section">
+            <div class="detail-item"><strong>Mã Kế hoạch:</strong> <span id="planId"></span></div>
+            <div class="detail-item"><strong>Tên Kế hoạch:</strong> <span id="planName"></span></div>
+            <div class="detail-item"><strong>Mô tả:</strong> <span id="planDescription"></span></div>
+            <div class="detail-item"><strong>Ngày bắt đầu:</strong> <span id="startDate"></span></div>
+            <div class="detail-item"><strong>Ngày kết thúc:</strong> <span id="endDate"></span></div>
+            <div class="detail-item"><strong>Mục tiêu:</strong> <span id="planTarget"></span></div>
+        </div>
+
+        <div class="meal-plan">
+            <h2>Thực đơn chi tiết</h2>
+            <div id="mealList">
+                <!-- Meals will be loaded here by JavaScript -->
+                <div class="meal">
+                    <h3>Bữa sáng (7:00 AM)</h3>
+                    <div class="food-item">
+                        <span>Trứng ốp la (2 quả)</span>
+                        <span class="macros">150 kcal, 12g P, 1g C, 11g F</span>
+                    </div>
+                    <div class="food-item">
+                        <span>Bánh mì nguyên cám (1 lát)</span>
+                        <span class="macros">80 kcal, 4g P, 15g C, 1g F</span>
+                    </div>
+                    <div class="food-item">
+                        <span>Sữa tươi không đường (200ml)</span>
+                        <span class="macros">100 kcal, 7g P, 10g C, 4g F</span>
+                    </div>
+                </div>
+                <div class="meal">
+                    <h3>Bữa trưa (12:30 PM)</h3>
+                    <div class="food-item">
+                        <span>Ức gà luộc (150g)</span>
+                        <span class="macros">240 kcal, 45g P, 0g C, 5g F</span>
+                    </div>
+                    <div class="food-item">
+                        <span>Cơm gạo lứt (150g)</span>
+                        <span class="macros">200 kcal, 4g P, 40g C, 1g F</span>
+                    </div>
+                    <div class="food-item">
+                        <span>Rau cải xanh luộc (200g)</span>
+                        <span class="macros">50 kcal, 3g P, 10g C, 0g F</span>
+                    </div>
+                </div>
+                <div class="meal">
+                    <h3>Bữa tối (7:00 PM)</h3>
+                    <div class="food-item">
+                        <span>Cá hồi nướng (100g)</span>
+                        <span class="macros">200 kcal, 20g P, 0g C, 13g F</span>
+                    </div>
+                    <div class="food-item">
+                        <span>Khoai lang luộc (100g)</span>
+                        <span class="macros">90 kcal, 2g P, 20g C, 0g F</span>
+                    </div>
+                    <div class="food-item">
+                        <span>Salad rau trộn</span>
+                        <span class="macros">80 kcal, 2g P, 8g C, 5g F</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <a href="NutritionalConsultationPage.html" class="btn-back">Quay lại Trang Tư vấn</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const planId = urlParams.get('id');
+
+            const planIdSpan = document.getElementById('planId');
+            const planNameSpan = document.getElementById('planName');
+            const planDescriptionSpan = document.getElementById('planDescription');
+            const startDateSpan = document.getElementById('startDate');
+            const endDateSpan = document.getElementById('endDate');
+            const planTargetSpan = document.getElementById('planTarget');
+            const mealListDiv = document.getElementById('mealList');
+
+            let nutritionPlans = JSON.parse(localStorage.getItem('nutritionPlans_USER_ID_PLACEHOLDER')) || [];
+            const plan = nutritionPlans.find(p => p.maCheDo === planId);
+
+            if (plan) {
+                planIdSpan.textContent = plan.maCheDo;
+                planNameSpan.textContent = plan.tenCheDo;
+                planDescriptionSpan.textContent = plan.moTa;
+                startDateSpan.textContent = plan.ngayBatDau;
+                endDateSpan.textContent = plan.ngayKetThuc || 'Chưa xác định';
+                planTargetSpan.textContent = plan.mucTieu;
+
+                // Simulate loading detailed meal data. In a real app, this would be fetched from a backend.
+                // For now, we use a static placeholder similar to the example HTML.
+                mealListDiv.innerHTML = `
+                    <div class="meal">
+                        <h3>Bữa sáng (7:00 AM)</h3>
+                        <div class="food-item">
+                            <span>Trứng ốp la (2 quả)</span>
+                            <span class="macros">150 kcal, 12g P, 1g C, 11g F</span>
+                        </div>
+                        <div class="food-item">
+                            <span>Bánh mì nguyên cám (1 lát)</span>
+                            <span class="macros">80 kcal, 4g P, 15g C, 1g F</span>
+                        </div>
+                        <div class="food-item">
+                            <span>Sữa tươi không đường (200ml)</span>
+                            <span class="macros">100 kcal, 7g P, 10g C, 4g F</span>
+                        </div>
+                    </div>
+                    <div class="meal">
+                        <h3>Bữa trưa (12:30 PM)</h3>
+                        <div class="food-item">
+                            <span>Ức gà luộc (150g)</span>
+                            <span class="macros">240 kcal, 45g P, 0g C, 5g F</span>
+                        </div>
+                        <div class="food-item">
+                            <span>Cơm gạo lứt (150g)</span>
+                            <span class="macros">200 kcal, 4g P, 40g C, 1g F</span>
+                        </div>
+                        <div class="food-item">
+                            <span>Rau cải xanh luộc (200g)</span>
+                            <span class="macros">50 kcal, 3g P, 10g C, 0g F</span>
+                        </div>
+                    </div>
+                    <div class="meal">
+                        <h3>Bữa tối (7:00 PM)</h3>
+                        <div class="food-item">
+                            <span>Cá hồi nướng (100g)</span>
+                            <span class="macros">200 kcal, 20g P, 0g C, 13g F</span>
+                        </div>
+                        <div class="food-item">
+                            <span>Khoai lang luộc (100g)</span>
+                            <span class="macros">90 kcal, 2g P, 20g C, 0g F</span>
+                        </div>
+                        <div class="food-item">
+                            <span>Salad rau trộn</span>
+                            <span class="macros">80 kcal, 2g P, 8g C, 5g F</span>
+                        </div>
+                    </div>
+                `;
+            } else {
+                planNameSpan.textContent = 'Không tìm thấy kế hoạch';
+                planDescriptionSpan.textContent = 'Vui lòng quay lại trang tư vấn để xem các kế hoạch.';
+            }
+        });
+    </script>
+</body>
+</html>

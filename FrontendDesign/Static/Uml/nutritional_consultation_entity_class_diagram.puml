@@ -1,0 +1,100 @@
+@startuml nutritional_consultation_entity_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+package "Modul Tư vấn Chế độ Dinh dưỡng" {
+    class NguoiDung {
+        +maNguoiDung: string <<generated>>
+        +tenThat: string
+        +email: string
+    }
+
+    class DacDiemCaNhan {
+        +maDacDiem: string <<generated>>
+        +chieuCao: number
+        +canNang: number
+        +mucDoVanDong: string
+        +benhLyNen: string
+        +diUng: string
+    }
+
+    class MucTieuDinhDuong {
+        +maMucTieu: string <<generated>>
+        +giamCan: boolean
+        +tangCan: boolean
+        +tangCo: boolean
+        +duyTriCanNang: boolean
+        +phucHoiSucKhoe: boolean
+        +thoiGian: string
+    }
+
+    class KeHoachDinhDuong {
+        +maKeHoach: string <<generated>>
+        +tenKeHoach: string
+        +tongCaloMucTieu: number
+        +tongMacroMucTieu: string
+        +canhBaoChenhLech: string
+        +ngayBatDau: date
+        +ngayKetThuc: date
+        +mucTieu: string
+    }
+
+    class ThucDon {
+        +maThucDon: string <<generated>>
+        +tenThucDon: string
+        +dinhLuongTong: string
+        +lyDoDeXuat: string
+    }
+
+    class BuaAn {
+        +maBuaAn: string <<generated>>
+        +tenBuaAn: string
+        +thoiGianAn: time
+    }
+
+    class ChiTietBuaAn {
+        +maChiTietBuaAn: string <<generated>>
+        +dinhLuong: string
+        +congThuc: string
+    }
+
+    class ThucPham {
+        +maThucPham: string <<generated>>
+        +tenThucPham: string
+        +moTa: string
+        +calo: number
+        +protein: number
+        +carb: number
+        +fat: number
+    }
+
+    class CongThucNauAn {
+        +maCongThuc: string <<generated>>
+        +tenCongThuc: string
+        +huongDan: string
+    }
+
+    class ThanhPhanCongThuc {
+        +maThanhPhan: string <<generated>>
+        +soLuong: string
+    }
+}
+
+' Quan hệ
+NguoiDung "1" *-- "1" DacDiemCaNhan : có
+NguoiDung "1" -- "0..*" MucTieuDinhDuong : đặt
+NguoiDung "1" -- "0..*" KeHoachDinhDuong : có
+
+KeHoachDinhDuong "1" *-- "1..*" ThucDon : bao gồm
+ThucDon "1" *-- "1..*" BuaAn : chứa
+
+BuaAn "1" -- "1..*" ChiTietBuaAn
+ChiTietBuaAn "0..*" -- "1" ThucPham
+
+CongThucNauAn "1" -- "1..*" ThanhPhanCongThuc
+ThanhPhanCongThuc "0..*" -- "1" ThucPham
+
+@enduml

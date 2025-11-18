@@ -1,0 +1,94 @@
+@startuml profile_management_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+package "Giao diện Người dùng" {
+    class ProfileManagementPage {
+        - realNameInput: HTMLInput
+        - emailInput: HTMLInput
+        - passwordInput: HTMLInput
+        - confirmPasswordInput: HTMLInput
+        - heightInput: HTMLInput
+        - weightInput: HTMLInput
+        - activityLevelSelect: HTMLSelect
+        - underlyingMedicalConditionsTextarea: HTMLTextarea
+        - allergiesTextarea: HTMLTextarea
+        --
+        + displayProfile(profileData: NguoiDung, dacDiemCaNhanData: DacDiemCaNhan)
+        + getEditedProfileData(): {tenThat, email}
+        + getEditedAccountData(): {matKhau}
+        + getEditedDacDiemCaNhanData(): {chieuCao, canNang, mucDoVanDong, benhLyNen, diUng}
+        + showSuccessMessage(message: string)
+        + showErrorMessage(message: string)
+    }
+
+    class ProfileController {
+        - profileManagementPage: ProfileManagementPage
+        - nguoiDungDAO: NguoiDungDAO
+        - taiKhoanDAO: TaiKhoanDAO
+        - dacDiemCaNhanDAO: DacDiemCaNhanDAO
+        --
+        + initialize()
+        + saveProfile()
+        + cancelEdit()
+    }
+}
+
+package "Lớp Truy xuất Dữ liệu (DAO)" {
+    interface NguoiDungDAO {
+        + getNguoiDungById(id: string): NguoiDung
+        + updateNguoiDung(nguoiDung: NguoiDung): boolean
+    }
+
+    interface TaiKhoanDAO {
+        + getTaiKhoanByUserId(userId: string): TaiKhoan
+        + updateTaiKhoan(taiKhoan: TaiKhoan): boolean
+    }
+
+    interface DacDiemCaNhanDAO {
+        + getDacDiemCaNhanByUserId(userId: string): DacDiemCaNhan
+        + updateDacDiemCaNhan(dacDiemCaNhan: DacDiemCaNhan): boolean
+        + createDacDiemCaNhan(dacDiemCaNhan: DacDiemCaNhan): boolean
+    }
+}
+
+package "Thực thể" {
+    class NguoiDung << (E, #FF7700) >> {
+        + id
+        + tenThat
+        + email
+        + tenTaiKhoan
+    }
+
+    class TaiKhoan << (E, #FF7700) >> {
+        + id
+        + tenTaiKhoan
+        + matKhau
+    }
+
+    class DacDiemCaNhan << (E, #FF7700) >> {
+        + id
+        + chieuCao
+        + canNang
+        + mucDoVanDong
+        + benhLyNen
+        + diUng
+    }
+}
+
+ProfileManagementPage .up.> ProfileController
+ProfileController ..> NguoiDungDAO
+ProfileController ..> TaiKhoanDAO
+ProfileController ..> DacDiemCaNhanDAO
+
+NguoiDungDAO ..> NguoiDung
+TaiKhoanDAO ..> TaiKhoan
+DacDiemCaNhanDAO ..> DacDiemCaNhan
+
+NguoiDung "1" -- "1" TaiKhoan : sở hữu
+NguoiDung "1" -- "0..1" DacDiemCaNhan : có
+
+@enduml

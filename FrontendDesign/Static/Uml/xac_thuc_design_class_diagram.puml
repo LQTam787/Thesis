@@ -1,0 +1,72 @@
+@startuml xac_thuc_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+' Các lớp UI
+class LoginPageUI {
+  - tenTaiKhoanInput: string
+  - matKhauInput: string
+  + hienThiThongBao(message: string): void
+  + layTenTaiKhoan(): string
+  + layMatKhau(): string
+}
+
+class RegisterPageUI {
+  - tenThatInput: string
+  - emailInput: string
+  - tenTaiKhoanInput: string
+  - matKhauInput: string
+  - xacNhanMatKhauInput: string
+  + hienThiThongBao(message: string): void
+  + layTenThat(): string
+  + layEmail(): string
+  + layTenTaiKhoan(): string
+  + layMatKhau(): string
+  + layXacNhanMatKhau(): string
+}
+
+' Lớp Service
+class AuthService {
+  + login(tenTaiKhoan: string, matKhau: string): JWTToken
+  + register(nguoiDungData: NguoiDung): boolean
+}
+
+' Các lớp DAO (Data Access Object) dưới dạng Interface
+interface TaiKhoanDAO {
+  + findByTenTaiKhoan(tenTaiKhoan: string): TaiKhoan
+  + save(taiKhoan: TaiKhoan): TaiKhoan
+}
+
+interface NguoiDungDAO {
+  + save(nguoiDung: NguoiDung): NguoiDung
+}
+
+' Các lớp thực thể
+class NguoiDung {
+  + tenThat: string
+  + email: string
+  + tenTaiKhoan: string
+  + matKhau: string
+}
+
+class TaiKhoan {
+  + tenTaiKhoan: string
+  + matKhau: string
+}
+
+' Các quan hệ
+LoginPageUI ..> AuthService : sử dụng
+RegisterPageUI ..> AuthService : sử dụng
+
+AuthService ..> TaiKhoanDAO : sử dụng
+AuthService ..> NguoiDungDAO : sử dụng
+
+TaiKhoanDAO ..> TaiKhoan : trả về/nhận
+NguoiDungDAO ..> NguoiDung : trả về/nhận
+
+NguoiDung "1" *-- "1" TaiKhoan : sở hữu
+
+@enduml

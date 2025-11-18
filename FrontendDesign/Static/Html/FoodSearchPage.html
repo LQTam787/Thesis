@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm kiếm Món ăn & Thực phẩm</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .search-section, .results-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background-color: #ecf0f1;
+            color: #333;
+            font-weight: bold;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: white;
+            display: none; /* Hidden by default */
+        }
+        .alert-info {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Tìm kiếm Món ăn & Thực phẩm</h1>
+
+        <div class="search-section">
+            <h2>Tìm kiếm</h2>
+            <div class="form-group">
+                <label for="searchInput">Nhập tên món ăn hoặc thực phẩm:</label>
+                <input type="text" id="searchInput" placeholder="VD: Gà nướng, Táo, Sữa chua">
+            </div>
+            <button class="btn btn-primary" id="searchBtn">Tìm kiếm</button>
+        </div>
+
+        <div class="results-section">
+            <h2>Kết quả tìm kiếm</h2>
+            <div class="alert alert-info" id="infoAlert"></div>
+            <table id="searchResultsTable">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Tên</th>
+                        <th>Loại</th>
+                        <th>Calo (kcal/100g)</th>
+                        <th>Protein (g)</th>
+                        <th>Chất béo (g)</th>
+                        <th>Carb (g)</th>
+                        <th>Mô tả / Công thức</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const searchInput = document.getElementById('searchInput');
+            const searchBtn = document.getElementById('searchBtn');
+            const searchResultsTableBody = document.querySelector('#searchResultsTable tbody');
+            const infoAlert = document.getElementById('infoAlert');
+
+            // Dữ liệu mẫu (có thể lấy từ API thực tế)
+            const sampleFoodData = [
+                { ma: 'MA001', ten: 'Gà nướng mật ong', loai: 'Món ăn', calo: 250, protein: 30, chatBeo: 10, carbohydrate: 5, moTa: 'Món gà nướng tẩm ướp mật ong và gia vị.' },
+                { ma: 'TP001', ten: 'Táo Gala', loai: 'Thực phẩm', calo: 52, protein: 0.3, chatBeo: 0.2, carbohydrate: 14, moTa: 'Táo tươi, giàu chất xơ.' },
+                { ma: 'MA002', ten: 'Salad rau củ quả', loai: 'Món ăn', calo: 150, protein: 5, chatBeo: 8, carbohydrate: 15, moTa: 'Nhiều loại rau củ tươi trộn dầu giấm.' },
+                { ma: 'TP002', ten: 'Sữa chua không đường', loai: 'Thực phẩm', calo: 60, protein: 10, chatBeo: 0.5, carbohydrate: 4, moTa: 'Sữa chua lên men tự nhiên.' },
+                { ma: 'MA003', ten: 'Cá hồi áp chảo', loai: 'Món ăn', calo: 200, protein: 25, chatBeo: 12, carbohydrate: 0, moTa: 'Cá hồi tươi áp chảo với ít dầu ô liu.' },
+                { ma: 'TP003', ten: 'Bánh mì nguyên cám', loai: 'Thực phẩm', calo: 250, protein: 13, chatBeo: 3, carbohydrate: 45, moTa: 'Giàu chất xơ, tốt cho tiêu hóa.' },
+            ];
+
+            function showAlert(element, message, type) {
+                element.textContent = message;
+                element.className = `alert alert-${type}`;
+                element.style.display = 'block';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
+            }
+
+            function renderSearchResults(results) {
+                searchResultsTableBody.innerHTML = '';
+                if (results.length === 0) {
+                    showAlert(infoAlert, 'Không tìm thấy kết quả nào.', 'info');
+                    return;
+                }
+
+                results.forEach(item => {
+                    const row = searchResultsTableBody.insertRow();
+                    row.innerHTML = `
+                        <td>${item.ma}</td>
+                        <td>${item.ten}</td>
+                        <td>${item.loai}</td>
+                        <td>${item.calo}</td>
+                        <td>${item.protein}</td>
+                        <td>${item.chatBeo}</td>
+                        <td>${item.carbohydrate}</td>
+                        <td>${item.moTa}</td>
+                    `;
+                });
+                infoAlert.style.display = 'none';
+            }
+
+            searchBtn.addEventListener('click', () => {
+                const query = searchInput.value.toLowerCase();
+                const filteredResults = sampleFoodData.filter(item => 
+                    item.ten.toLowerCase().includes(query) || 
+                    item.moTa.toLowerCase().includes(query)
+                );
+                renderSearchResults(filteredResults);
+            });
+
+            // Render all items initially
+            renderSearchResults(sampleFoodData);
+        });
+    </script>
+</body>
+</html>

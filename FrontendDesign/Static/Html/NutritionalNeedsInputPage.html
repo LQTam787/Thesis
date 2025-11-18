@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhập Thông tin Nhu cầu Dinh dưỡng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 800px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-section {
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-actions {
+            text-align: right;
+            margin-top: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: white;
+            display: none; /* Hidden by default */
+        }
+        .alert-success {
+            background-color: #2ecc71;
+        }
+        .alert-error {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nhập Thông tin Nhu cầu Dinh dưỡng</h1>
+
+        <div class="alert alert-success" id="successAlert"></div>
+        <div class="alert alert-error" id="errorAlert"></div>
+
+        <div class="form-section">
+            <form id="nutritionalNeedsForm">
+                <input type="hidden" id="maNhuCau" value="">
+                <input type="hidden" id="maNguoiDung" value="USER_ID_PLACEHOLDER"> <!-- Sẽ được điền bởi hệ thống -->
+
+                <div class="form-group">
+                    <label for="chieuCao">Chiều cao (cm):</label>
+                    <input type="number" id="chieuCao" min="50" max="250" required>
+                </div>
+                <div class="form-group">
+                    <label for="canNang">Cân nặng (kg):</label>
+                    <input type="number" id="canNang" min="10" max="300" step="0.1" required>
+                </div>
+                <div class="form-group">
+                    <label for="tuoi">Tuổi:</label>
+                    <input type="number" id="tuoi" min="1" max="120" required>
+                </div>
+                <div class="form-group">
+                    <label for="gioiTinh">Giới tính:</label>
+                    <select id="gioiTinh" required>
+                        <option value="">Chọn giới tính</option>
+                        <option value="nam">Nam</option>
+                        <option value="nu">Nữ</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mucDoHoatDong">Mức độ hoạt động:</label>
+                    <select id="mucDoHoatDong" required>
+                        <option value="">Chọn mức độ hoạt động</option>
+                        <option value="it">Ít vận động (sedentary)</option>
+                        <option value="nhe">Vận động nhẹ (lightly active)</option>
+                        <option value="vua">Vận động vừa (moderately active)</option>
+                        <option value="nang">Vận động nhiều (very active)</option>
+                        <option value="rat_nang">Vận động rất nhiều (extra active)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="mucTieuDinhDuong">Mục tiêu dinh dưỡng (ví dụ: giảm 5kg, tăng cơ bắp):</label>
+                    <textarea id="mucTieuDinhDuong" required></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu Nhu cầu Dinh dưỡng</button>
+                </div>
+            </form>
+
+            <div id="recommendationResults" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px; display: none;">
+                <h2>Nhu cầu Dinh dưỡng Khuyến nghị</h2>
+                <p><strong>Calo khuyến nghị:</strong> <span id="caloKhuyenNghi"></span> kcal/ngày</p>
+                <p><strong>Protein:</strong> <span id="proteinKhuyenNghi"></span> g/ngày</p>
+                <p><strong>Chất béo:</strong> <span id="chatBeoKhuyenNghi"></span> g/ngày</p>
+                <p><strong>Carbohydrate:</strong> <span id="carbohydrateKhuyenNghi"></span> g/ngày</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('nutritionalNeedsForm');
+            const maNhuCauInput = document.getElementById('maNhuCau');
+            const maNguoiDungInput = document.getElementById('maNguoiDung');
+            const chieuCaoInput = document.getElementById('chieuCao');
+            const canNangInput = document.getElementById('canNang');
+            const tuoiInput = document.getElementById('tuoi');
+            const gioiTinhInput = document.getElementById('gioiTinh');
+            const mucDoHoatDongInput = document.getElementById('mucDoHoatDong');
+            const mucTieuDinhDuongInput = document.getElementById('mucTieuDinhDuong');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+            const recommendationResults = document.getElementById('recommendationResults');
+            const caloKhuyenNghiSpan = document.getElementById('caloKhuyenNghi');
+            const proteinKhuyenNghiSpan = document.getElementById('proteinKhuyenNghi');
+            const chatBeoKhuyenNghiSpan = document.getElementById('chatBeoKhuyenNghi');
+            const carbohydrateKhuyenNghiSpan = document.getElementById('carbohydrateKhuyenNghi');
+
+            // Load existing data if any (simulated for a specific user)
+            let nutritionalNeeds = JSON.parse(localStorage.getItem('nutritionalNeeds_USER_ID_PLACEHOLDER')) || {};
+            if (Object.keys(nutritionalNeeds).length > 0) {
+                maNhuCauInput.value = nutritionalNeeds.maNhuCau || '';
+                chieuCaoInput.value = nutritionalNeeds.chieuCao || '';
+                canNangInput.value = nutritionalNeeds.canNang || '';
+                tuoiInput.value = nutritionalNeeds.tuoi || '';
+                gioiTinhInput.value = nutritionalNeeds.gioiTinh || '';
+                mucDoHoatDongInput.value = nutritionalNeeds.mucDoHoatDong || '';
+                mucTieuDinhDuongInput.value = nutritionalNeeds.mucTieuDinhDuong || '';
+                displayRecommendations(nutritionalNeeds.caloKhuyenNghi, nutritionalNeeds.proteinKhuyenNghi, nutritionalNeeds.chatBeoKhuyenNghi, nutritionalNeeds.carbohydrateKhuyenNghi);
+            }
+
+            function showAlert(element, message, type) {
+                element.textContent = message;
+                element.className = `alert alert-${type}`;
+                element.style.display = 'block';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
+            }
+
+            function calculateBMR(weight, height, age, gender) {
+                // Mifflin-St Jeor Equation
+                if (gender === 'nam') {
+                    return (10 * weight) + (6.25 * height) - (5 * age) + 5;
+                } else if (gender === 'nu') {
+                    return (10 * weight) + (6.25 * height) - (5 * age) - 161;
+                }
+                return 0;
+            }
+
+            function calculateTDEE(bmr, activityLevel) {
+                let multiplier = 1.2; // Sedentary
+                if (activityLevel === 'nhe') multiplier = 1.375;
+                else if (activityLevel === 'vua') multiplier = 1.55;
+                else if (activityLevel === 'nang') multiplier = 1.725;
+                else if (activityLevel === 'rat_nang') multiplier = 1.9;
+                return bmr * multiplier;
+            }
+
+            function displayRecommendations(calo, protein, fat, carb) {
+                caloKhuyenNghiSpan.textContent = calo.toFixed(0);
+                proteinKhuyenNghiSpan.textContent = protein.toFixed(1);
+                chatBeoKhuyenNghiSpan.textContent = fat.toFixed(1);
+                carbohydrateKhuyenNghiSpan.textContent = carb.toFixed(1);
+                recommendationResults.style.display = 'block';
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const chieuCao = parseFloat(chieuCaoInput.value);
+                const canNang = parseFloat(canNangInput.value);
+                const tuoi = parseInt(tuoiInput.value);
+                const gioiTinh = gioiTinhInput.value;
+                const mucDoHoatDong = mucDoHoatDongInput.value;
+                const mucTieuDinhDuong = mucTieuDinhDuongInput.value;
+
+                if (isNaN(chieuCao) || isNaN(canNang) || isNaN(tuoi) || !gioiTinh || !mucDoHoatDong || !mucTieuDinhDuong) {
+                    showAlert(errorAlert, 'Vui lòng điền đầy đủ các thông tin bắt buộc.', 'error');
+                    return;
+                }
+
+                const bmr = calculateBMR(canNang, chieuCao, tuoi, gioiTinh);
+                const tdee = calculateTDEE(bmr, mucDoHoatDong);
+
+                // Simple macronutrient distribution (example: 25% protein, 30% fat, 45% carb)
+                const proteinCalo = tdee * 0.25; // 25% of total calories from protein
+                const fatCalo = tdee * 0.30;     // 30% of total calories from fat
+                const carbCalo = tdee * 0.45;    // 45% of total calories from carbohydrates
+
+                const proteinGrams = proteinCalo / 4; // 1g protein = 4 calories
+                const fatGrams = fatCalo / 9;       // 1g fat = 9 calories
+                const carbGrams = carbCalo / 4;     // 1g carbohydrate = 4 calories
+
+                const newNeeds = {
+                    maNhuCau: maNhuCauInput.value || `NCN${Date.now()}`,
+                    maNguoiDung: maNguoiDungInput.value,
+                    chieuCao: chieuCao,
+                    canNang: canNang,
+                    tuoi: tuoi,
+                    gioiTinh: gioiTinh,
+                    mucDoHoatDong: mucDoHoatDong,
+                    mucTieuDinhDuong: mucTieuDinhDuong,
+                    caloKhuyenNghi: tdee,
+                    proteinKhuyenNghi: proteinGrams,
+                    chatBeoKhuyenNghi: fatGrams,
+                    carbohydrateKhuyenNghi: carbGrams
+                };
+
+                localStorage.setItem('nutritionalNeeds_USER_ID_PLACEHOLDER', JSON.stringify(newNeeds));
+                showAlert(successAlert, 'Lưu nhu cầu dinh dưỡng thành công!', 'success');
+                displayRecommendations(tdee, proteinGrams, fatGrams, carbGrams);
+            });
+        });
+    </script>
+</body>
+</html>

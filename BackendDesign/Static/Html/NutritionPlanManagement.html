@@ -117,8 +117,8 @@
                 <label for="endDate">Ngày kết thúc:</label>
                 <input type="date" id="endDate" name="endDate" required>
 
-                <label for="totalCaloriesGoal">Mục tiêu Calo/ngày:</label>
-                <input type="number" id="totalCaloriesGoal" name="totalCaloriesGoal" required>
+                <label for="nutritionGoal">Mục tiêu dinh dưỡng:</label>
+                <input type="text" id="nutritionGoal" name="nutritionGoal" required>
 
                 <button type="submit">Lưu Kế hoạch</button>
                 <button type="button" onclick="hideAddPlanForm()">Hủy</button>
@@ -140,8 +140,8 @@
     // Dữ liệu giả lập
     const mockData = {
         plans: [
-            { id: 'plan01', name: 'Kế hoạch giảm cân 7 ngày', startDate: '2024-05-01', endDate: '2024-05-07', totalCaloriesGoal: 1500 },
-            { id: 'plan02', name: 'Kế hoạch tăng cơ', startDate: '2024-05-10', endDate: '2024-05-24', totalCaloriesGoal: 2500 }
+            { id: 'plan01', name: 'Kế hoạch giảm cân 7 ngày', startDate: '2024-05-01', endDate: '2024-05-07', nutritionGoal: 1500 },
+            { id: 'plan02', name: 'Kế hoạch tăng cơ', startDate: '2024-05-10', endDate: '2024-05-24', nutritionGoal: 2500 }
         ],
         dailyMenus: {
             'plan01': [
@@ -223,7 +223,7 @@
             name: document.getElementById('planName').value,
             startDate: document.getElementById('startDate').value,
             endDate: document.getElementById('endDate').value,
-            totalCaloriesGoal: document.getElementById('totalCaloriesGoal').value
+            nutritionGoal: document.getElementById('nutritionGoal').value
         };
         mockData.plans.push(newPlan);
         renderPlans();

@@ -1,0 +1,211 @@
+@startuml entity_class_diagram_design
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+' Main entity classes
+class NguoiDung {
+  +id: string
+  +fullName: string
+  +email: string
+  +username: string
+  +password: string
+}
+
+class QuanTriVien {
+  +id: string
+}
+
+class TaiKhoan {
+  +id: string
+  +username: string
+  +password: string
+}
+
+class MucTieuDinhDuong {
+  +id: string
+  +weightLoss: boolean
+  +weightGain: boolean
+  +muscleGain: boolean
+  +maintainWeight: boolean
+  +recovery: boolean
+  +duration: string
+}
+
+class DacDiemCaNhan {
+  +id: string
+  +height: double
+  +weight: double
+  +activityLevel: string
+  +underlyingDisease: string
+  +allergies: string
+}
+
+class ThucPham {
+  +id: string
+  +foodName: string
+  +description: string
+  +calories: double
+  +protein: double
+  +carb: double
+  +fat: double
+}
+
+class CongThucNauAn {
+  +id: string
+  +recipeName: string
+  +instructions: string
+}
+
+class ThucDon {
+  +id: string
+  +menuName: string
+  +totalQuantity: double
+  +reasonForSuggestion: string
+}
+
+class BuaAn {
+  +id: string
+  +mealName: string
+  +mealTime: string
+}
+
+class KeHoachDinhDuong {
+  +id: string
+  +planName: string
+  +totalTargetCalories: double
+  +totalTargetMacro: string
+  +deviationWarning: string
+}
+
+class Checklist {
+  +id: string
+  +shoppingList: string
+  +tips: string
+  +dailyReminders: string
+}
+
+class HoatDongTheChat {
+  +id: string
+  +activityName: string
+  +caloriesBurned: double
+}
+
+class DuLieuThucTe {
+  +id: string
+  +inputTime: string
+}
+
+class NoiDungChiaSe {
+  +id: string
+  +title: string
+  +content: string
+  +shareStatus: string
+  +views: int
+  +likes: int
+  +comments: int
+  +saves: int
+}
+
+class LoaiDoiTuongQuanTri {
+  +id: string
+  +typeName: string
+}
+
+' Intermediate classes
+class ChiTietBuaAn {
+  +id: string
+  +quantity: double
+  +recipe: CongThucNauAn
+}
+
+class ThanhPhanCongThuc {
+  +id: string
+  +quantity: double
+}
+
+class ChiTietDuLieuThucTe {
+  +id: string
+  +actualQuantity: double
+}
+
+class ChiTietHoatDongThucTe {
+  +id: string
+  +executionTime: string
+  +intensity: string
+}
+
+class TuongTacChiaSe {
+  +id: string
+  +interactionType: string
+  +interactionTime: string
+  +commentContent: string
+}
+
+class QuyenQuanTri {
+  +id: string
+  +action: string
+}
+
+' Information output classes (potentially DTO/View Model later)
+class BieuDoTienDo {
+  +id: string
+  +currentWeight: double
+  +bodyMassIndex: double
+  +targetCompletionPercentage: double
+}
+
+class BaoCaoDinhDuong {
+  +id: string
+  +consumedMacro: string
+  +consumedMicroNutrient: string
+}
+
+class GoiYDieuChinh {
+  +id: string
+  +suggestionContent: string
+}
+
+' Relationships
+NguoiDung <|-- QuanTriVien
+
+NguoiDung "1" *-- "1" TaiKhoan : soHuu >
+NguoiDung "1" *-- "1" DacDiemCaNhan : co >
+NguoiDung "1" o-- "0..*" MucTieuDinhDuong : dat >
+NguoiDung "1" o-- "0..*" KeHoachDinhDuong : co >
+NguoiDung "1" o-- "0..*" HoatDongTheChat : thucHien >
+NguoiDung "1" o-- "0..*" DuLieuThucTe : nhap >
+NguoiDung "1" o-- "0..*" NoiDungChiaSe : tao >
+
+KeHoachDinhDuong "1" *-- "1..*" ThucDon : baoGom >
+ThucDon "1" *-- "1..*" BuaAn : chua >
+
+BuaAn "1" o-- "1..*" ChiTietBuaAn
+ChiTietBuaAn "0..*" o-- "1" ThucPham
+
+CongThucNauAn "1" o-- "1..*" ThanhPhanCongThuc
+ThanhPhanCongThuc "0..*" o-- "1" ThucPham
+
+KeHoachDinhDuong "1" *-- "1" Checklist : co >
+
+DuLieuThucTe "1" o-- "0..*" ChiTietDuLieuThucTe
+ChiTietDuLieuThucTe "0..*" o-- "1" ThucPham
+
+DuLieuThucTe "1" o-- "0..*" ChiTietHoatDongThucTe
+ChiTietHoatDongThucTe "0..*" o-- "1" HoatDongTheChat
+
+KeHoachDinhDuong "1" o-- "0..*" DuLieuThucTe : theoDoiBang >
+
+KeHoachDinhDuong "1" o-- "0..*" BieuDoTienDo : taoRa >
+KeHoachDinhDuong "1" o-- "0..*" BaoCaoDinhDuong : taoRa >
+KeHoachDinhDuong "1" o-- "0..*" GoiYDieuChinh : duaRa >
+
+NoiDungChiaSe "1" o-- "0..*" TuongTacChiaSe
+TuongTacChiaSe "0..*" o-- "1" NguoiDung : thucHien >
+
+QuanTriVien "1" o-- "0..*" QuyenQuanTri
+QuyenQuanTri "0..*" o-- "1" LoaiDoiTuongQuanTri
+
+@enduml

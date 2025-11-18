@@ -1,0 +1,123 @@
+@startuml nutritional_consultation_dao_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+package "Lớp Truy Xuất Dữ Liệu (DAO)" {
+    interface INguoiDungDAO {
+        +layDacDiemCaNhan(maNguoiDung: string): DacDiemCaNhan
+        +capNhatDacDiemCaNhan(dacDiem: DacDiemCaNhan): boolean
+    }
+
+    interface IMucTieuDinhDuongDAO {
+        +layMucTieuDinhDuong(maNguoiDung: string): MucTieuDinhDuong
+        +taoMucTieuDinhDuong(mucTieu: MucTieuDinhDuong): string
+        +capNhatMucTieuDinhDuong(mucTieu: MucTieuDinhDuong): boolean
+    }
+
+    interface IKeHoachDinhDuongDAO {
+        +layDanhSachKeHoach(maNguoiDung: string): List<KeHoachDinhDuong>
+        +layKeHoachTheoMa(maKeHoach: string): KeHoachDinhDuong
+        +taoKeHoachDinhDuong(keHoach: KeHoachDinhDuong): string
+        +capNhatKeHoachDinhDuong(keHoach: KeHoachDinhDuong): boolean
+        +xoaKeHoachDinhDuong(maKeHoach: string): boolean
+    }
+
+    interface IThucPhamDAO {
+        +timKiemThucPham(tuKhoa: string): List<ThucPham>
+        +layThucPhamTheoMa(maThucPham: string): ThucPham
+    }
+
+    interface IBuaAnDAO {
+        +layBuaAnTheoKeHoach(maKeHoach: string): List<BuaAn>
+        +taoBuaAn(buaAn: BuaAn): string
+        +capNhatBuaAn(buaAn: BuaAn): boolean
+        +xoaBuaAn(maBuaAn: string): boolean
+    }
+
+    interface IChiTietBuaAnDAO {
+        +layChiTietBuaAn(maBuaAn: string): List<ChiTietBuaAn>
+        +themChiTietBuaAn(chiTiet: ChiTietBuaAn): string
+        +capNhatChiTietBuaAn(chiTiet: ChiTietBuaAn): boolean
+        +xoaChiTietBuaAn(maChiTiet: string): boolean
+    }
+}
+
+package "Thực Thể (Entity)" {
+    class NguoiDung {
+      +tenThat
+      +email
+      +tenTaiKhoan
+      +matKhau
+    }
+
+    class MucTieuDinhDuong {
+      +maMucTieu: string <<generated>>
+      +giamCan: boolean
+      +tangCan: boolean
+      +tangCo: boolean
+      +duyTriCanNang: boolean
+      +phucHoiSucKhoe: boolean
+      +thoiGian: string
+      +maNguoiDung: string <<hidden>>
+    }
+
+    class DacDiemCaNhan {
+      +maDacDiem: string <<generated>>
+      +chieuCao: number
+      +canNang: number
+      +mucDoVanDong: string
+      +benhLyNen: string
+      +diUng: string
+      +maNguoiDung: string <<hidden>>
+    }
+
+    class ThucPham {
+      +maThucPham: string <<generated>>
+      +tenThucPham: string
+      +moTa: string
+      +calo: number
+      +protein: number
+      +carb: number
+      +fat: number
+    }
+
+    class KeHoachDinhDuong {
+      +maKeHoach: string <<generated>>
+      +tenKeHoach: string
+      +tongCaloMucTieu: number
+      +tongMacroMucTieu: string
+      +canhBaoChenhLech: string
+      +maNguoiDung: string <<hidden>>
+      +ngayBatDau: date
+      +ngayKetThuc: date
+      +mucTieu: string
+    }
+
+    class BuaAn {
+      +maBuaAn: string <<generated>>
+      +tenBuaAn: string
+      +thoiGianAn: time
+      +maKeHoach: string <<hidden>>
+    }
+
+    class ChiTietBuaAn {
+      +maChiTietBuaAn: string <<generated>>
+      +dinhLuong: string
+      +congThuc: string
+      +maBuaAn: string <<hidden>>
+      +maThucPham: string <<hidden>>
+    }
+}
+
+INguoiDungDAO .left.> NguoiDung
+INguoiDungDAO .left.> DacDiemCaNhan
+IMucTieuDinhDuongDAO .left.> MucTieuDinhDuong
+IKeHoachDinhDuongDAO .left.> KeHoachDinhDuong
+IThucPhamDAO .left.> ThucPham
+IBuaAnDAO .left.> BuaAn
+IChiTietBuaAnDAO .left.> ChiTietBuaAn
+
+@enduml

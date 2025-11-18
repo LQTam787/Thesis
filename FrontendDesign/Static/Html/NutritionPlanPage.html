@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Chế độ Dinh dưỡng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .form-section, .list-section {
+            margin-bottom: 40px;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            background-color: #fdfdfd;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group textarea {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+        .form-actions {
+            text-align: right;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            color: white;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+        }
+        .btn-secondary {
+            background-color: #95a5a6;
+            color: white;
+            margin-left: 10px;
+        }
+        .btn-secondary:hover {
+            background-color: #7f8c8d;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        table th {
+            background-color: #ecf0f1;
+            color: #333;
+            font-weight: bold;
+        }
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+        .btn-edit {
+            background-color: #f39c12;
+            color: white;
+        }
+        .btn-edit:hover {
+            background-color: #e67e22;
+        }
+        .btn-delete {
+            background-color: #e74c3c;
+            color: white;
+        }
+        .btn-delete:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            color: white;
+            display: none; /* Hidden by default */
+        }
+        .alert-success {
+            background-color: #2ecc71;
+        }
+        .alert-error {
+            background-color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Quản lý Chế độ Dinh dưỡng</h1>
+
+        <div class="alert alert-success" id="successAlert"></div>
+        <div class="alert alert-error" id="errorAlert"></div>
+
+        <div class="form-section">
+            <h2>Thêm/Sửa Chế độ Dinh dưỡng</h2>
+            <form id="nutritionPlanForm">
+                <input type="hidden" id="maCheDo" value="">
+                <div class="form-group">
+                    <label for="tenCheDo">Tên Chế độ:</label>
+                    <input type="text" id="tenCheDo" required>
+                </div>
+                <div class="form-group">
+                    <label for="moTa">Mô tả:</label>
+                    <textarea id="moTa"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="ngayBatDau">Ngày bắt đầu:</label>
+                    <input type="date" id="ngayBatDau" required>
+                </div>
+                <div class="form-group">
+                    <label for="ngayKetThuc">Ngày kết thúc:</label>
+                    <input type="date" id="ngayKetThuc">
+                </div>
+                <div class="form-group">
+                    <label for="mucTieu">Mục tiêu:</label>
+                    <input type="text" id="mucTieu" placeholder="VD: Giảm cân, Tăng cơ" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Lưu Chế độ</button>
+                    <button type="button" class="btn btn-secondary" id="clearFormBtn">Hủy</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="list-section">
+            <h2>Danh sách Chế độ Dinh dưỡng</h2>
+            <table id="nutritionPlanTable">
+                <thead>
+                    <tr>
+                        <th>Mã</th>
+                        <th>Tên Chế độ</th>
+                        <th>Mô tả</th>
+                        <th>Bắt đầu</th>
+                        <th>Kết thúc</th>
+                        <th>Mục tiêu</th>
+                        <th>Hành động</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Dữ liệu sẽ được thêm vào đây bằng JavaScript -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('nutritionPlanForm');
+            const maCheDoInput = document.getElementById('maCheDo');
+            const tenCheDoInput = document.getElementById('tenCheDo');
+            const moTaInput = document.getElementById('moTa');
+            const ngayBatDauInput = document.getElementById('ngayBatDau');
+            const ngayKetThucInput = document.getElementById('ngayKetThuc');
+            const mucTieuInput = document.getElementById('mucTieu');
+            const clearFormBtn = document.getElementById('clearFormBtn');
+            const nutritionPlanTableBody = document.querySelector('#nutritionPlanTable tbody');
+            const successAlert = document.getElementById('successAlert');
+            const errorAlert = document.getElementById('errorAlert');
+
+            let nutritionPlans = JSON.parse(localStorage.getItem('nutritionPlans')) || [];
+            let currentEditId = null;
+
+            function showAlert(element, message, type) {
+                element.textContent = message;
+                element.className = `alert alert-${type}`;
+                element.style.display = 'block';
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, 3000);
+            }
+
+            function renderNutritionPlans() {
+                nutritionPlanTableBody.innerHTML = '';
+                nutritionPlans.forEach(plan => {
+                    const row = nutritionPlanTableBody.insertRow();
+                    row.dataset.id = plan.maCheDo;
+                    row.innerHTML = `
+                        <td>${plan.maCheDo}</td>
+                        <td>${plan.tenCheDo}</td>
+                        <td>${plan.moTa || ''}</td>
+                        <td>${plan.ngayBatDau}</td>
+                        <td>${plan.ngayKetThuc || ''}</td>
+                        <td>${plan.mucTieu || ''}</td>
+                        <td class="action-buttons">
+                            <button class="btn btn-edit" data-id="${plan.maCheDo}">Sửa</button>
+                            <button class="btn btn-delete" data-id="${plan.maCheDo}">Xóa</button>
+                        </td>
+                    `;
+                });
+            }
+
+            function clearForm() {
+                maCheDoInput.value = '';
+                tenCheDoInput.value = '';
+                moTaInput.value = '';
+                ngayBatDauInput.value = '';
+                ngayKetThucInput.value = '';
+                mucTieuInput.value = '';
+                currentEditId = null;
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const newPlan = {
+                    maCheDo: maCheDoInput.value || `CDD${Date.now()}`,
+                    tenCheDo: tenCheDoInput.value,
+                    moTa: moTaInput.value,
+                    ngayBatDau: ngayBatDauInput.value,
+                    ngayKetThuc: ngayKetThucInput.value,
+                    mucTieu: mucTieuInput.value,
+                };
+
+                if (currentEditId) {
+                    // Update existing plan
+                    const index = nutritionPlans.findIndex(p => p.maCheDo === currentEditId);
+                    if (index > -1) {
+                        nutritionPlans[index] = newPlan;
+                        showAlert(successAlert, 'Cập nhật chế độ dinh dưỡng thành công!', 'success');
+                    } else {
+                        showAlert(errorAlert, 'Không tìm thấy chế độ để cập nhật.', 'error');
+                    }
+                } else {
+                    // Add new plan
+                    nutritionPlans.push(newPlan);
+                    showAlert(successAlert, 'Thêm chế độ dinh dưỡng thành công!', 'success');
+                }
+
+                localStorage.setItem('nutritionPlans', JSON.stringify(nutritionPlans));
+                renderNutritionPlans();
+                clearForm();
+            });
+
+            clearFormBtn.addEventListener('click', clearForm);
+
+            nutritionPlanTableBody.addEventListener('click', (e) => {
+                if (e.target.classList.contains('btn-edit')) {
+                    const idToEdit = e.target.dataset.id;
+                    const planToEdit = nutritionPlans.find(p => p.maCheDo === idToEdit);
+
+                    if (planToEdit) {
+                        maCheDoInput.value = planToEdit.maCheDo;
+                        tenCheDoInput.value = planToEdit.tenCheDo;
+                        moTaInput.value = planToEdit.moTa;
+                        ngayBatDauInput.value = planToEdit.ngayBatDau;
+                        ngayKetThucInput.value = planToEdit.ngayKetThuc;
+                        mucTieuInput.value = planToEdit.mucTieu;
+                        currentEditId = idToEdit;
+                    }
+                } else if (e.target.classList.contains('btn-delete')) {
+                    const idToDelete = e.target.dataset.id;
+                    if (confirm('Bạn có chắc chắn muốn xóa chế độ dinh dưỡng này không?')) {
+                        nutritionPlans = nutritionPlans.filter(p => p.maCheDo !== idToDelete);
+                        localStorage.setItem('nutritionPlans', JSON.stringify(nutritionPlans));
+                        renderNutritionPlans();
+                        showAlert(successAlert, 'Xóa chế độ dinh dưỡng thành công!', 'success');
+                    }
+                }
+            });
+
+            renderNutritionPlans();
+        });
+    </script>
+</body>
+</html>

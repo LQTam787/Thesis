@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo Tiến Độ và Đánh Giá</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h1, h2 {
+            color: #2c5e77;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 6px;
+            background-color: #fcfcfc;
+        }
+        .report-item {
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #eef;
+            border-left: 5px solid #2c5e77;
+            border-radius: 4px;
+        }
+        .report-item strong {
+            color: #2c5e77;
+        }
+        .chart-placeholder {
+            width: 100%;
+            height: 300px;
+            background-color: #e0e0e0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #666;
+            font-size: 1.2em;
+            border-radius: 6px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+        .advice-box {
+            background-color: #dff0d8;
+            border: 1px solid #d0e9c6;
+            color: #3c763d;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .advice-box strong {
+            color: #2b542c;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .button-group button {
+            background-color: #2c5e77;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #1a425a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Báo Cáo Tiến Độ và Đánh Giá</h1>
+
+        <div class="section">
+            <h2>Tiến Độ Cân Nặng</h2>
+            <div class="chart-placeholder">Biểu đồ tiến độ cân nặng (dữ liệu giả định)</div>
+            <div class="report-item">
+                <strong>Cân nặng hiện tại:</strong> 70 kg
+            </div>
+            <div class="report-item">
+                <strong>Thay đổi trong 7 ngày qua:</strong> -0.5 kg
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Chỉ Số Cơ Thể</h2>
+            <div class="chart-placeholder">Biểu đồ chỉ số cơ thể (dữ liệu giả định)</div>
+            <div class="report-item">
+                <strong>BMI:</strong> 22.9 (Bình thường)
+            </div>
+            <div class="report-item">
+                <strong>Tỷ lệ mỡ cơ thể:</strong> 18%
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Báo Cáo Dinh Dưỡng</h2>
+            <div class="chart-placeholder">Biểu đồ Macro/Micro Nutrient (dữ liệu giả định)</div>
+            <div class="report-item">
+                <strong>Tổng Calo tiêu thụ hôm nay:</strong> 1800 Calo (Mục tiêu: 2000 Calo)
+            </div>
+            <div class="report-item">
+                <strong>Protein:</strong> 120g (Mục tiêu: 150g)
+            </div>
+            <div class="report-item">
+                <strong>Carb:</strong> 180g (Mục tiêu: 200g)
+            </div>
+            <div class="report-item">
+                <strong>Fat:</strong> 60g (Mục tiêu: 70g)
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Gợi Ý Điều Chỉnh</h2>
+            <div class="advice-box">
+                <strong>Dựa trên dữ liệu của bạn:</strong>
+                <p>Bạn đang có xu hướng giảm nhẹ lượng protein. Hãy cân nhắc bổ sung thêm các nguồn protein từ thịt nạc, trứng hoặc các sản phẩm từ sữa.</p>
+                <p>Hoạt động thể chất của bạn đang rất tốt, hãy duy trì cường độ này để đạt được mục tiêu.</p>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="generateNewReport()">Tải lại Báo cáo</button>
+        </div>
+    </div>
+
+    <script>
+        function generateNewReport() {
+            alert('Đang tạo báo cáo mới...');
+            // Logic để tải dữ liệu và cập nhật báo cáo
+        }
+    </script>
+</body>
+</html>

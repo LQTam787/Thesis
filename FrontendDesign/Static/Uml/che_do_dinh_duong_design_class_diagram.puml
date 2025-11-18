@@ -1,0 +1,213 @@
+@startuml che_do_dinh_duong_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+' Các lớp UI
+class NutritionPlanPageUI {
+  - maCheDoInput: string
+  - tenCheDoInput: string
+  - moTaInput: string
+  - ngayBatDauInput: date
+  - ngayKetThucInput: date
+  - mucTieuInput: string
+  - nutritionPlanTableBody: HTMLElement
+  + hienThiThongBao(message: string, type: string): void
+  + layThongTinCheDo(): CheDoDinhDuongData
+  + dienThongTinCheDo(plan: CheDoDinhDuongData): void
+  + hienThiDanhSachCheDo(plans: CheDoDinhDuongData[]): void
+  + xoaCheDo(maCheDo: string): void
+  + lamSachForm(): void
+}
+
+class FoodSearchPageUI {
+  - searchInput: string
+  - searchResultsTableBody: HTMLElement
+  + hienThiThongBao(message: string, type: string): void
+  + layTuKhoaTimKiem(): string
+  + hienThiKetQuaTimKiem(results: FoodItemData[]): void
+}
+
+class NutritionalNeedsInputPageUI {
+  - maNhuCauInput: string
+  - maNguoiDungInput: string
+  - chieuCaoInput: number
+  - canNangInput: number
+  - tuoiInput: number
+  - gioiTinhInput: string
+  - mucDoHoatDongInput: string
+  - mucTieuDinhDuongInput: string
+  - caloKhuyenNghiSpan: HTMLElement
+  - proteinKhuyenNghiSpan: HTMLElement
+  - chatBeoKhuyenNghiSpan: HTMLElement
+  - carbohydrateKhuyenNghiSpan: HTMLElement
+  + hienThiThongBao(message: string, type: string): void
+  + layThongTinNhuCau(): NhuCauDinhDuongData
+  + dienThongTinNhuCau(needs: NhuCauDinhDuongData): void
+  + hienThiKhuyenNghi(calo: number, protein: number, fat: number, carb: number): void
+}
+
+' Lớp Service
+class NutritionService {
+  + luuCheDoDinhDuong(cheDo: CheDoDinhDuong): boolean
+  + layTatCaCheDoDinhDuong(): CheDoDinhDuong[]
+  + layCheDoDinhDuongTheoMa(maCheDo: string): CheDoDinhDuong
+  + capNhatCheDoDinhDuong(cheDo: CheDoDinhDuong): boolean
+  + xoaCheDoDinhDuong(maCheDo: string): boolean
+  + timKiemMonAnVaThucPham(tuKhoa: string): FoodItem[]
+  + luuNhuCauDinhDuong(nhuCau: NhuCauDinhDuong): boolean
+  + layNhuCauDinhDuongCuaNguoiDung(maNguoiDung: string): NhuCauDinhDuong
+  + tinhToanNhuCauCalo(canNang: number, chieuCao: number, tuoi: number, gioiTinh: string, mucDoHoatDong: string): CaloMacronutrientData
+}
+
+' Các lớp DAO (Data Access Object) dưới dạng Interface
+interface CheDoDinhDuongDAO {
+  + save(cheDo: CheDoDinhDuong): CheDoDinhDuong
+  + findById(maCheDo: string): CheDoDinhDuong
+  + findAll(): CheDoDinhDuong[]
+  + update(cheDo: CheDoDinhDuong): CheDoDinhDuong
+  + delete(maCheDo: string): boolean
+}
+
+interface MonAnDAO {
+  + save(monAn: MonAn): MonAn
+  + findById(maMonAn: string): MonAn
+  + findByName(tenMonAn: string): MonAn[]
+  + findAll(): MonAn[]
+  + update(monAn: MonAn): MonAn
+  + delete(maMonAn: string): boolean
+}
+
+interface ThucPhamDAO {
+  + save(thucPham: ThucPham): ThucPham
+  + findById(maThucPham: string): ThucPham
+  + findByName(tenThucPham: string): ThucPham[]
+  + findAll(): ThucPham[]
+  + update(thucPham: ThucPham): ThucPham
+  + delete(maThucPham: string): boolean
+}
+
+interface ChiTietCheDoDinhDuongDAO {
+  + save(chiTiet: ChiTietCheDoDinhDuong): ChiTietCheDoDinhDuong
+  + findByMaCheDo(maCheDo: string): ChiTietCheDoDinhDuong[]
+  + deleteByMaCheDo(maCheDo: string): boolean
+}
+
+interface NhuCauDinhDuongDAO {
+  + save(nhuCau: NhuCauDinhDuong): NhuCauDinhDuong
+  + findByMaNguoiDung(maNguoiDung: string): NhuCauDinhDuong
+  + update(nhuCau: NhuCauDinhDuong): NhuCauDinhDuong
+}
+
+interface ChuyenGiaDinhDuongDAO {
+  + save(chuyenGia: ChuyenGiaDinhDuong): ChuyenGiaDinhDuong
+  + findById(maChuyenGia: string): ChuyenGiaDinhDuong
+  + findAll(): ChuyenGiaDinhDuong[]
+}
+
+' Các lớp thực thể (đã có từ pha phân tích hoặc bổ sung)
+class NguoiDung {
+  + tenThat: string
+  + email: string
+  + tenTaiKhoan: string
+  + matKhau: string
+}
+
+class TaiKhoan {
+  + tenTaiKhoan: string
+  + matKhau: string
+}
+
+class CheDoDinhDuong {
+  + maCheDo: string
+  + tenCheDo: string
+  + moTa: string
+  + ngayBatDau: date
+  + ngayKetThuc: date
+  + mucTieu: string
+}
+
+class MonAn {
+  + maMonAn: string
+  + tenMonAn: string
+  + moTa: string
+  + congThuc: string
+  + caloTongCong: number
+  + protein: number
+  + chatBeo: number
+  + carbohydrate: number
+}
+
+class ThucPham {
+  + maThucPham: string
+  + tenThucPham: string
+  + donViTinh: string
+  + calo: number
+  + protein: number
+  + chatBeo: number
+  + carbohydrate: number
+}
+
+class ChiTietCheDoDinhDuong {
+  + maChiTiet: string
+  + soLuong: number
+  + buaAn: string
+}
+
+class NhuCauDinhDuong {
+  + maNhuCau: string
+  + chieuCao: number
+  + canNang: number
+  + tuoi: number
+  + gioiTinh: string
+  + mucDoHoatDong: string
+  + mucTieuDinhDuong: string
+  + caloKhuyenNghi: number
+  + proteinKhuyenNghi: number
+  + chatBeoKhuyenNghi: number
+  + carbohydrateKhuyenNghi: number
+}
+
+class ChuyenGiaDinhDuong {
+  + maChuyenGia: string
+  + tenChuyenGia: string
+  + email: string
+  + soDienThoai: string
+  + chuyenMon: string
+}
+
+' Các quan hệ
+' Quan hệ với các lớp UI
+NutritionPlanPageUI ..> NutritionService : sử dụng
+FoodSearchPageUI ..> NutritionService : sử dụng
+NutritionalNeedsInputPageUI ..> NutritionService : sử dụng
+
+' Quan hệ Service với DAO
+NutritionService ..> CheDoDinhDuongDAO : sử dụng
+NutritionService ..> MonAnDAO : sử dụng
+NutritionService ..> ThucPhamDAO : sử dụng
+NutritionService ..> ChiTietCheDoDinhDuongDAO : sử dụng
+NutritionService ..> NhuCauDinhDuongDAO : sử dụng
+
+' Quan hệ DAO với Entity
+CheDoDinhDuongDAO ..> CheDoDinhDuong : trả về/nhận
+MonAnDAO ..> MonAn : trả về/nhận
+ThucPhamDAO ..> ThucPham : trả về/nhận
+ChiTietCheDoDinhDuongDAO ..> ChiTietCheDoDinhDuong : trả về/nhận
+NhuCauDinhDuongDAO ..> NhuCauDinhDuong : trả về/nhận
+ChuyenGiaDinhDuongDAO ..> ChuyenGiaDinhDuong : trả về/nhận
+
+' Quan hệ giữa các thực thể
+NguoiDung "1" *-- "1" TaiKhoan : sở hữu (từ biểu đồ xác thực)
+NguoiDung "1" -- "*" CheDoDinhDuong : có
+NguoiDung "1" -- "1" NhuCauDinhDuong : có
+
+CheDoDinhDuong "1" *-- "*" ChiTietCheDoDinhDuong : bao gồm
+MonAn "1" -- "*" ChiTietCheDoDinhDuong : có thể nằm trong
+ThucPham "1" -- "*" ChiTietCheDoDinhDuong : có thể nằm trong
+
+ChuyenGiaDinhDuong "1" -- "*" CheDoDinhDuong : tạo/quản lý
+
+@enduml

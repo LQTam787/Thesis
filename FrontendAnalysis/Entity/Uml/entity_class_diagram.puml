@@ -24,6 +24,9 @@ class TaiKhoan {
 class MucTieuDinhDuong {
   +giamCan
   +tangCan
+  +tangCo
+  +duyTriCanNang
+  +phucHoiSucKhoe
   +thoiGian
 }
 

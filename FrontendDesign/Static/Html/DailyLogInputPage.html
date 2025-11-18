@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhập Liệu Dữ Liệu Hàng Ngày</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        h1, h2 {
+            color: #2c5e77;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .section {
+            margin-bottom: 30px;
+            border: 1px solid #e0e0e0;
+            padding: 20px;
+            border-radius: 6px;
+            background-color: #fcfcfc;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="time"],
+        .form-group select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        .form-group button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+        .form-group button:hover {
+            background-color: #45a049;
+        }
+        .food-item, .activity-item {
+            display: flex;
+            align-items: center;
+            background-color: #eef;
+            padding: 10px;
+            border-radius: 4px;
+            margin-bottom: 10px;
+            justify-content: space-between;
+        }
+        .food-item span, .activity-item span {
+            flex-grow: 1;
+        }
+        .food-item button, .activity-item button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+        .food-item button:hover, .activity-item button:hover {
+            background-color: #da190b;
+        }
+        .button-group {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .button-group button {
+            background-color: #2c5e77;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s ease;
+        }
+        .button-group button:hover {
+            background-color: #1a425a;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nhập Liệu Dữ Liệu Hàng Ngày</h1>
+
+        <div class="section">
+            <h2>Bữa Ăn Đã Tiêu Thụ</h2>
+            <div class="form-group">
+                <label for="meal-time">Thời gian bữa ăn:</label>
+                <select id="meal-time">
+                    <option value="breakfast">Bữa sáng</option>
+                    <option value="lunch">Bữa trưa</option>
+                    <option value="dinner">Bữa tối</option>
+                    <option value="snack">Bữa phụ</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="food-search">Tìm kiếm món ăn/thực phẩm:</label>
+                <input type="text" id="food-search" placeholder="Nhập tên món ăn hoặc thực phẩm">
+                <button onclick="addFoodItem()">Thêm món ăn</button>
+            </div>
+            <div id="food-list">
+                <!-- Food items will be added here -->
+                <div class="food-item">
+                    <span>Cơm trắng (200g) - 260 Calo</span>
+                    <button>Xóa</button>
+                </div>
+                <div class="food-item">
+                    <span>Thịt gà luộc (150g) - 240 Calo</span>
+                    <button>Xóa</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Hoạt Động Thể Chất Đã Thực Hiện</h2>
+            <div class="form-group">
+                <label for="activity-name">Tên hoạt động:</label>
+                <input type="text" id="activity-name" placeholder="Ví dụ: Chạy bộ, Yoga, Nâng tạ">
+            </div>
+            <div class="form-group">
+                <label for="activity-duration">Thời lượng (phút):</label>
+                <input type="number" id="activity-duration" min="1" value="30">
+            </div>
+            <div class="form-group">
+                <label for="activity-intensity">Cường độ:</label>
+                <select id="activity-intensity">
+                    <option value="low">Thấp</option>
+                    <option value="medium">Trung bình</option>
+                    <option value="high">Cao</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <button onclick="addActivityItem()">Thêm hoạt động</button>
+            </div>
+            <div id="activity-list">
+                <!-- Activity items will be added here -->
+                <div class="activity-item">
+                    <span>Chạy bộ (30 phút, Cường độ trung bình) - 300 Calo</span>
+                    <button>Xóa</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button onclick="saveDailyLog()">Lưu Dữ Liệu Hàng Ngày</button>
+        </div>
+    </div>
+
+    <script>
+        function addFoodItem() {
+            const foodSearch = document.getElementById('food-search').value;
+            if (foodSearch) {
+                const foodList = document.getElementById('food-list');
+                const newItem = document.createElement('div');
+                newItem.className = 'food-item';
+                newItem.innerHTML = `<span>${foodSearch} (ví dụ: 100g) - XX Calo</span><button onclick="this.parentNode.remove()">Xóa</button>`;
+                foodList.appendChild(newItem);
+                document.getElementById('food-search').value = '';
+            }
+        }
+
+        function addActivityItem() {
+            const activityName = document.getElementById('activity-name').value;
+            const activityDuration = document.getElementById('activity-duration').value;
+            const activityIntensity = document.getElementById('activity-intensity').value;
+
+            if (activityName && activityDuration) {
+                const activityList = document.getElementById('activity-list');
+                const newItem = document.createElement('div');
+                newItem.className = 'activity-item';
+                newItem.innerHTML = `<span>${activityName} (${activityDuration} phút, Cường độ ${activityIntensity}) - XX Calo</span><button onclick="this.parentNode.remove()">Xóa</button>`;
+                activityList.appendChild(newItem);
+                document.getElementById('activity-name').value = '';
+                document.getElementById('activity-duration').value = '30';
+                document.getElementById('activity-intensity').value = 'medium';
+            }
+        }
+
+        function saveDailyLog() {
+            alert('Dữ liệu hàng ngày đã được lưu!');
+            // Here would be the logic to send data to the backend
+        }
+    </script>
+</body>
+</html>

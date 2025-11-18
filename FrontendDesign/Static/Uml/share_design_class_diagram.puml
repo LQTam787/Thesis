@@ -1,0 +1,128 @@
+@startuml share_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+package "Thực Thể" {
+  class NguoiDung {
+    + id: string
+    + tenThat: string
+    + email: string
+    + tenTaiKhoan: string
+    + matKhau: string
+  }
+
+  class NoiDungChiaSe {
+    + id: string
+    + tieuDe: string
+    + noiDung: string
+    + trangThaiChiaSe: string
+    + luotXem: int
+    + luotThich: int
+    + luotBinhLuan: int
+    + luotLuu: int
+    + nguoiDungId: string
+    + keHoachId: string
+  }
+
+  class KeHoachDinhDuong {
+    + id: string
+    + tenKeHoach: string
+    + tongCaloMucTieu: float
+    + tongMacroMucTieu: string
+    + canhBaoChenhLech: string
+  }
+
+  class TuongTacChiaSe {
+    + id: string
+    + loaiTuongTac: string
+    + thoiGianTuongTac: Date
+    + noiDungBinhLuan: string
+    + nguoiDungId: string
+    + noiDungChiaSeId: string
+  }
+}
+
+package "Giao Diện (UI)" {
+  class UISharePlanActivityPage {
+    + titleInput: HTMLInputElement
+    + contentTextArea: HTMLTextAreaElement
+    + nutritionPlanSelect: HTMLSelectElement
+    + publicShareCheckbox: HTMLInputElement
+    + shareForm: HTMLFormElement
+    + messageBox: HTMLDivElement
+    -- Thuộc tính ẩn --
+    + userId: string
+    + planId: string
+    + activityId: string
+    -- Phương thức --
+    + handleSubmit(): void
+    + displayMessage(type: string, message: string): void
+    + loadNutritionPlans(userId: string): Promise<void>
+  }
+
+  class UIViewSharedContentPage {
+    + postContainer: HTMLDivElement
+    + likeButtons: NodeListOf<HTMLButtonElement>
+    + commentButtons: NodeListOf<HTMLButtonElement>
+    + saveButtons: NodeListOf<HTMLButtonElement>
+    + commentInputAreas: NodeListOf<HTMLDivElement>
+    -- Thuộc tính ẩn --
+    + currentUserId: string
+    + postId: string
+    -- Phương thức --
+    + loadSharedContent(): Promise<void>
+    + handleLike(postId: string): void
+    + handleComment(postId: string, commentText: string): void
+    + handleSave(postId: string): void
+  }
+}
+
+package "Truy Xuất Dữ Liệu (DAO)" {
+  interface INoiDungChiaSeDAO {
+    + taoNoiDungChiaSe(noiDung: NoiDungChiaSe): Promise<boolean>
+    + layTatCaNoiDungChiaSe(): Promise<NoiDungChiaSe[]>
+    + layNoiDungChiaSeTheoId(id: string): Promise<NoiDungChiaSe | null>
+    + capNhatNoiDungChiaSe(noiDung: NoiDungChiaSe): Promise<boolean>
+    + xoaNoiDungChiaSe(id: string): Promise<boolean>
+    + layNoiDungChiaSeTheoNguoiDung(nguoiDungId: string): Promise<NoiDungChiaSe[]>
+  }
+
+  interface ITuongTacChiaSeDAO {
+    + taoTuongTacChiaSe(tuongTac: TuongTacChiaSe): Promise<boolean>
+    + layTatCaTuongTacChiaSe(noiDungId: string): Promise<TuongTacChiaSe[]>
+    + capNhatTuongTacChiaSe(tuongTac: TuongTacChiaSe): Promise<boolean>
+    + xoaTuongTacChiaSe(id: string): Promise<boolean>
+  }
+
+  interface IKeHoachDinhDuongDAO {
+    + layTatCaKeHoachDinhDuongCuaNguoiDung(nguoiDungId: string): Promise<KeHoachDinhDuong[]>
+  }
+
+  interface INguoiDungDAO {
+    + layThongTinNguoiDung(id: string): Promise<NguoiDung | null>
+  }
+}
+
+' Quan hệ giữa các lớp UI và DAO
+UISharePlanActivityPage ..> INoiDungChiaSeDAO : sử dụng
+UISharePlanActivityPage ..> IKeHoachDinhDuongDAO : sử dụng
+UIViewSharedContentPage ..> INoiDungChiaSeDAO : sử dụng
+UIViewSharedContentPage ..> ITuongTacChiaSeDAO : sử dụng
+UIViewSharedContentPage ..> INguoiDungDAO : sử dụng
+
+' Quan hệ giữa các lớp DAO và Thực Thể
+INoiDungChiaSeDAO ..> NoiDungChiaSe
+ITuongTacChiaSeDAO ..> TuongTacChiaSe
+IKeHoachDinhDuongDAO ..> KeHoachDinhDuong
+INguoiDungDAO ..> NguoiDung
+
+' Quan hệ giữa các thực thể
+NguoiDung "1" -- "0..*" NoiDungChiaSe : tạo
+NoiDungChiaSe "1" -- "0..1" KeHoachDinhDuong : liên kết với
+NoiDungChiaSe "1" -- "0..*" TuongTacChiaSe
+NguoiDung "1" -- "0..*" TuongTacChiaSe : thực hiện
+
+@enduml

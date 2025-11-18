@@ -1,0 +1,204 @@
+@startuml database_schema_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+
+entity tblNguoiDung {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +fullName: VARCHAR(255)
+  +email: VARCHAR(255)
+  +username: VARCHAR(255)
+  +password: VARCHAR(255)
+  +height: DOUBLE
+  +weight: DOUBLE
+  +activityLevel: VARCHAR(255)
+  +underlyingDisease: VARCHAR(255)
+  +allergies: VARCHAR(255)
+}
+
+entity tblQuanTriVien {
+  +id: VARCHAR(255) <<PK, FK>>
+  --
+}
+
+entity tblMucTieuDinhDuong {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +weightLoss: BOOLEAN
+  +weightGain: BOOLEAN
+  +muscleGain: BOOLEAN
+  +maintainWeight: BOOLEAN
+  +recovery: BOOLEAN
+  +duration: VARCHAR(255)
+  +nguoiDungId: VARCHAR(255) <<FK>>
+}
+
+entity tblThucPham {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +foodName: VARCHAR(255)
+  +description: VARCHAR(255)
+  +calories: DOUBLE
+  +protein: DOUBLE
+  +carb: DOUBLE
+  +fat: DOUBLE
+}
+
+entity tblCongThucNauAn {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +recipeName: VARCHAR(255)
+  +instructions: VARCHAR(255)
+}
+
+entity tblThucDon {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +menuName: VARCHAR(255)
+  +totalQuantity: DOUBLE
+  +reasonForSuggestion: VARCHAR(255)
+  +keHoachDinhDuongId: VARCHAR(255) <<FK>>
+}
+
+entity tblBuaAn {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +mealName: VARCHAR(255)
+  +mealTime: VARCHAR(255)
+  +thucDonId: VARCHAR(255) <<FK>>
+}
+
+entity tblKeHoachDinhDuong {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +planName: VARCHAR(255)
+  +totalTargetCalories: DOUBLE
+  +totalTargetMacro: VARCHAR(255)
+  +deviationWarning: VARCHAR(255)
+  +shoppingList: VARCHAR(255)
+  +tips: VARCHAR(255)
+  +dailyReminders: VARCHAR(255)
+  +nguoiDungId: VARCHAR(255) <<FK>>
+}
+
+entity tblHoatDongTheChat {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +activityName: VARCHAR(255)
+  +caloriesBurned: DOUBLE
+  +nguoiDungId: VARCHAR(255) <<FK>>
+}
+
+entity tblDuLieuThucTe {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +inputTime: VARCHAR(255)
+  +nguoiDungId: VARCHAR(255) <<FK>>
+  +keHoachDinhDuongId: VARCHAR(255) <<FK>>
+}
+
+entity tblNoiDungChiaSe {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +title: VARCHAR(255)
+  +content: VARCHAR(255)
+  +shareStatus: VARCHAR(255)
+  +views: INT
+  +likes: INT
+  +comments: INT
+  +saves: INT
+  +nguoiDungId: VARCHAR(255) <<FK>>
+}
+
+entity tblLoaiDoiTuongQuanTri {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +typeName: VARCHAR(255)
+}
+
+entity tblChiTietBuaAn {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +quantity: DOUBLE
+  +buaAnId: VARCHAR(255) <<FK>>
+  +thucPhamId: VARCHAR(255) <<FK>>
+}
+
+entity tblThanhPhanCongThuc {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +quantity: DOUBLE
+  +congThucNauAnId: VARCHAR(255) <<FK>>
+  +thucPhamId: VARCHAR(255) <<FK>>
+}
+
+entity tblChiTietDuLieuThucTe {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +actualQuantity: DOUBLE
+  +duLieuThucTeId: VARCHAR(255) <<FK>>
+  +thucPhamId: VARCHAR(255) <<FK>>
+}
+
+entity tblChiTietHoatDongThucTe {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +executionTime: VARCHAR(255)
+  +intensity: VARCHAR(255)
+  +duLieuThucTeId: VARCHAR(255) <<FK>>
+  +hoatDongTheChatId: VARCHAR(255) <<FK>>
+}
+
+entity tblTuongTacChiaSe {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +interactionType: VARCHAR(255)
+  +interactionTime: VARCHAR(255)
+  +commentContent: VARCHAR(255)
+  +noiDungChiaSeId: VARCHAR(255) <<FK>>
+  +nguoiDungId: VARCHAR(255) <<FK>>
+}
+
+entity tblQuyenQuanTri {
+  +id: VARCHAR(255) <<PK>>
+  --
+  +action: VARCHAR(255)
+  +quanTriVienId: VARCHAR(255) <<FK>>
+  +loaiDoiTuongQuanTriId: VARCHAR(255) <<FK>>
+}
+
+' Relationships
+tblNguoiDung "1" -- "0..1" tblQuanTriVien : (kế thừa)
+tblNguoiDung "1" -- "0..*" tblMucTieuDinhDuong
+tblNguoiDung "1" -- "0..*" tblKeHoachDinhDuong
+tblNguoiDung "1" -- "0..*" tblHoatDongTheChat
+tblNguoiDung "1" -- "0..*" tblDuLieuThucTe
+tblNguoiDung "1" -- "0..*" tblNoiDungChiaSe
+
+tblKeHoachDinhDuong "1" -- "1..*" tblThucDon
+
+tblThucDon "1" -- "1..*" tblBuaAn
+
+tblBuaAn "1" -- "1..*" tblChiTietBuaAn
+tblChiTietBuaAn "0..*" -- "1" tblThucPham
+
+tblCongThucNauAn "1" -- "1..*" tblThanhPhanCongThuc
+tblThanhPhanCongThuc "0..*" -- "1" tblThucPham
+
+tblDuLieuThucTe "1" -- "0..*" tblChiTietDuLieuThucTe
+tblChiTietDuLieuThucTe "0..*" -- "1" tblThucPham
+
+tblDuLieuThucTe "1" -- "0..*" tblChiTietHoatDongThucTe
+tblChiTietHoatDongThucTe "0..*" -- "1" tblHoatDongTheChat
+
+tblNoiDungChiaSe "1" -- "0..*" tblTuongTacChiaSe
+tblTuongTacChiaSe "0..*" -- "1" tblNguoiDung
+
+tblQuanTriVien "1" -- "0..*" tblQuyenQuanTri
+tblQuyenQuanTri "0..*" -- "1" tblLoaiDoiTuongQuanTri
+
+@enduml

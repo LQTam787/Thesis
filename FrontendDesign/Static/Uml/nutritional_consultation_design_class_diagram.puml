@@ -1,0 +1,74 @@
+@startuml nutritional_consultation_design_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+package "Giao Diện Người Dùng (Frontend)" {
+    class NutritionalConsultationPage {
+        +chieuCao: number
+        +canNang: number
+        +tuoi: number
+        +gioiTinh: string
+        +mucDoHoatDong: string
+        +mucTieuDinhDuong: string
+        +caloKhuyenNghi: number <<hidden>>
+        +proteinKhuyenNghi: number <<hidden>>
+        +chatBeoKhuyenNghi: number <<hidden>>
+        +carbohydrateKhuyenNghi: number <<hidden>>
+        --
+        +luuNhuCauDinhDuong(): void
+        +hienThiKhuyenNghi(): void
+        +taoKeHoachTuKhuyenNghi(): void
+        +taiDanhSachKeHoach(): void
+        +xoaKeHoach(maCheDo: string): void
+        +xemChiTietKeHoach(maCheDo: string): void
+    }
+
+    class NutritionPlanDetailPage {
+        +maCheDo: string <<hidden>>
+        +tenCheDo: string
+        +moTa: string
+        +ngayBatDau: date
+        +ngayKetThuc: date
+        +mucTieu: string
+        +thucDonChiTiet: List<BuaAnView> <<hidden>>
+        --
+        +taiChiTietKeHoach(maCheDo: string): void
+        +hienThiThucDon(): void
+    }
+
+    class FoodSearchPage {
+        +tuKhoaTimKiem: string
+        +ketQuaTimKiem: List<ThucPhamView>
+        --
+        +timKiemThucPham(): void
+        +hienThiKetQuaTimKiem(): void
+    }
+
+    class BuaAnView <<(V,lightgrey)>> {
+        +tenBuaAn: string
+        +thoiGianAn: time
+        +danhSachThucPham: List<ThucPhamView>
+    }
+
+    class ThucPhamView <<(V,lightgrey)>> {
+        +maThucPham: string
+        +tenThucPham: string
+        +loai: string
+        +calo: number
+        +protein: number
+        +carb: number
+        +fat: number
+        +moTa: string
+        +dinhLuong: string <<hidden>>
+    }
+}
+
+NutritionalConsultationPage ..> NutritionPlanDetailPage : điều hướng tới
+NutritionalConsultationPage ..> FoodSearchPage : có thể tích hợp
+NutritionPlanDetailPage "1" *-- "*" BuaAnView
+BuaAnView "1" *-- "*" ThucPhamView
+
+@enduml
