@@ -1,0 +1,88 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Chia sẻ kế hoạch và hoạt động dinh dưỡng (Analysis)" {
+
+    interface "GiaoDienChiaSe" <<Boundary>> {
+    }
+
+    class "GiaoDienTuyChonChiaSe" <<Boundary>> {
+        + in_CheDoCongKhai
+        + in_DanhSachBanBe_Nhom
+        + sub_XacNhanChiaSe
+    }
+
+    class "GiaoDienXemNoiDungChiaSe" <<Boundary>> {
+        + out_NoiDungChiaSe
+        + out_LuotThich
+        + out_DanhSachBinhLuan
+        + sub_Thich
+        + in_BinhLuanMoi
+        + sub_GuiBinhLuan
+        + sub_LuuNoiDung
+    }
+
+    class "GiaoDienDeXuat" <<Boundary>> {
+        + out_DanhSachDeXuatNguoiDung
+        + out_DanhSachDeXuatNhom
+    }
+
+    class "QuanLyChiaSe" <<Control>> {
+        + thayDoiCheDoChiaSe(noiDungId, cheDo, danhSachNguoiNhan) : boolean
+        + xemNoiDungChiaSe(noiDungId) : NoiDungChiaSe
+        + thichNoiDung(noiDungId, nguoiDungId) : boolean
+        + themBinhLuan(noiDungId, nguoiDungId, noiDungBinhLuan) : boolean
+        + luuNoiDungChiaSe(noiDungId, nguoiDungId) : boolean
+    }
+
+    class "HeThongDeXuat" <<Control>> {
+        + deXuatNguoiDungHoacNhom(nguoiDungId) : DanhSachDeXuat
+    }
+
+    class "NoiDungChiaSe" <<Entity>> {
+        + idNoiDung
+        + nguoiTaoId
+        + tieuDe
+        + moTa
+        + cheDoCongKhai
+        + thoiGianTao
+    }
+
+    class "BinhLuan" <<Entity>> {
+        + idBinhLuan
+        + noiDungId
+        + nguoiBinhLuanId
+        + noiDung
+        + thoiGianBinhLuan
+    }
+
+    class "NguoiDung" <<Entity>> {
+        + idNguoiDung
+        + tenNguoiDung
+    }
+
+    class "Nhom" <<Entity>> {
+        + idNhom
+        + tenNhom
+    }
+
+    GiaoDienChiaSe <|-- GiaoDienTuyChonChiaSe
+    GiaoDienChiaSe <|-- GiaoDienXemNoiDungChiaSe
+    GiaoDienChiaSe <|-- GiaoDienDeXuat
+
+    GiaoDienTuyChonChiaSe ..> QuanLyChiaSe : uses
+    GiaoDienXemNoiDungChiaSe ..> QuanLyChiaSe : uses
+    GiaoDienDeXuat ..> HeThongDeXuat : uses
+
+    QuanLyChiaSe ..> NoiDungChiaSe : manages
+    QuanLyChiaSe ..> BinhLuan : manages
+
+    HeThongDeXuat ..> NguoiDung : suggests
+    HeThongDeXuat ..> Nhom : suggests
+
+    NoiDungChiaSe "1" -- "*" BinhLuan : has
+
+}
+
+@enduml

@@ -1,0 +1,28 @@
+@startuml
+left to right direction
+actor "Người dùng" as User
+actor "Hệ thống AI" as AI_System
+
+rectangle "Theo dõi và đánh giá kế hoạch dinh dưỡng" {
+    usecase TheoDoiVaDanhGia
+
+    User --> (Nhập dữ liệu ăn uống và hoạt động)
+    (Nhập dữ liệu ăn uống và hoạt động) --> TheoDoiVaDanhGia : <<include>>
+
+    (Nhận dạng thực phẩm và ước tính dinh dưỡng) .> AI_System : <<sử dụng>>
+    (Nhận dạng thực phẩm và ước tính dinh dưỡng) --> TheoDoiVaDanhGia : <<include>>
+
+    (So sánh dữ liệu) --> TheoDoiVaDanhGia : <<include>>
+
+    (Tạo biểu đồ, báo cáo và gợi ý điều chỉnh) --> TheoDoiVaDanhGia : <<include>>
+
+    (SuDungNLP) .> AI_System : <<sử dụng>>
+    (SuDungVisionAI) .> AI_System : <<sử dụng>>
+
+    (Nhận dạng thực phẩm và ước tính dinh dưỡng) ..> (SuDungNLP) : <<include>>
+    (Nhận dạng thực phẩm và ước tính dinh dưỡng) ..> (SuDungVisionAI) : <<include>>
+}
+
+User -- TheoDoiVaDanhGia
+AI_System -- TheoDoiVaDanhGia
+@enduml

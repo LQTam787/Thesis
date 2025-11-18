@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienChonKieuKeHoach" as gd_ckkh
+boundary "GiaoDienNhapChiTietKeHoach" as gd_nctkh
+control "QuanLyKeHoachDinhDuong" as ql_khdd
+entity "KeHoachDinhDuong" as khdd
+
+user -> gd_ckkh : Kích hoạt sub_ChonKeHoachMau hoặc sub_TaoKeHoachMoi
+gd_ckkh -> ql_khdd : chonKieuKeHoach(kieu)
+activate ql_khdd
+alt Chọn kế hoạch mẫu
+    ql_khdd -> khdd : getKeHoachMau()
+    khdd --> ql_khdd : KeHoachDinhDuong mẫu
+else Tạo kế hoạch mới
+    ql_khdd -> khdd ** : createKeHoachMoi()
+    khdd --> ql_khdd : KeHoachDinhDuong mới
+end
+ql_khdd --> gd_ckkh : KeHoachDinhDuong
+deactivate ql_khdd
+gd_ckkh -> gd_nctkh : show(KeHoachDinhDuong)
+@enduml

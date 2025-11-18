@@ -1,0 +1,195 @@
+@startuml entity_class_diagram
+
+!pragma layout smetana
+
+hide circle
+skinparam classAttributeIconSize 0
+
+' Lớp thực thể chính
+class NguoiDung {
+  +tenThat
+  +email
+  +tenTaiKhoan
+  +matKhau
+}
+
+class QuanTriVien {
+}
+
+class TaiKhoan {
+  +tenTaiKhoan
+  +matKhau
+}
+
+class MucTieuDinhDuong {
+  +giamCan
+  +tangCan
+  +thoiGian
+}
+
+class DacDiemCaNhan {
+  +chieuCao
+  +canNang
+  +mucDoVanDong
+  +benhLyNen
+  +diUng
+}
+
+class ThucPham {
+  +tenThucPham
+  +moTa
+  +calo
+  +protein
+  +carb
+  +fat
+}
+
+class CongThucNauAn {
+  +tenCongThuc
+  +huongDan
+}
+
+class ThucDon {
+  +tenThucDon
+  +dinhLuongTong
+  +lyDoDeXuat
+}
+
+class BuaAn {
+  +tenBuaAn
+  +thoiGianAn
+}
+
+class KeHoachDinhDuong {
+  +tenKeHoach
+  +tongCaloMucTieu
+  +tongMacroMucTieu
+  +canhBaoChenhLech
+}
+
+class Checklist {
+  +danhSachMuaSam
+  +meo
+  +loiNhacHangNgay
+}
+
+class HoatDongTheChat {
+  +tenHoatDong
+  +caloriesTieuHao
+}
+
+class DuLieuThucTe {
+  +thoiGianNhap
+}
+
+class NoiDungChiaSe {
+  +tieuDe
+  +noiDung
+  +trangThaiChiaSe
+  +luotXem
+  +luotThich
+  +luotBinhLuan
+  +luotLuu
+}
+
+class LoaiDoiTuongQuanTri {
+  +tenLoai
+}
+
+' Lớp trung gian
+class ChiTietBuaAn {
+  +dinhLuong
+  +congThuc
+}
+
+class ThanhPhanCongThuc {
+  +soLuong
+}
+
+class ChiTietDuLieuThucTe {
+  +dinhLuongThucTe
+}
+
+class ChiTietHoatDongThucTe {
+  +thoiGianThucHien
+  +cuongDo
+}
+
+class TuongTacChiaSe {
+  +loaiTuongTac
+  +thoiGianTuongTac
+  +noiDungBinhLuan
+}
+
+class QuyenQuanTri {
+  +hanhDong
+}
+
+' Các lớp đầu ra thông tin (có thể là DTO/View Model sau này)
+class BieuDoTienDo {
+  +canNangHienTai
+  +chiSoCoThe
+  +phanTramMucTieuDatDuoc
+}
+
+class BaoCaoDinhDuong {
+  +macroTieuThu
+  +microNutrientTieuThu
+}
+
+class GoiYDieuChinh {
+  +noiDungGoiY
+}
+
+' Quan hệ
+NguoiDung <|-- QuanTriVien
+
+NguoiDung "1" *-- "1" TaiKhoan : sở hữu
+NguoiDung "1" *-- "1" DacDiemCaNhan : có
+NguoiDung "1" -- "0..*" MucTieuDinhDuong : đặt
+NguoiDung "1" -- "0..*" KeHoachDinhDuong : có
+NguoiDung "1" -- "0..*" HoatDongTheChat : thực hiện
+NguoiDung "1" -- "0..*" DuLieuThucTe : nhập
+NguoiDung "1" -- "0..*" NoiDungChiaSe : tạo
+
+KeHoachDinhDuong "1" *-- "1..*" ThucDon : bao gồm
+ThucDon "1" *-- "1..*" BuaAn : chứa
+
+BuaAn "1" -- "1..*" ChiTietBuaAn
+ChiTietBuaAn "0..*" -- "1" ThucPham
+
+CongThucNauAn "1" -- "1..*" ThanhPhanCongThuc
+ThanhPhanCongThuc "0..*" -- "1" ThucPham
+
+KeHoachDinhDuong "1" *-- "1" Checklist : có
+
+DuLieuThucTe "1" -- "0..*" ChiTietDuLieuThucTe
+ChiTietDuLieuThucTe "0..*" -- "1" ThucPham
+
+DuLieuThucTe "1" -- "0..*" ChiTietHoatDongThucTe
+ChiTietHoatDongThucTe "0..*" -- "1" HoatDongTheChat
+
+KeHoachDinhDuong "1" -- "0..*" DuLieuThucTe : theo dõi bằng
+
+KeHoachDinhDuong "1" -- "0..*" BieuDoTienDo : tạo ra
+KeHoachDinhDuong "1" -- "0..*" BaoCaoDinhDuong : tạo ra
+KeHoachDinhDuong "1" -- "0..*" GoiYDieuChinh : đưa ra
+
+NoiDungChiaSe "1" -- "0..*" TuongTacChiaSe
+TuongTacChiaSe "0..*" -- "1" NguoiDung : thực hiện
+
+QuanTriVien "1" -- "0..*" QuyenQuanTri
+QuyenQuanTri "0..*" -- "1" LoaiDoiTuongQuanTri
+
+' Quan hệ phụ thuộc (có thể không thể hiện rõ trên biểu đồ lớp phân tích)
+' HeThongAI ..> MucTieuDinhDuong
+' HeThongAI ..> DacDiemCaNhan
+' HeThongAI ..> ThucPham
+' HeThongAI ..> KeHoachDinhDuong
+' HeThongAI ..> DuLieuThucTe
+
+' MoHinhNLP ..> MucTieuDinhDuong
+' MoHinhNLP ..> DacDiemCaNhan
+' MoHinhNLP ..> DuLieuThucTe
+
+@enduml

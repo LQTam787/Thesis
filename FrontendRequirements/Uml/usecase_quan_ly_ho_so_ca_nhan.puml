@@ -1,0 +1,22 @@
+@startuml
+left to right direction
+actor "Người dùng" as User
+
+rectangle "Quản lý hồ sơ cá nhân" {
+    usecase QuanLyHoSoCaNhan as "Quản lý hồ sơ cá nhân"
+
+    User --> QuanLyHoSoCaNhan
+
+    usecase XemThongTinHoSo as "Xem thông tin hồ sơ"
+    usecase CapNhatThongTinSinhTracHoc as "Cập nhật thông tin sinh trắc học"
+    usecase CapNhatMucTieuSucKhoe as "Cập nhật mục tiêu sức khỏe"
+    usecase CapNhatSoThichAnUong as "Cập nhật sở thích ăn uống"
+    usecase LuuThayDoiHoSo as "Lưu thay đổi hồ sơ"
+
+    QuanLyHoSoCaNhan .> XemThongTinHoSo : <<include>>
+    QuanLyHoSoCaNhan .> CapNhatThongTinSinhTracHoc : <<extend>>
+    QuanLyHoSoCaNhan .> CapNhatMucTieuSucKhoe : <<extend>>
+    QuanLyHoSoCaNhan .> CapNhatSoThichAnUong : <<extend>>
+    QuanLyHoSoCaNhan .> LuuThayDoiHoSo : <<include>>
+}
+@enduml

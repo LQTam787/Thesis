@@ -1,0 +1,21 @@
+@startuml
+left to right direction
+actor "Người dùng" as User
+actor "Hệ thống AI" as AI_System
+
+rectangle "Chia sẻ kế hoạch và hoạt động dinh dưỡng" {
+    usecase ChiaSeKeHoachVaHoatDongDinhDuong as "Chia sẻ kế hoạch và hoạt động dinh dưỡng"
+
+    User --> ChiaSeKeHoachVaHoatDongDinhDuong
+
+    usecase DanhDauCongKhaiHoacChiaSeVoiBanBe as "Đánh dấu công khai hoặc chia sẻ với bạn bè"
+    usecase XemThichBinhLuanLuuNoiDungChiaSe as "Xem, thích, bình luận và lưu nội dung chia sẻ"
+    usecase DeXuatNguoiDungHoacNhom as "Đề xuất người dùng hoặc nhóm"
+
+    ChiaSeKeHoachVaHoatDongDinhDuong .> DanhDauCongKhaiHoacChiaSeVoiBanBe : <<include>>
+    ChiaSeKeHoachVaHoatDongDinhDuong .> XemThichBinhLuanLuuNoiDungChiaSe : <<include>>
+    ChiaSeKeHoachVaHoatDongDinhDuong .> DeXuatNguoiDungHoacNhom : <<extend>>
+
+    AI_System --> DeXuatNguoiDungHoacNhom
+}
+@enduml

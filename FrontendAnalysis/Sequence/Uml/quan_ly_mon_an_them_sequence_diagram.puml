@@ -1,0 +1,35 @@
+@startuml
+!theme plain
+autonumber
+actor "Người quản trị" as admin
+boundary "GiaoDienChonLoaiDoiTuong" as gd_cldt
+boundary "GiaoDienQuanLyChiTiet" as gd_qlct
+control "QuanLyDoiTuongAdmin" as ql_dta
+control "AI_Training_Proxy" as ai_proxy
+entity "MonAn" as ma
+
+admin -> gd_cldt : Chọn in_ChonLoaiDoiTuong ("Món ăn")
+admin -> gd_cldt : Kích hoạt sub_XacNhanChon
+gd_cldt -> ql_dta : chonLoaiDoiTuong("MonAn")
+activate ql_dta
+ql_dta -> ma : readDanhSach()
+ma --> ql_dta : DanhSachDoiTuong
+ql_dta --> gd_cldt : DanhSachDoiTuong
+deactivate ql_dta
+gd_cldt -> gd_qlct : show(DanhSachDoiTuong)
+gd_qlct --> admin : Hiển thị out_DanhSachDoiTuong
+
+admin -> gd_qlct : Nhập in_TruongThongTin (dữ liệu món ăn mới)
+admin -> gd_qlct : Kích hoạt sub_ThemDoiTuong
+gd_qlct -> ql_dta : themDoiTuong("MonAn", duLieuDoiTuong)
+activate ql_dta
+ql_dta -> ma ** : create(duLieuDoiTuong)
+ma --> ql_dta : boolean (thành công/thất bại)
+ql_dta -> ai_proxy : guiDuLieuHuanLuyen("MonAn", duLieuDoiTuong)
+activate ai_proxy
+ai_proxy --> ql_dta : boolean
+deactivate ai_proxy
+ql_dta --> gd_qlct : boolean
+deactivate ql_dta
+gd_qlct --> admin : Hiển thị out_ThongBaoTrangThai
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienDeXuatThucDon" as gd_dxtd
+control "QuanLyTuVanDinhDuong" as ql_tvdd
+control "AI_Service_Proxy" as ai_proxy
+entity "ThucDon" as td
+
+user -> gd_dxtd : Nhập in_YeuCauChinhSua
+user -> gd_dxtd : Kích hoạt sub_GuiYeuCauChinhSua
+gd_dxtd -> ql_tvdd : yeuCauChinhSuaThucDon(thucDon, yeuCau)
+activate ql_tvdd
+ql_tvdd -> ai_proxy : chinhSuaThucDonAI(thucDonGoc, yeuCauChinhSua)
+activate ai_proxy
+ai_proxy -> ai_proxy : Xử lý yêu cầu và tạo ThucDon mới
+ai_proxy --> ql_tvdd : ThucDon đã chỉnh sửa
+deactivate ai_proxy
+ql_tvdd -> td : update(ThucDon đã chỉnh sửa)
+ql_tvdd --> gd_dxtd : ThucDon đã chỉnh sửa
+deactivate ql_tvdd
+gd_dxtd --> user : Hiển thị out_ThucDonDeXuat mới và out_ThongBaoTrangThai
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienCapNhatSinhTracHoc" as gd_cnsth
+control "QuanLyHoSoNguoiDung" as ql_hsnd
+entity "HoSoNguoiDung" as hsnd
+entity "ThongTinSinhTracHoc" as tt_sth
+
+user -> gd_cnsth : Nhập in_ChieuCao, in_CanNang, in_GioiTinh, in_NgaySinh
+user -> gd_cnsth : Kích hoạt sub_LuuSinhTracHoc
+gd_cnsth -> ql_hsnd : capNhatThongTinSinhTracHoc(nguoiDungId, sinhTracHocMoi)
+activate ql_hsnd
+ql_hsnd -> hsnd : read(nguoiDungId)
+hsnd --> ql_hsnd : HoSoNguoiDung
+ql_hsnd -> tt_sth : update(sinhTracHocMoi)
+ql_hsnd -> hsnd : luuThayDoiHoSo(nguoiDungId, duLieuHoSo)
+hsnd --> ql_hsnd : boolean
+ql_hsnd --> gd_cnsth : true
+deactivate ql_hsnd
+gd_cnsth --> user : Hiển thị thông báo cập nhật thành công
+@enduml

@@ -1,0 +1,49 @@
+@startuml
+left to right direction
+actor "Người dùng chưa có tài khoản" as UnregisteredUser
+actor "Người dùng cơ bản" as BasicUser
+
+UnregisteredUser --|> BasicUser
+
+rectangle "Module Xác thực" {
+    usecase DangKyTaiKhoanMoi as "Đăng ký tài khoản mới"
+    usecase DangNhap as "Đăng nhập"
+    usecase DangXuat as "Đăng xuất"
+
+    UnregisteredUser --> DangKyTaiKhoanMoi
+    BasicUser --> DangNhap
+    BasicUser --> DangXuat
+
+    usecase TruyCapHeThong as "Truy cập hệ thống"
+    usecase ChonDangKyTaiKhoanMoi as "Chọn đăng ký tài khoản mới"
+    usecase NhapThongTinDangKy as "Nhập thông tin đăng ký"
+    usecase KiemTraYeuCauDangKy as "Kiểm tra yêu cầu đăng ký"
+    usecase HienThiGiaoDienChinh as "Hiển thị giao diện chính"
+
+    usecase ChonDangNhap as "Chọn đăng nhập"
+    usecase NhapThongTinDangNhap as "Nhập thông tin đăng nhập"
+    usecase KiemTraThongTinDangNhap as "Kiểm tra thông tin đăng nhập"
+
+    usecase TruyCapGiaoDienChinh as "Truy cập giao diện chính"
+    usecase ChonDangXuat as "Chọn đăng xuất"
+    usecase KetThucPhienLamViec as "Kết thúc phiên làm việc"
+    usecase ChuyenVeGiaoDienDangNhapDangKy as "Chuyển về giao diện đăng nhập/đăng ký"
+
+    DangKyTaiKhoanMoi .> TruyCapHeThong : <<include>>
+    DangKyTaiKhoanMoi .> ChonDangKyTaiKhoanMoi : <<include>>
+    DangKyTaiKhoanMoi .> NhapThongTinDangKy : <<include>>
+    DangKyTaiKhoanMoi .> KiemTraYeuCauDangKy : <<include>>
+    DangKyTaiKhoanMoi .> HienThiGiaoDienChinh : <<include>>
+
+    DangNhap .> TruyCapHeThong : <<include>>
+    DangNhap .> ChonDangNhap : <<include>>
+    DangNhap .> NhapThongTinDangNhap : <<include>>
+    DangNhap .> KiemTraThongTinDangNhap : <<include>>
+    DangNhap .> HienThiGiaoDienChinh : <<include>>
+
+    DangXuat .> TruyCapGiaoDienChinh : <<include>>
+    DangXuat .> ChonDangXuat : <<include>>
+    DangXuat .> KetThucPhienLamViec : <<include>>
+    DangXuat .> ChuyenVeGiaoDienDangNhapDangKy : <<include>>
+}
+@enduml

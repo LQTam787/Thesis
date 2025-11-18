@@ -1,0 +1,26 @@
+@startuml
+!theme plain
+autonumber
+actor "Người quản trị" as admin
+boundary "GiaoDienQuanLyChiTiet" as gd_qlct
+control "QuanLyDoiTuongAdmin" as ql_dta
+control "AI_Training_Proxy" as ai_proxy
+entity "DoiTuong" as dt <<NguoiDung/MonAn>>
+
+admin -> gd_qlct : Chọn đối tượng từ out_DanhSachDoiTuong
+admin -> gd_qlct : Nhập in_TruongThongTin (dữ liệu cập nhật)
+admin -> gd_qlct : Kích hoạt sub_SuaDoiTuong
+gd_qlct -> ql_dta : suaDoiTuong(loai, doiTuongId, duLieuDoiTuongMoi)
+activate ql_dta
+ql_dta -> dt : update(doiTuongId, duLieuDoiTuongMoi)
+dt --> ql_dta : boolean (thành công/thất bại)
+alt Nếu loại đối tượng là "MonAn"
+    ql_dta -> ai_proxy : guiDuLieuHuanLuyen("MonAn", duLieuDoiTuongMoi)
+    activate ai_proxy
+    ai_proxy --> ql_dta : boolean
+    deactivate ai_proxy
+end
+ql_dta --> gd_qlct : boolean
+deactivate ql_dta
+gd_qlct --> admin : Hiển thị out_ThongBaoTrangThai
+@enduml

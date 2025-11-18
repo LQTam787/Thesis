@@ -1,0 +1,86 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Quản lý hồ sơ cá nhân (Analysis)" {
+
+    interface "GiaoDienQuanLyHoSo" <<Boundary>> {
+    }
+
+    class "GiaoDienXemHoSo" <<Boundary>> {
+        + out_TenNguoiDung
+        + out_ThongTinSinhTracHoc
+        + out_MucTieuSucKhoe
+        + out_SoThichAnUong
+        + sub_ChinhSuaSinhTracHoc
+        + sub_ChinhSuaMucTieu
+        + sub_ChinhSuaSoThich
+    }
+
+    class "GiaoDienCapNhatSinhTracHoc" <<Boundary>> {
+        + in_ChieuCao
+        + in_CanNang
+        + in_GioiTinh
+        + in_NgaySinh
+        + sub_LuuSinhTracHoc
+    }
+
+    class "GiaoDienCapNhatMucTieuSucKhoe" <<Boundary>> {
+        + in_LoaiMucTieu
+        + in_MoTaMucTieu
+        + sub_LuuMucTieu
+    }
+
+    class "GiaoDienCapNhatSoThichAnUong" <<Boundary>> {
+        + in_DanhSachSoThich
+        + sub_LuuSoThich
+    }
+
+    class "QuanLyHoSoNguoiDung" <<Control>> {
+        + layThongTinHoSo(nguoiDungId) : HoSoNguoiDung
+        + capNhatThongTinSinhTracHoc(nguoiDungId, sinhTracHocMoi) : boolean
+        + capNhatMucTieuSucKhoe(nguoiDungId, mucTieuMoi) : boolean
+        + capNhatSoThichAnUong(nguoiDungId, soThichMoi) : boolean
+        + luuThayDoiHoSo(nguoiDungId, duLieuHoSo) : boolean
+    }
+
+    class "HoSoNguoiDung" <<Entity>> {
+        + idNguoiDung
+        + tenNguoiDung
+    }
+
+    class "ThongTinSinhTracHoc" <<Entity>> {
+        + chieuCao
+        + canNang
+        + gioiTinh
+        + ngaySinh
+    }
+
+    class "MucTieuSucKhoe" <<Entity>> {
+        + loaiMucTieu
+        + moTaMucTieu
+    }
+
+    class "SoThichAnUong" <<Entity>> {
+        + danhSachSoThich
+    }
+
+    GiaoDienQuanLyHoSo <|-- GiaoDienXemHoSo
+    GiaoDienQuanLyHoSo <|-- GiaoDienCapNhatSinhTracHoc
+    GiaoDienQuanLyHoSo <|-- GiaoDienCapNhatMucTieuSucKhoe
+    GiaoDienQuanLyHoSo <|-- GiaoDienCapNhatSoThichAnUong
+
+    GiaoDienXemHoSo ..> QuanLyHoSoNguoiDung : uses
+    GiaoDienCapNhatSinhTracHoc ..> QuanLyHoSoNguoiDung : uses
+    GiaoDienCapNhatMucTieuSucKhoe ..> QuanLyHoSoNguoiDung : uses
+    GiaoDienCapNhatSoThichAnUong ..> QuanLyHoSoNguoiDung : uses
+
+    QuanLyHoSoNguoiDung ..> HoSoNguoiDung : manages
+
+    HoSoNguoiDung "1" -- "1" ThongTinSinhTracHoc : has
+    HoSoNguoiDung "1" -- "1" MucTieuSucKhoe : has
+    HoSoNguoiDung "1" -- "1" SoThichAnUong : has
+
+}
+
+@enduml

@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienDangKy" as gd_dk
+control "QuanLyXacThuc" as ql_xt
+entity "TaiKhoan" as tk
+
+user -> gd_dk : Nhập tenDangNhap, matKhau, xacNhanMatKhau
+user -> gd_dk : Kích hoạt Đăng ký
+gd_dk -> ql_xt : xuLyDangKy(tenDangNhap, matKhau, xacNhanMatKhau)
+activate ql_xt
+ql_xt -> ql_xt : Kiểm tra tính hợp lệ dữ liệu và tên đăng nhập tồn tại
+alt Nếu hợp lệ và tên đăng nhập chưa tồn tại
+    ql_xt -> tk ** : create(tenDangNhap, matKhau, trangThai)
+    ql_xt --> gd_dk : TaiKhoan mới
+    gd_dk --> user : Hiển thị thông báo đăng ký thành công
+else Nếu dữ liệu không hợp lệ hoặc tên đăng nhập đã tồn tại
+    ql_xt --> gd_dk : out_ThongBaoLoi
+    gd_dk --> user : Hiển thị thông báo lỗi
+end
+deactivate ql_xt
+@enduml

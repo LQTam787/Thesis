@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+
+state "Giao diện chia sẻ" as SharingScreen
+state "Giao diện tùy chọn chia sẻ" as SharingOptionsScreen
+state "Giao diện xem nội dung chia sẻ" as ViewSharedContentScreen
+state "Giao diện đề xuất" as SuggestionScreen
+
+[*] --> SharingScreen : Khởi động
+
+SharingScreen --> SharingOptionsScreen : Bắt đầu chia sẻ
+SharingScreen --> ViewSharedContentScreen : Xem nội dung chia sẻ
+SharingScreen --> SuggestionScreen : Xem đề xuất
+
+SharingOptionsScreen --> ViewSharedContentScreen : Xác nhận chia sẻ /sub_XacNhanChiaSe
+SharingOptionsScreen --> SharingOptionsScreen : Chia sẻ thất bại /out_ThongBaoLoi
+SharingOptionsScreen --> SharingScreen : Hủy
+
+ViewSharedContentScreen --> ViewSharedContentScreen : Thích /sub_Thich
+ViewSharedContentScreen --> ViewSharedContentScreen : Gửi bình luận /sub_GuiBinhLuan
+ViewSharedContentScreen --> ViewSharedContentScreen : Lưu nội dung /sub_LuuNoiDung
+ViewSharedContentScreen --> SharingScreen : Quay lại
+
+SuggestionScreen --> ViewSharedContentScreen : Chọn nội dung đề xuất
+SuggestionScreen --> SharingScreen : Quay lại
+
+@enduml

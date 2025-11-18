@@ -1,0 +1,41 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienNhapChiTietKeHoach" as gd_nctkh
+boundary "GiaoDienCanhBao" as gd_cb
+control "QuanLyKeHoachDinhDuong" as ql_khdd
+control "TinhToanDinhDuong" as tt_dd
+control "QuanLyThongBao" as ql_tb
+entity "KeHoachDinhDuong" as khdd
+entity "MucTieu" as mt
+
+user -> gd_nctkh : Nhập in_TenKeHoach, in_MucTieu, in_NgayBatDau, in_NgayKetThuc, in_DanhSachMonAn
+user -> gd_nctkh : Kích hoạt sub_LuuKeHoach
+gd_nctkh -> ql_khdd : dienChiTietKeHoach(keHoachId, chiTiet)
+activate ql_khdd
+ql_khdd -> khdd : update(chiTiet)
+ql_khdd -> tt_dd : tinhToanCaloMacro(keHoach)
+activate tt_dd
+tt_dd -> khdd : read(keHoach)
+tt_dd -> mt : read(mucTieu)
+tt_dd --> ql_khdd : KetQuaTinhToan
+deactivate tt_dd
+ql_khdd -> tt_dd : kiemTraCanhBao(ketQuaTinhToan, mucTieu)
+activate tt_dd
+tt_dd --> ql_khdd : DanhSachCanhBao
+deactivate tt_dd
+ql_khdd -> ql_tb : taoChecklist(keHoach)
+activate ql_tb
+ql_tb --> ql_khdd : Checklist
+deactivate ql_tb
+ql_khdd -> ql_tb : taoLoiNhac(keHoach)
+activate ql_tb
+ql_tb --> ql_khdd : DanhSachLoiNhac
+deactivate ql_tb
+ql_khdd -> khdd : luuKeHoach(keHoach)
+ql_khdd --> gd_nctkh : true
+deactivate ql_khdd
+gd_nctkh -> gd_cb : show(DanhSachCanhBao, Checklist, DanhSachLoiNhac)
+gd_cb --> user : Hiển thị out_CanhBaoCaloMacro, out_Checklist, out_LoiNhac
+@enduml

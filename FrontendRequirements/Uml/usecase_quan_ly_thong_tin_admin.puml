@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+actor "Quản trị viên" as Admin
+actor "Hệ thống AI" as AI_System
+
+rectangle "Quản lý thông tin đối tượng (Admin)" {
+    usecase QuanLyThongTinDoiTuong
+
+    Admin --> (Chọn loại đối tượng quản lý)
+    (Chọn loại đối tượng quản lý) --> QuanLyThongTinDoiTuong : <<include>>
+
+    Admin --> (Thêm đối tượng)
+    (Thêm đối tượng) --> QuanLyThongTinDoiTuong : <<extend>>
+    (Thêm đối tượng) ..> (Gửi dữ liệu huấn luyện AI) : <<include>>
+
+    Admin --> (Sửa đối tượng)
+    (Sửa đối tượng) --> QuanLyThongTinDoiTuong : <<extend>>
+    (Sửa đối tượng) ..> (Gửi dữ liệu huấn luyện AI) : <<include>>
+
+    Admin --> (Xóa đối tượng)
+    (Xóa đối tượng) --> QuanLyThongTinDoiTuong : <<extend>>
+    (Xóa đối tượng) ..> (Gửi dữ liệu huấn luyện AI) : <<include>>
+
+    (Gửi dữ liệu huấn luyện AI) .> AI_System : <<sử dụng>>
+
+    (Quản lý thông tin người dùng) --|> QuanLyThongTinDoiTuong
+    (Quản lý thông tin tư vấn chế độ dinh dưỡng) --|> QuanLyThongTinDoiTuong
+    (Quản lý thông tin lập kế hoạch) --|> QuanLyThongTinDoiTuong
+    (Quản lý thông tin theo dõi và đánh giá) --|> QuanLyThongTinDoiTuong
+    (Quản lý danh sách món ăn) --|> QuanLyThongTinDoiTuong
+    (Quản lý nguyên liệu và quy trình nấu ăn) --|> QuanLyThongTinDoiTuong
+
+}
+
+Admin -- QuanLyThongTinDoiTuong
+AI_System -- (Gửi dữ liệu huấn luyện AI)
+@enduml

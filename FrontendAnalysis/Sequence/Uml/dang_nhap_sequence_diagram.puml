@@ -1,0 +1,24 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienDangNhap" as gd_dn
+control "QuanLyXacThuc" as ql_xt
+entity "TaiKhoan" as tk
+
+user -> gd_dn : Nhập tenDangNhap, matKhau
+user -> gd_dn : Kích hoạt Đăng nhập
+gd_dn -> ql_xt : xuLyDangNhap(tenDangNhap, matKhau)
+activate ql_xt
+ql_xt -> tk : find(tenDangNhap, matKhau)
+alt Nếu tìm thấy TaiKhoan hợp lệ
+    tk --> ql_xt : TaiKhoan
+    ql_xt --> gd_dn : TaiKhoan
+    deactivate ql_xt
+    gd_dn --> user : Chuyển hướng đến GiaoDienChinh
+else Nếu thông tin đăng nhập không hợp lệ
+    ql_xt --> gd_dn : out_ThongBaoLoi
+    deactivate ql_xt
+    gd_dn --> user : Hiển thị thông báo lỗi
+end
+@enduml

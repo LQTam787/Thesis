@@ -1,0 +1,30 @@
+@startuml
+!theme plain
+autonumber
+actor "Người quản trị" as admin
+boundary "GiaoDienChonLoaiDoiTuong" as gd_cldt
+boundary "GiaoDienQuanLyChiTiet" as gd_qlct
+control "QuanLyDoiTuongAdmin" as ql_dta
+entity "NguoiDung" as nd
+
+admin -> gd_cldt : Chọn in_ChonLoaiDoiTuong ("Người dùng")
+admin -> gd_cldt : Kích hoạt sub_XacNhanChon
+gd_cldt -> ql_dta : chonLoaiDoiTuong("NguoiDung")
+activate ql_dta
+ql_dta -> nd : readDanhSach()
+nd --> ql_dta : DanhSachDoiTuong
+ql_dta --> gd_cldt : DanhSachDoiTuong
+deactivate ql_dta
+gd_cldt -> gd_qlct : show(DanhSachDoiTuong)
+gd_qlct --> admin : Hiển thị out_DanhSachDoiTuong
+
+admin -> gd_qlct : Nhập in_TruongThongTin (dữ liệu người dùng mới)
+admin -> gd_qlct : Kích hoạt sub_ThemDoiTuong
+gd_qlct -> ql_dta : themDoiTuong("NguoiDung", duLieuDoiTuong)
+activate ql_dta
+ql_dta -> nd ** : create(duLieuDoiTuong)
+nd --> ql_dta : boolean (thành công/thất bại)
+ql_dta --> gd_qlct : boolean
+deactivate ql_dta
+gd_qlct --> admin : Hiển thị out_ThongBaoTrangThai
+@enduml

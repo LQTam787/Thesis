@@ -1,0 +1,37 @@
+@startuml
+left to right direction
+actor "Người dùng chưa có tài khoản" as UnregisteredUser
+actor "Người dùng cơ bản" as BasicUser
+actor "Người dùng" as User
+actor "Quản trị viên" as Admin
+actor "Hệ thống AI" as AI_System
+
+UnregisteredUser --|> BasicUser
+BasicUser <|-- User
+BasicUser <|-- Admin
+
+rectangle "Hệ thống Quản lý Dinh dưỡng Cá nhân" {
+    UnregisteredUser --> (Đăng ký tài khoản mới)
+    BasicUser --> (Đăng nhập)
+    BasicUser --> (Đăng xuất)
+
+    User --> (Tư vấn chế độ dinh dưỡng)
+    User --> (Hướng dẫn chuẩn bị thực đơn)
+    User --> (Lập kế hoạch dinh dưỡng)
+    User --> (Theo dõi và đánh giá)
+    User --> (Chia sẻ kế hoạch và hoạt động dinh dưỡng)
+    User --> (Quản lý hồ sơ cá nhân)
+
+    Admin --> (Quản lý thông tin người dùng)
+    Admin --> (Quản lý thông tin tư vấn chế độ dinh dưỡng)
+    Admin --> (Quản lý thông tin lập kế hoạch)
+    Admin --> (Quản lý thông tin theo dõi và đánh giá)
+    Admin --> (Quản lý danh sách món ăn)
+    Admin --> (Quản lý nguyên liệu và quy trình nấu ăn)
+
+    (Tư vấn chế độ dinh dưỡng) ..> AI_System : <<sử dụng>>
+    (Theo dõi và đánh giá) ..> AI_System : <<sử dụng>>
+    (Quản lý danh sách món ăn) ..> AI_System : <<huấn luyện lại>>
+    (Quản lý nguyên liệu và quy trình nấu ăn) ..> AI_System : <<huấn luyện lại>>
+}
+@enduml

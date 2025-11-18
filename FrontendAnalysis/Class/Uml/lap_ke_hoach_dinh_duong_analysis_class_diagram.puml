@@ -1,0 +1,88 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Lập kế hoạch dinh dưỡng (Analysis)" {
+
+    interface "GiaoDienLapKeHoach" <<Boundary>> {
+    }
+
+    class "GiaoDienChonKieuKeHoach" <<Boundary>> {
+        + sub_ChonKeHoachMau
+        + sub_TaoKeHoachMoi
+        + out_DanhSachKeHoachMau
+    }
+
+    class "GiaoDienNhapChiTietKeHoach" <<Boundary>> {
+        + in_TenKeHoach
+        + in_MucTieu
+        + in_NgayBatDau
+        + in_NgayKetThuc
+        + in_DanhSachMonAn
+        + sub_LuuKeHoach
+    }
+
+    class "GiaoDienCanhBao" <<Boundary>> {
+        + out_CanhBaoCaloMacro
+        + out_Checklist
+        + out_LoiNhac
+    }
+
+    class "QuanLyKeHoachDinhDuong" <<Control>> {
+        + chonKieuKeHoach(kieu) : KeHoachDinhDuong
+        + dienChiTietKeHoach(keHoachId, chiTiet) : KeHoachDinhDuong
+        + luuKeHoach(keHoach) : boolean
+    }
+
+    class "TinhToanDinhDuong" <<Control>> {
+        + tinhToanCaloMacro(keHoach) : KetQuaTinhToan
+        + kiemTraCanhBao(ketQuaTinhToan, mucTieu) : DanhSachCanhBao
+    }
+
+    class "QuanLyThongBao" <<Control>> {
+        + taoChecklist(keHoach) : Checklist
+        + taoLoiNhac(keHoach) : DanhSachLoiNhac
+    }
+
+    class "KeHoachDinhDuong" <<Entity>> {
+        + idKeHoach
+        + tenKeHoach
+        + ngayBatDau
+        + ngayKetThuc
+    }
+
+    class "MonAn" <<Entity>> {
+        + tenMonAn
+        + calo
+        + protein
+        + carb
+        + fat
+    }
+
+    class "MucTieu" <<Entity>> {
+        + tenMucTieu
+        + moTa
+    }
+
+    GiaoDienLapKeHoach <|-- GiaoDienChonKieuKeHoach
+    GiaoDienLapKeHoach <|-- GiaoDienNhapChiTietKeHoach
+    GiaoDienLapKeHoach <|-- GiaoDienCanhBao
+
+    GiaoDienChonKieuKeHoach ..> QuanLyKeHoachDinhDuong : uses
+    GiaoDienNhapChiTietKeHoach ..> QuanLyKeHoachDinhDuong : uses
+
+    QuanLyKeHoachDinhDuong ..> TinhToanDinhDuong : uses
+    QuanLyKeHoachDinhDuong ..> QuanLyThongBao : uses
+    QuanLyKeHoachDinhDuong ..> KeHoachDinhDuong : manages
+
+    TinhToanDinhDuong ..> KeHoachDinhDuong : reads
+    TinhToanDinhDuong ..> MucTieu : reads
+
+    QuanLyThongBao ..> KeHoachDinhDuong : reads
+
+    KeHoachDinhDuong "1" -- "*" MonAn : contains
+    KeHoachDinhDuong "1" -- "1" MucTieu : has
+
+}
+
+@enduml

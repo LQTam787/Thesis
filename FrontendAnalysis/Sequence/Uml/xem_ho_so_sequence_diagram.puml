@@ -1,0 +1,27 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienXemHoSo" as gd_xhs
+control "QuanLyHoSoNguoiDung" as ql_hsnd
+entity "HoSoNguoiDung" as hsnd
+entity "ThongTinSinhTracHoc" as tt_sth
+entity "MucTieuSucKhoe" as mt_sk
+entity "SoThichAnUong" as st_au
+
+user -> gd_xhs : Yêu cầu xem hồ sơ
+gd_xhs -> ql_hsnd : layThongTinHoSo(nguoiDungId)
+activate ql_hsnd
+ql_hsnd -> hsnd : read(nguoiDungId)
+ql_hsnd -> tt_sth : read(nguoiDungId)
+ql_hsnd -> mt_sk : read(nguoiDungId)
+ql_hsnd -> st_au : read(nguoiDungId)
+hsnd --> ql_hsnd : HoSoNguoiDung
+tt_sth --> ql_hsnd : ThongTinSinhTracHoc
+mt_sk --> ql_hsnd : MucTieuSucKhoe
+st_au --> ql_hsnd : SoThichAnUong
+ql_hsnd --> gd_xhs : HoSoNguoiDung
+deactivate ql_hsnd
+gd_xhs --> user : Hiển thị out_TenNguoiDung, out_ThongTinSinhTracHoc, out_MucTieuSucKhoe, out_SoThichAnUong
+user -> gd_xhs : Kích hoạt sub_ChinhSuaSinhTracHoc/MucTieu/SoThich
+@enduml

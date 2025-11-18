@@ -1,0 +1,28 @@
+@startuml
+!theme plain
+
+state "Giao diện quản lý hồ sơ" as ProfileManagementScreen
+state "Giao diện xem hồ sơ" as ViewProfileScreen
+state "Giao diện cập nhật sinh trắc học" as UpdateBiometricScreen
+state "Giao diện cập nhật mục tiêu sức khỏe" as UpdateHealthGoalScreen
+state "Giao diện cập nhật sở thích ăn uống" as UpdateDietaryPreferenceScreen
+
+[*] --> ProfileManagementScreen : Khởi động
+
+ProfileManagementScreen --> ViewProfileScreen : Bắt đầu quản lý hồ sơ
+
+ViewProfileScreen --> UpdateBiometricScreen : Chỉnh sửa sinh trắc học /sub_ChinhSuaSinhTracHoc
+ViewProfileScreen --> UpdateHealthGoalScreen : Chỉnh sửa mục tiêu /sub_ChinhSuaMucTieu
+ViewProfileScreen --> UpdateDietaryPreferenceScreen : Chỉnh sửa sở thích /sub_ChinhSuaSoThich
+ViewProfileScreen --> [*] : Kết thúc quản lý hồ sơ
+
+UpdateBiometricScreen --> ViewProfileScreen : Lưu sinh trắc học thành công /sub_LuuSinhTracHoc
+UpdateBiometricScreen --> UpdateBiometricScreen : Lưu sinh trắc học thất bại /out_ThongBaoLoi
+
+UpdateHealthGoalScreen --> ViewProfileScreen : Lưu mục tiêu thành công /sub_LuuMucTieu
+UpdateHealthGoalScreen --> UpdateHealthGoalScreen : Lưu mục tiêu thất bại /out_ThongBaoLoi
+
+UpdateDietaryPreferenceScreen --> ViewProfileScreen : Lưu sở thích thành công /sub_LuuSoThich
+UpdateDietaryPreferenceScreen --> UpdateDietaryPreferenceScreen : Lưu sở thích thất bại /out_ThongBaoLoi
+
+@enduml

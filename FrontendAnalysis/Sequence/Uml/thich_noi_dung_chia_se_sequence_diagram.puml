@@ -1,0 +1,17 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienXemNoiDungChiaSe" as gd_xndcs
+control "QuanLyChiaSe" as ql_cs
+entity "NoiDungChiaSe" as nd_cs
+
+user -> gd_xndcs : Kích hoạt sub_Thich
+gd_xndcs -> ql_cs : thichNoiDung(noiDungId, nguoiDungId)
+activate ql_cs
+ql_cs -> nd_cs : updateLuotThich(noiDungId, nguoiDungId)
+nd_cs --> ql_cs : boolean
+ql_cs --> gd_xndcs : boolean (thành công/thất bại)
+deactivate ql_cs
+gd_xndcs --> user : Cập nhật out_LuotThich và hiển thị thông báo trạng thái
+@enduml

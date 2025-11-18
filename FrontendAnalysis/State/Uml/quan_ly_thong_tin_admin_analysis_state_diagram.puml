@@ -1,0 +1,21 @@
+@startuml
+!theme plain
+
+state "Giao diện quản lý Admin" as AdminManagementScreen
+state "Giao diện chọn loại đối tượng" as ObjectTypeSelectionScreen
+state "Giao diện quản lý chi tiết" as DetailManagementScreen
+
+[*] --> AdminManagementScreen : Khởi động
+
+AdminManagementScreen --> ObjectTypeSelectionScreen : Bắt đầu quản lý
+
+ObjectTypeSelectionScreen --> DetailManagementScreen : Chọn loại đối tượng /sub_XacNhanChon
+ObjectTypeSelectionScreen --> AdminManagementScreen : Hủy
+
+DetailManagementScreen --> DetailManagementScreen : Thêm đối tượng /sub_ThemDoiTuong
+DetailManagementScreen --> DetailManagementScreen : Sửa đối tượng /sub_SuaDoiTuong
+DetailManagementScreen --> DetailManagementScreen : Xóa đối tượng /sub_XoaDoiTuong
+DetailManagementScreen --> DetailManagementScreen : Hiển thị thông báo trạng thái /out_ThongBaoTrangThai
+DetailManagementScreen --> ObjectTypeSelectionScreen : Quay lại chọn loại đối tượng
+
+@enduml

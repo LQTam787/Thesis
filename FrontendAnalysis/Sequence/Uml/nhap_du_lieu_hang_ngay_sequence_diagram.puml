@@ -1,0 +1,32 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienNhapDuLieu" as gd_ndl
+control "QuanLyTheoDoiDanhGia" as ql_tddg
+control "PhanTichDuLieuAI" as pt_ai
+entity "ThucPhamNhanDang" as tp_nd
+entity "DuLieuHangNgay" as dl_hn
+
+user -> gd_ndl : Nhập in_HinhAnhBuaAn, in_MoTaBuaAn, in_HoatDong
+user -> gd_ndl : Kích hoạt sub_LuuDuLieu
+gd_ndl -> ql_tddg : nhapDuLieuHangNgay(hinhAnh, moTa, hoatDong)
+activate ql_tddg
+alt Nếu có HinhAnhBuaAn
+    ql_tddg -> pt_ai : nhanDangThucPham(hinhAnhBuaAn)
+    activate pt_ai
+    pt_ai -> tp_nd ** : create(ThongTinThucPham)
+    pt_ai --> ql_tddg : ThongTinThucPham
+    deactivate pt_ai
+else Nếu có MoTaBuaAn
+    ql_tddg -> pt_ai : phanTichNgonNgu(moTaBuaAn)
+    activate pt_ai
+    pt_ai -> tp_nd ** : create(ThongTinThucPham)
+    pt_ai --> ql_tddg : ThongTinThucPham
+    deactivate pt_ai
+end
+ql_tddg -> dl_hn : update(ThucPhamNhanDang, danhSachHoatDong)
+ql_tddg --> gd_ndl : KetQuaNhanDang
+deactivate ql_tddg
+gd_ndl --> user : Hiển thị out_KetQuaNhanDangThucPham
+@enduml

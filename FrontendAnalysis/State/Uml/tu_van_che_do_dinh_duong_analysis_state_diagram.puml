@@ -1,0 +1,18 @@
+@startuml
+!theme plain
+
+state "Giao diện tư vấn dinh dưỡng" as NutritionAdviceScreen
+state "Giao diện nhập thông tin" as InputScreen
+state "Giao diện đề xuất thực đơn" as MenuSuggestionScreen
+
+[*] --> NutritionAdviceScreen : Khởi động
+
+NutritionAdviceScreen --> InputScreen : Bắt đầu tư vấn
+
+InputScreen --> MenuSuggestionScreen : Gửi thông tin thành công
+InputScreen --> InputScreen : Gửi thông tin thất bại /out_ThongBaoLoi
+
+MenuSuggestionScreen --> MenuSuggestionScreen : Yêu cầu chỉnh sửa /sub_GuiYeuCauChinhSua
+MenuSuggestionScreen --> [*] : Kết thúc tư vấn
+
+@enduml

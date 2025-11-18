@@ -1,0 +1,21 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienDeXuat" as gd_dx
+control "HeThongDeXuat" as ht_dx
+entity "NguoiDung" as nd
+entity "Nhom" as nhom
+
+user -> gd_dx : Yêu cầu đề xuất người dùng/nhóm
+gd_dx -> ht_dx : deXuatNguoiDungHoacNhom(nguoiDungId)
+activate ht_dx
+ht_dx -> ht_dx : Thực hiện logic đề xuất
+ht_dx -> nd : read(criteria)
+ht_dx -> nhom : read(criteria)
+nd --> ht_dx : DanhSachNguoiDung
+nhom --> ht_dx : DanhSachNhom
+ht_dx --> gd_dx : DanhSachDeXuat (NguoiDung, Nhom)
+deactivate ht_dx
+gd_dx --> user : Hiển thị out_DanhSachDeXuatNguoiDung, out_DanhSachDeXuatNhom
+@enduml

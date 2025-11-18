@@ -1,0 +1,20 @@
+@startuml
+left to right direction
+actor "Người dùng" as User
+
+rectangle "Lập kế hoạch dinh dưỡng" {
+    usecase LapKeHoachDinhDuong as "Lập kế hoạch dinh dưỡng"
+
+    User --> (Chọn kế hoạch mẫu hoặc tạo mới)
+    (Chọn kế hoạch mẫu hoặc tạo mới) --> LapKeHoachDinhDuong : <<include>>
+
+    User --> (Điền chi tiết kế hoạch)
+    (Điền chi tiết kế hoạch) --> LapKeHoachDinhDuong : <<include>>
+
+    (Tính toán và cảnh báo Calo/Macro) --> LapKeHoachDinhDuong : <<include>>
+
+    (Cung cấp Checklist và lời nhắc) --> LapKeHoachDinhDuong : <<include>>
+}
+
+User -- LapKeHoachDinhDuong
+@enduml

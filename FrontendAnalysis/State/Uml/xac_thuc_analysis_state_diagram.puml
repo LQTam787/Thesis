@@ -1,0 +1,23 @@
+@startuml
+!theme plain
+
+state "Giao diện xác thực" as AuthScreen
+state "Giao diện đăng ký" as RegisterScreen
+state "Giao diện đăng nhập" as LoginScreen
+state "Giao diện chính" as MainScreen
+
+[*] --> AuthScreen : Khởi động
+
+AuthScreen --> RegisterScreen : Chọn Đăng ký
+AuthScreen --> LoginScreen : Chọn Đăng nhập
+
+RegisterScreen --> LoginScreen : Đăng ký thành công
+RegisterScreen --> RegisterScreen : Đăng ký thất bại /out_ThongBaoLoi
+
+LoginScreen --> MainScreen : Đăng nhập thành công
+LoginScreen --> LoginScreen : Đăng nhập thất bại /out_ThongBaoLoi
+LoginScreen --> RegisterScreen : Chọn Đăng ký (từ màn hình đăng nhập)
+
+MainScreen --> AuthScreen : Đăng xuất
+
+@enduml

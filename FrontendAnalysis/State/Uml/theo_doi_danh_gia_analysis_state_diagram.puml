@@ -1,0 +1,22 @@
+@startuml
+!theme plain
+
+state "Giao diện theo dõi đánh giá" as TrackingEvaluationScreen
+state "Giao diện nhập dữ liệu" as DataInputScreen
+state "Giao diện hiển thị báo cáo" as ReportDisplayScreen
+
+[*] --> TrackingEvaluationScreen : Khởi động
+
+TrackingEvaluationScreen --> DataInputScreen : Bắt đầu nhập dữ liệu
+
+DataInputScreen --> DataInputScreen : Nhận dạng thực phẩm /out_KetQuaNhanDangThucPham
+DataInputScreen --> ReportDisplayScreen : Lưu dữ liệu thành công /sub_LuuDuLieu
+DataInputScreen --> DataInputScreen : Lưu dữ liệu thất bại /out_ThongBaoLoi
+
+ReportDisplayScreen --> ReportDisplayScreen : Hiển thị biểu đồ tiến độ /out_BieuDoTienDo
+ReportDisplayScreen --> ReportDisplayScreen : Hiển thị báo cáo dinh dưỡng /out_BaoCaoDinhDuong
+ReportDisplayScreen --> ReportDisplayScreen : Hiển thị gợi ý điều chỉnh /out_GoiYDieuChinh
+ReportDisplayScreen --> [*] : Kết thúc theo dõi đánh giá
+ReportDisplayScreen --> DataInputScreen : Quay lại nhập dữ liệu
+
+@enduml

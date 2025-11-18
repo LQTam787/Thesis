@@ -1,0 +1,26 @@
+@startuml
+!theme plain
+
+state "Giao diện lập kế hoạch" as PlanCreationScreen
+state "Giao diện chọn kiểu kế hoạch" as PlanTypeSelectionScreen
+state "Giao diện nhập chi tiết kế hoạch" as PlanDetailsInputScreen
+state "Giao diện cảnh báo" as WarningScreen
+
+[*] --> PlanCreationScreen : Khởi động
+
+PlanCreationScreen --> PlanTypeSelectionScreen : Bắt đầu lập kế hoạch
+
+PlanTypeSelectionScreen --> PlanDetailsInputScreen : Chọn kế hoạch mẫu /sub_ChonKeHoachMau
+PlanTypeSelectionScreen --> PlanDetailsInputScreen : Tạo kế hoạch mới /sub_TaoKeHoachMoi
+PlanTypeSelectionScreen --> PlanTypeSelectionScreen : Hiển thị danh sách kế hoạch mẫu /out_DanhSachKeHoachMau
+
+PlanDetailsInputScreen --> WarningScreen : Lưu kế hoạch thành công /sub_LuuKeHoach
+PlanDetailsInputScreen --> PlanDetailsInputScreen : Lưu kế hoạch thất bại /out_ThongBaoLoi
+
+WarningScreen --> [*] : Kết thúc lập kế hoạch
+WarningScreen --> PlanDetailsInputScreen : Quay lại chỉnh sửa
+WarningScreen --> WarningScreen : Hiển thị cảnh báo /out_CanhBaoCaloMacro
+WarningScreen --> WarningScreen : Hiển thị Checklist /out_Checklist
+WarningScreen --> WarningScreen : Hiển thị Lời nhắc /out_LoiNhac
+
+@enduml

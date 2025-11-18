@@ -1,0 +1,74 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Tư vấn chế độ dinh dưỡng (Analysis)" {
+
+    interface "GiaoDienTuVanDinhDuong" <<Boundary>> {
+    }
+
+    class "GiaoDienNhapThongTin" <<Boundary>> {
+        + in_CauHoiNguoiDung
+        + sub_GuiThongTin
+    }
+
+    class "GiaoDienDeXuatThucDon" <<Boundary>> {
+        + out_ThucDonDeXuat
+        + in_YeuCauChinhSua
+        + sub_GuiYeuCauChinhSua
+        + out_ThongBaoTrangThai
+    }
+
+    class "QuanLyTuVanDinhDuong" <<Control>> {
+        + khoiTaoTuVan()
+        + guiThongTinBanDau(thongTin) : ThucDon / ThongBaoLoi
+        + yeuCauChinhSuaThucDon(thucDon, yeuCau) : ThucDon / ThongBaoLoi
+    }
+
+    class "AI_Service_Proxy" <<Control>> {
+        + phanTichDuLieu(duLieuDauVao) : ketQuaPhanTich
+        + taoDeXuatThucDon(ketQuaPhanTich) : ThucDon
+        + chinhSuaThucDonAI(thucDonGoc, yeuCauChinhSua) : ThucDon
+    }
+
+    class "ThongTinNguoiDung" <<Entity>> {
+        + tuoi
+        + canNang
+        + mucTieu
+        + soThich
+    }
+
+    class "ThucDon" <<Entity>> {
+        + tenThucDon
+        + tongCalo
+        + tongProtein
+        + tongCarb
+        + tongFat
+    }
+
+    class "MonAn" <<Entity>> {
+        + tenMonAn
+        + calo
+        + protein
+        + carb
+        + fat
+    }
+
+    GiaoDienTuVanDinhDuong <|-- GiaoDienNhapThongTin
+    GiaoDienTuVanDinhDuong <|-- GiaoDienDeXuatThucDon
+
+    GiaoDienNhapThongTin ..> QuanLyTuVanDinhDuong : uses
+    GiaoDienDeXuatThucDon ..> QuanLyTuVanDinhDuong : uses
+
+    QuanLyTuVanDinhDuong ..> AI_Service_Proxy : uses
+    QuanLyTuVanDinhDuong ..> ThongTinNguoiDung : manages
+    QuanLyTuVanDinhDuong ..> ThucDon : manages
+
+    AI_Service_Proxy ..> ThucDon : creates
+    AI_Service_Proxy ..> MonAn : creates
+
+    ThucDon "1" -- "*" MonAn : contains
+
+}
+
+@enduml

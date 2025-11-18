@@ -1,0 +1,38 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienHienThiBaoCao" as gd_htbc
+control "QuanLyTheoDoiDanhGia" as ql_tddg
+control "SoSanhDuLieu" as ss_dl
+control "TaoBaoCao" as tb_bc
+entity "DuLieuHangNgay" as dl_hn
+entity "KeHoachDinhDuong" as khdd
+entity "BaoCaoTienDo" as bc_td
+
+user -> gd_htbc : Yêu cầu xem báo cáo tiến độ
+gd_htbc -> ql_tddg : layBaoCaoTienDo(nguoiDungId)
+activate ql_tddg
+ql_tddg -> dl_hn : read(nguoiDungId)
+ql_tddg -> khdd : read(nguoiDungId)
+ql_tddg -> ss_dl : soSanhVoiKeHoach(duLieuThucTe, keHoach)
+activate ss_dl
+ss_dl --> ql_tddg : KetQuaSoSanh
+deactivate ss_dl
+ql_tddg -> tb_bc : taoBieuDo(ketQuaSoSanh)
+activate tb_bc
+tb_bc --> ql_tddg : BieuDo
+deactivate tb_bc
+ql_tddg -> tb_bc : taoBaoCaoChiTiet(ketQuaSoSanh)
+activate tb_bc
+tb_bc --> ql_tddg : BaoCao
+deactivate tb_bc
+ql_tddg -> tb_bc : taoGoiYDieuChinh(ketQuaSoSanh)
+activate tb_bc
+tb_bc --> ql_tddg : GoiY
+deactivate tb_bc
+ql_tddg -> bc_td ** : create(BieuDo, BaoCao, GoiY)
+ql_tddg --> gd_htbc : BaoCaoTienDo
+deactivate ql_tddg
+gd_htbc --> user : Hiển thị out_BieuDoTienDo, out_BaoCaoDinhDuong, out_GoiYDieuChinh
+@enduml

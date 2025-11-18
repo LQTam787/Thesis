@@ -1,0 +1,90 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Theo dõi và đánh giá (Analysis)" {
+
+    interface "GiaoDienTheoDoiDanhGia" <<Boundary>> {
+    }
+
+    class "GiaoDienNhapDuLieu" <<Boundary>> {
+        + in_HinhAnhBuaAn
+        + in_MoTaBuaAn
+        + in_HoatDong
+        + sub_LuuDuLieu
+        + out_KetQuaNhanDangThucPham
+    }
+
+    class "GiaoDienHienThiBaoCao" <<Boundary>> {
+        + out_BieuDoTienDo
+        + out_BaoCaoDinhDuong
+        + out_GoiYDieuChinh
+    }
+
+    class "QuanLyTheoDoiDanhGia" <<Control>> {
+        + nhapDuLieuHangNgay(hinhAnh, moTa, hoatDong) : KetQuaNhanDang / boolean
+        + layBaoCaoTienDo(nguoiDungId) : BaoCaoTienDo
+    }
+
+    class "PhanTichDuLieuAI" <<Control>> {
+        + nhanDangThucPham(hinhAnhBuaAn) : ThongTinThucPham
+        + phanTichNgonNgu(moTaBuaAn) : ThongTinThucPham
+    }
+
+    class "SoSanhDuLieu" <<Control>> {
+        + soSanhVoiKeHoach(duLieuThucTe, keHoach) : KetQuaSoSanh
+    }
+
+    class "TaoBaoCao" <<Control>> {
+        + taoBieuDo(ketQuaSoSanh) : BieuDo
+        + taoBaoCaoChiTiet(ketQuaSoSanh) : BaoCao
+        + taoGoiYDieuChinh(ketQuaSoSanh) : GoiY
+    }
+
+    class "DuLieuHangNgay" <<Entity>> {
+        + ngay
+        + danhSachBuaAn
+        + danhSachHoatDong
+    }
+
+    class "ThucPhamNhanDang" <<Entity>> {
+        + tenThucPham
+        + caloUocTinh
+        + proteinUocTinh
+    }
+
+    class "KeHoachDinhDuong" <<Entity>> {
+        // ... (Attributes from previous diagram)
+    }
+
+    class "BaoCaoTienDo" <<Entity>> {
+        + idBaoCao
+        + ngayTao
+        + noiDungBaoCao
+        + danhSachBieuDo
+        + danhSachGoiY
+    }
+
+    GiaoDienTheoDoiDanhGia <|-- GiaoDienNhapDuLieu
+    GiaoDienTheoDoiDanhGia <|-- GiaoDienHienThiBaoCao
+
+    GiaoDienNhapDuLieu ..> QuanLyTheoDoiDanhGia : uses
+    GiaoDienHienThiBaoCao ..> QuanLyTheoDoiDanhGia : uses
+
+    QuanLyTheoDoiDanhGia ..> PhanTichDuLieuAI : uses
+    QuanLyTheoDoiDanhGia ..> SoSanhDuLieu : uses
+    QuanLyTheoDoiDanhGia ..> TaoBaoCao : uses
+    QuanLyTheoDoiDanhGia ..> DuLieuHangNgay : manages
+
+    PhanTichDuLieuAI ..> ThucPhamNhanDang : creates
+
+    SoSanhDuLieu ..> DuLieuHangNgay : reads
+    SoSanhDuLieu ..> KeHoachDinhDuong : reads
+
+    TaoBaoCao ..> BaoCaoTienDo : creates
+
+    DuLieuHangNgay "1" -- "*" ThucPhamNhanDang : contains
+
+}
+
+@enduml

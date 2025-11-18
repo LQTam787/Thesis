@@ -1,0 +1,26 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienNhapThongTin" as gd_ntt
+boundary "GiaoDienDeXuatThucDon" as gd_dxtd
+control "QuanLyTuVanDinhDuong" as ql_tvdd
+control "AI_Service_Proxy" as ai_proxy
+entity "ThucDon" as td
+
+user -> gd_ntt : Nhập in_CauHoiNguoiDung
+user -> gd_ntt : Kích hoạt sub_GuiThongTin
+gd_ntt -> ql_tvdd : guiThongTinBanDau(thongTin)
+activate ql_tvdd
+ql_tvdd -> ai_proxy : phanTichDuLieu(duLieuDauVao)
+activate ai_proxy
+ai_proxy -> ai_proxy : Xử lý và phân tích dữ liệu
+ai_proxy -> td ** : taoDeXuatThucDon(ketQuaPhanTich)
+ai_proxy --> ql_tvdd : ThucDon
+deactivate ai_proxy
+ql_tvdd -> td : save(ThucDon)
+ql_tvdd --> gd_ntt : ThucDon
+deactivate ql_tvdd
+gd_ntt -> gd_dxtd : show(ThucDon)
+gd_dxtd --> user : Hiển thị out_ThucDonDeXuat
+@enduml

@@ -1,0 +1,35 @@
+@startuml
+left to right direction
+actor "Người dùng" as User
+actor "Hệ thống AI" as AI_System
+
+rectangle "Tư vấn chế độ dinh dưỡng" {
+    usecase TuVanDinhDuong as "TuVanDinhDuong"
+
+    User --> (Cung cấp thông tin ban đầu)
+    (Cung cấp thông tin ban đầu) --> TuVanDinhDuong : <<include>>
+
+    (Phân tích dữ liệu đầu vào) .> AI_System : <<sử dụng>>
+    (Phân tích dữ liệu đầu vào) --> TuVanDinhDuong : <<include>>
+
+    (Tạo và đề xuất thực đơn) --> TuVanDinhDuong : <<include>>
+
+    User --> (Yêu cầu chỉnh sửa thực đơn)
+    (Yêu cầu chỉnh sửa thực đơn) --> TuVanDinhDuong : <<extend>>
+
+    (Chỉnh sửa thực đơn) .> AI_System : <<sử dụng>>
+    (Chỉnh sửa thực đơn) --> TuVanDinhDuong : <<include>>
+
+    (SuDungNLP) .> AI_System : <<sử dụng>>
+    (SuDungMachineLearning) .> AI_System : <<sử dụng>>
+    (TruyXuatDuLieuThucPham)
+
+    (PhanTichDuLieuDauVao) ..> (SuDungNLP) : <<include>>
+    (PhanTichDuLieuDauVao) ..> (SuDungMachineLearning) : <<include>>
+    (Tạo và đề xuất thực đơn) ..> (TruyXuatDuLieuThucPham) : <<include>>
+    (ChinhSuaThucDon) ..> (TruyXuatDuLieuThucPham) : <<include>>
+}
+
+User -- TuVanDinhDuong
+AI_System -- TuVanDinhDuong
+@enduml

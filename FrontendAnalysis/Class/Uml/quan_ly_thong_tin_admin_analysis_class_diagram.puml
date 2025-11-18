@@ -1,0 +1,74 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Quản lý thông tin đối tượng (Admin) (Analysis)" {
+
+    interface "GiaoDienQuanLyAdmin" <<Boundary>> {
+    }
+
+    class "GiaoDienChonLoaiDoiTuong" <<Boundary>> {
+        + in_ChonLoaiDoiTuong
+        + sub_XacNhanChon
+    }
+
+    class "GiaoDienQuanLyChiTiet" <<Boundary>> {
+        + out_DanhSachDoiTuong
+        + in_TruongThongTin
+        + sub_ThemDoiTuong
+        + sub_SuaDoiTuong
+        + sub_XoaDoiTuong
+        + out_ThongBaoTrangThai
+    }
+
+    class "QuanLyDoiTuongAdmin" <<Control>> {
+        + chonLoaiDoiTuong(loai) : DanhSachDoiTuong
+        + themDoiTuong(loai, duLieuDoiTuong) : boolean
+        + suaDoiTuong(loai, doiTuongId, duLieuDoiTuongMoi) : boolean
+        + xoaDoiTuong(loai, doiTuongId) : boolean
+    }
+
+    class "AI_Training_Proxy" <<Control>> {
+        + guiDuLieuHuanLuyen(loaiDoiTuong, duLieu) : boolean
+    }
+
+    class "NguoiDung" <<Entity>> {
+        + idNguoiDung
+        + tenNguoiDung
+        // ... other user attributes
+    }
+
+    class "MonAn" <<Entity>> {
+        + idMonAn
+        + tenMonAn
+        // ... other food attributes
+    }
+
+    class "NguyenLieu" <<Entity>> {
+        + idNguyenLieu
+        + tenNguyenLieu
+        // ... other ingredient attributes
+    }
+
+    class "QuyTrinhNauAn" <<Entity>> {
+        + idQuyTrinh
+        + tenQuyTrinh
+        // ... other cooking process attributes
+    }
+
+    GiaoDienQuanLyAdmin <|-- GiaoDienChonLoaiDoiTuong
+    GiaoDienQuanLyAdmin <|-- GiaoDienQuanLyChiTiet
+
+    GiaoDienChonLoaiDoiTuong ..> QuanLyDoiTuongAdmin : uses
+    GiaoDienQuanLyChiTiet ..> QuanLyDoiTuongAdmin : uses
+
+    QuanLyDoiTuongAdmin ..> AI_Training_Proxy : uses
+
+    QuanLyDoiTuongAdmin ..> NguoiDung : manages
+    QuanLyDoiTuongAdmin ..> MonAn : manages
+    QuanLyDoiTuongAdmin ..> NguyenLieu : manages
+    QuanLyDoiTuongAdmin ..> QuyTrinhNauAn : manages
+
+}
+
+@enduml

@@ -1,0 +1,53 @@
+@startuml
+!theme plain
+left to right direction
+
+package "Module Xác thực (Analysis)" {
+
+    interface "GiaoDienXacThuc" <<Boundary>> {
+    }
+
+    class "GiaoDienDangKy" <<Boundary>> {
+        + in_TenDangNhap
+        + in_MatKhau
+        + in_XacNhanMatKhau
+        + sub_DangKy
+        + out_ThongBaoLoi
+    }
+
+    class "GiaoDienDangNhap" <<Boundary>> {
+        + in_TenDangNhap
+        + in_MatKhau
+        + sub_DangNhap
+        + out_ThongBaoLoi
+    }
+
+    class "GiaoDienChinh" <<Boundary>> {
+        + sub_DangXuat
+    }
+
+    class "QuanLyXacThuc" <<Control>> {
+        + xuLyDangKy(in_TenDangNhap, in_MatKhau, in_XacNhanMatKhau) : out_ThongBaoLoi / TaiKhoan
+        + xuLyDangNhap(in_TenDangNhap, in_MatKhau) : out_ThongBaoLoi / TaiKhoan
+        + xuLyDangXuat() : boolean
+    }
+
+    class "TaiKhoan" <<Entity>> {
+        + tenDangNhap
+        + matKhau
+        + trangThai
+    }
+
+    GiaoDienXacThuc <|-- GiaoDienDangKy
+    GiaoDienXacThuc <|-- GiaoDienDangNhap
+    GiaoDienXacThuc <|-- GiaoDienChinh
+
+    GiaoDienDangKy ..> QuanLyXacThuc : uses
+    GiaoDienDangNhap ..> QuanLyXacThuc : uses
+    GiaoDienChinh ..> QuanLyXacThuc : uses
+
+    QuanLyXacThuc ..> TaiKhoan : manages
+
+}
+
+@enduml

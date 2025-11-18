@@ -1,0 +1,22 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienCapNhatMucTieuSucKhoe" as gd_cnmtskh
+control "QuanLyHoSoNguoiDung" as ql_hsnd
+entity "HoSoNguoiDung" as hsnd
+entity "MucTieuSucKhoe" as mt_sk
+
+user -> gd_cnmtskh : Nhập in_LoaiMucTieu, in_MoTaMucTieu
+user -> gd_cnmtskh : Kích hoạt sub_LuuMucTieu
+gd_cnmtskh -> ql_hsnd : capNhatMucTieuSucKhoe(nguoiDungId, mucTieuMoi)
+activate ql_hsnd
+ql_hsnd -> hsnd : read(nguoiDungId)
+hsnd --> ql_hsnd : HoSoNguoiDung
+ql_hsnd -> mt_sk : update(mucTieuMoi)
+ql_hsnd -> hsnd : luuThayDoiHoSo(nguoiDungId, duLieuHoSo)
+hsnd --> ql_hsnd : boolean
+ql_hsnd --> gd_cnmtskh : true
+deactivate ql_hsnd
+gd_cnmtskh --> user : Hiển thị thông báo cập nhật thành công
+@enduml

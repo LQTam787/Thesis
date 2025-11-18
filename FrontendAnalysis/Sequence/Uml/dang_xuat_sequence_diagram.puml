@@ -1,0 +1,15 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienChinh" as gd_chinh
+control "QuanLyXacThuc" as ql_xt
+
+user -> gd_chinh : Kích hoạt Đăng xuất (sub_DangXuat)
+gd_chinh -> ql_xt : xuLyDangXuat()
+activate ql_xt
+ql_xt -> ql_xt : Xóa token JWT khỏi Local Storage / Cập nhật trạng thái Redux
+ql_xt --> gd_chinh : true
+deactivate ql_xt
+gd_chinh --> user : Chuyển hướng đến GiaoDienDangNhap
+@enduml

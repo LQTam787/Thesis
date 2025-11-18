@@ -1,0 +1,22 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienCapNhatSoThichAnUong" as gd_cnstau
+control "QuanLyHoSoNguoiDung" as ql_hsnd
+entity "HoSoNguoiDung" as hsnd
+entity "SoThichAnUong" as st_au
+
+user -> gd_cnstau : Nhập in_DanhSachSoThich
+user -> gd_cnstau : Kích hoạt sub_LuuSoThich
+gd_cnstau -> ql_hsnd : capNhatSoThichAnUong(nguoiDungId, soThichMoi)
+activate ql_hsnd
+ql_hsnd -> hsnd : read(nguoiDungId)
+hsnd --> ql_hsnd : HoSoNguoiDung
+ql_hsnd -> st_au : update(soThichMoi)
+ql_hsnd -> hsnd : luuThayDoiHoSo(nguoiDungId, duLieuHoSo)
+hsnd --> ql_hsnd : boolean
+ql_hsnd --> gd_cnstau : true
+deactivate ql_hsnd
+gd_cnstau --> user : Hiển thị thông báo cập nhật thành công
+@enduml

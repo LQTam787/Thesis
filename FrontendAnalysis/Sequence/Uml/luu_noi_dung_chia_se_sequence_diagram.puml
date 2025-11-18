@@ -1,0 +1,15 @@
+@startuml
+!theme plain
+autonumber
+actor "Người dùng" as user
+boundary "GiaoDienXemNoiDungChiaSe" as gd_xndcs
+control "QuanLyChiaSe" as ql_cs
+
+user -> gd_xndcs : Kích hoạt sub_LuuNoiDung
+gd_xndcs -> ql_cs : luuNoiDungChiaSe(noiDungId, nguoiDungId)
+activate ql_cs
+ql_cs -> ql_cs : Thực hiện logic lưu nội dung
+ql_cs --> gd_xndcs : boolean (thành công/thất bại)
+deactivate ql_cs
+gd_xndcs --> user : Hiển thị thông báo trạng thái
+@enduml
