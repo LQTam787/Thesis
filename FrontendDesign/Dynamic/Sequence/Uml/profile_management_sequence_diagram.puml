@@ -1,0 +1,106 @@
+@startuml profile_management_sequence_diagram
+!pragma layout smetana
+
+title Biểu đồ Tuần tự: Quản lý Hồ sơ Cá nhân
+
+actor "Người dùng" as User
+participant "ProfileManagementPage" as Page
+participant "ProfileController" as Controller
+participant "NguoiDungDAO" as NguoiDungDAO
+participant "TaiKhoanDAO" as TaiKhoanDAO
+participant "DacDiemCaNhanDAO" as DacDiemCaNhanDAO
+
+activate User
+User -> Page: Truy cập trang Quản lý Hồ sơ
+activate Page
+
+Page -> Controller: initialize()
+activate Controller
+
+Controller -> NguoiDungDAO: getNguoiDungById(userId)
+activate NguoiDungDAO
+NguoiDungDAO --> Controller: NguoiDung
+deactivate NguoiDungDAO
+
+Controller -> DacDiemCaNhanDAO: getDacDiemCaNhanByUserId(userId)
+activate DacDiemCaNhanDAO
+DacDiemCaNhanDAO --> Controller: DacDiemCaNhan
+deactivate DacDiemCaNhanDAO
+
+Controller -> Page: displayProfile(profileData, dacDiemCaNhanData)
+activate Page
+Page --> User: Hiển thị hồ sơ
+deactivate Page
+
+User -> Page: Chỉnh sửa thông tin
+activate Page
+User -> Page: Nhấn "Lưu"
+
+Page -> Controller: saveProfile()
+activate Controller
+
+Controller -> Page: getEditedProfileData()
+activate Page
+Page --> Controller: {tenThat, email}
+deactivate Page
+
+Controller -> NguoiDungDAO: updateNguoiDung(nguoiDung)
+activate NguoiDungDAO
+NguoiDungDAO --> Controller: boolean (thành công/thất bại)
+deactivate NguoiDungDAO
+
+alt Thay đổi mật khẩu
+    User -> Page: Chọn "Thay đổi mật khẩu"
+    User -> Page: Nhập mật khẩu mới và xác nhận
+    Page -> Controller: getEditedAccountData()
+    activate Page
+    Page --> Controller: {matKhau}
+    deactivate Page
+
+    Controller -> TaiKhoanDAO: updateTaiKhoan(taiKhoan)
+    activate TaiKhoanDAO
+    TaiKhoanDAO --> Controller: boolean (thành công/thất bại)
+    deactivate TaiKhoanDAO
+
+    alt Mật khẩu không hợp lệ / Cập nhật thất bại
+        Controller -> Page: showErrorMessage("Mật khẩu không hợp lệ.")
+        activate Page
+        Page --> User: Hiển thị thông báo lỗi
+        deactivate Page
+    end
+end
+
+Controller -> Page: getEditedDacDiemCaNhanData()
+activate Page
+Page --> Controller: {chieuCao, canNang, mucDoVanDong, benhLyNen, diUng}
+deactivate Page
+
+alt DacDiemCaNhan đã tồn tại
+    Controller -> DacDiemCaNhanDAO: updateDacDiemCaNhan(dacDiemCaNhan)
+    activate DacDiemCaNhanDAO
+    DacDiemCaNhanDAO --> Controller: boolean (thành công/thất bại)
+    deactivate DacDiemCaNhanDAO
+else DacDiemCaNhan chưa tồn tại
+    Controller -> DacDiemCaNhanDAO: createDacDiemCaNhan(dacDiemCaNhan)
+    activate DacDiemCaNhanDAO
+    DacDiemCaNhanDAO --> Controller: boolean (thành công/thất bại)
+    deactivate DacDiemCaNhanDAO
+end
+
+alt Lưu thành công
+    Controller -> Page: showSuccessMessage("Hồ sơ đã được cập nhật thành công!")
+    activate Page
+    Page --> User: Hiển thị thông báo thành công
+    deactivate Page
+else Lưu thất bại
+    Controller -> Page: showErrorMessage("Đã xảy ra lỗi khi cập nhật hồ sơ.")
+    activate Page
+    Page --> User: Hiển thị thông báo lỗi
+    deactivate Page
+end
+
+deactivate Controller
+deactivate Page
+deactivate User
+
+@enduml

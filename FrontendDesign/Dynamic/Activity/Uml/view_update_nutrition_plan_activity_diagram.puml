@@ -1,0 +1,47 @@
+@startuml view_update_nutrition_plan_activity_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Hoạt động - Xem/Cập nhật Chế độ Dinh dưỡng
+
+start
+
+:Người dùng truy cập trang Quản lý Chế độ Dinh dưỡng;
+
+partition "NutritionPlanPageUI" {
+  :Hiển thị danh sách chế độ dinh dưỡng;
+  note right: Gọi phương thức hienThiDanhSachCheDo()
+  :Người dùng chọn một chế độ dinh dưỡng để xem/cập nhật;
+  :Điền thông tin chế độ dinh dưỡng vào form;
+  note right: Gọi phương thức dienThongTinCheDo()
+}
+
+alt Người dùng chỉ xem
+  :Kết thúc;
+else Người dùng cập nhật
+  partition "NutritionPlanPageUI" {
+    :Người dùng chỉnh sửa thông tin;
+    note right: Gọi phương thức layThongTinCheDo()
+    :Người dùng nhấn "Lưu" hoặc "Cập nhật";
+    :Hiển thị thông báo thành công/thất bại;
+    note right: Gọi phương thức hienThiThongBao()
+  }
+
+  partition "NutritionService" {
+    :Kiểm tra và xử lý dữ liệu;
+    :Cập nhật chế độ dinh dưỡng;
+    note right: Gọi phương thức capNhatCheDoDinhDuong(cheDo: CheDoDinhDuong)
+  }
+
+  partition "CheDoDinhDuongDAO" {
+    :Thực hiện cập nhật dữ liệu vào cơ sở dữ liệu;
+    note right: Gọi phương thức update(cheDo: CheDoDinhDuong)
+  }
+
+  :Hiển thị danh sách chế độ dinh dưỡng cập nhật;
+  note right: Gọi phương thức hienThiDanhSachCheDo()
+end
+
+stop
+
+@enduml

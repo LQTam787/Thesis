@@ -1,0 +1,171 @@
+@startuml nutritional_consultation_sequence_diagram
+' Điều khiển layout và màu sắc
+!pragma layout smetana
+skinparam sequenceMessageAlign center
+skinparam roundcorner 5
+skinparam participantpadding 20
+skinparam boxpadding 10
+
+actor NgườiDùng as User
+participant "NutritionalConsultationPage" as NCPage
+participant "IKeHoachDinhDuongDAO" as PlanDAO
+participant "IBuaAnDAO" as MealDAO
+participant "IChiTietBuaAnDAO" as MealDetailDAO
+participant "IThucPhamDAO" as FoodDAO
+database "Cơ Sở Dữ Liệu" as DB
+
+title Biểu đồ tuần tự: Tư vấn Chế độ Dinh dưỡng và Tạo Kế hoạch
+
+autonumber
+
+User -> NCPage: truy cập trang tư vấn dinh dưỡng
+activate NCPage
+
+User -> NCPage: nhapThongTinCaNhan(chieuCao, canNang, tuoi, gioiTinh, mucDoHoatDong)
+activate NCPage
+NCPage --> User: hiển thị giao diện nhập thông tin
+deactivate NCPage
+
+User -> NCPage: chonMucTieuDinhDuong(mucTieu)
+activate NCPage
+NCPage -> NCPage: tinhToanKhuyenNghi()
+activate NCPage
+NCPage --> User: hienThiKhuyenNghi(calo, protein, carb, chatBeo)
+deactivate NCPage
+deactivate NCPage
+
+alt Tạo Kế hoạch Dinh dưỡng từ Khuyến nghị
+    User -> NCPage: taoKeHoachTuKhuyenNghi()
+    activate NCPage
+    NCPage -> PlanDAO: taoKeHoachDinhDuong(keHoach)
+    activate PlanDAO
+    PlanDAO -> DB: insert KeHoachDinhDuong
+    activate DB
+    DB --> PlanDAO: maKeHoach
+    deactivate DB
+    PlanDAO --> NCPage: maKeHoach
+    deactivate PlanDAO
+    NCPage --> User: chuyển hướng đến trang chi tiết kế hoạch
+    NCPage -> NCPage: xemChiTietKeHoach(maKeHoach)
+    activate NCPage
+    NCPage -> MealDAO: layBuaAnTheoKeHoach(maKeHoach)
+    activate MealDAO
+    MealDAO -> DB: select * from BuaAn where maKeHoach = maKeHoach
+    activate DB
+    DB --> MealDAO: List<BuaAn>
+    deactivate DB
+    MealDAO --> NCPage: List<BuaAn>
+    deactivate MealDAO
+
+    loop for each BuaAn in List<BuaAn>
+        NCPage -> MealDetailDAO: layChiTietBuaAn(maBuaAn)
+        activate MealDetailDAO
+        MealDetailDAO -> DB: select * from ChiTietBuaAn where maBuaAn = maBuaAn
+        activate DB
+        DB --> MealDetailDAO: List<ChiTietBuaAn>
+        deactivate DB
+        MealDetailDAO --> NCPage: List<ChiTietBuaAn>
+        deactivate MealDetailDAO
+
+        loop for each ChiTietBuaAn in List<ChiTietBuaAn>
+            NCPage -> FoodDAO: layThucPhamTheoMa(maThucPham)
+            activate FoodDAO
+            FoodDAO -> DB: select * from ThucPham where maThucPham = maThucPham
+            activate DB
+            DB --> FoodDAO: ThucPham
+            deactivate DB
+            FoodDAO --> NCPage: ThucPham
+            deactivate FoodDAO
+        end
+    end
+    NCPage --> User: hienThiThucDon(thucDonChiTiet)
+    deactivate NCPage
+else Lưu Nhu Cầu Dinh Dưỡng
+    User -> NCPage: luuNhuCauDinhDuong()
+    activate NCPage
+    NCPage -> PlanDAO: capNhatDacDiemCaNhan(dacDiem) ' Assuming DacDiemCaNhan is handled by INguoiDungDAO or similar
+    activate PlanDAO
+    PlanDAO -> DB: update DacDiemCaNhan
+    activate DB
+    DB --> PlanDAO: boolean
+    deactivate DB
+    PlanDAO --> NCPage: boolean
+    deactivate PlanDAO
+    deactivate NCPage
+end
+
+User -> NCPage: taiDanhSachKeHoach()
+activate NCPage
+NCPage -> PlanDAO: layDanhSachKeHoach(maNguoiDung)
+activate PlanDAO
+PlanDAO -> DB: select * from KeHoachDinhDuong where maNguoiDung = maNguoiDung
+activate DB
+DB --> PlanDAO: List<KeHoachDinhDuong>
+deactivate DB
+PlanDAO --> NCPage: List<KeHoachDinhDuong>
+deactivate PlanDAO
+NCPage --> User: hienThiDanhSachKeHoach(List<KeHoachDinhDuong>)
+deactivate NCPage
+
+alt Xem chi tiết Kế hoạch
+    User -> NCPage: xemChiTietKeHoach(maKeHoach)
+    activate NCPage
+    NCPage -> PlanDAO: layKeHoachTheoMa(maKeHoach)
+    activate PlanDAO
+    PlanDAO -> DB: select * from KeHoachDinhDuong where maKeHoach = maKeHoach
+    activate DB
+    DB --> PlanDAO: KeHoachDinhDuong
+    deactivate DB
+    PlanDAO --> NCPage: KeHoachDinhDuong
+    deactivate PlanDAO
+
+    NCPage -> MealDAO: layBuaAnTheoKeHoach(maKeHoach)
+    activate MealDAO
+    MealDAO -> DB: select * from BuaAn where maKeHoach = maKeHoach
+    activate DB
+    DB --> MealDAO: List<BuaAn>
+    deactivate DB
+    MealDAO --> NCPage: List<BuaAn>
+    deactivate MealDAO
+
+    loop for each BuaAn in List<BuaAn>
+        NCPage -> MealDetailDAO: layChiTietBuaAn(maBuaAn)
+        activate MealDetailDAO
+        MealDetailDAO -> DB: select * from ChiTietBuaAn where maBuaAn = maBuaAn
+        activate DB
+        DB --> MealDetailDAO: List<ChiTietBuaAn>
+        deactivate DB
+        MealDetailDAO --> NCPage: List<ChiTietBuaAn>
+        deactivate MealDetailDAO
+
+        loop for each ChiTietBuaAn in List<ChiTietBuaAn>
+            NCPage -> FoodDAO: layThucPhamTheoMa(maThucPham)
+            activate FoodDAO
+            FoodDAO -> DB: select * from ThucPham where maThucPham = maThucPham
+            activate DB
+            DB --> FoodDAO: ThucPham
+            deactivate DB
+            FoodDAO --> NCPage: ThucPham
+            deactivate FoodDAO
+        end
+    end
+    NCPage --> User: hiển thị NutritionPlanDetailPage
+    NCPage -> NCPage: hienThiThucDon()
+    activate NCPage
+    deactivate NCPage
+    deactivate NCPage
+else Xóa Kế hoạch
+    User -> NCPage: xoaKeHoach(maKeHoach)
+    activate NCPage
+    NCPage -> PlanDAO: xoaKeHoachDinhDuong(maKeHoach)
+    activate PlanDAO
+    PlanDAO -> DB: delete from KeHoachDinhDuong where maKeHoach = maKeHoach
+    activate DB
+    DB --> PlanDAO: boolean
+    deactivate DB
+    PlanDAO --> NCPage: boolean
+    deactivate PlanDAO
+    deactivate NCPage
+end
+
+@enduml

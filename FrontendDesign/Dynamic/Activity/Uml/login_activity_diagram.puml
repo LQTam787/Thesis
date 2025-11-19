@@ -1,0 +1,26 @@
+@startuml login_activity_diagram
+
+start
+
+:Người dùng truy cập trang Đăng nhập;
+:LoginPageUI hiển thị giao diện đăng nhập;
+
+if (Người dùng nhập tên tài khoản và mật khẩu) then (Có)
+  :LoginPageUI.layTenTaiKhoan();
+  :LoginPageUI.layMatKhau();
+  :AuthService.login(tenTaiKhoan, matKhau);
+
+  if (Đăng nhập thành công?) then (Có)
+    :Hệ thống cấp JWTToken;
+    :Chuyển hướng đến trang chính;
+  else (Không)
+    :LoginPageUI.hienThiThongBao("Tên tài khoản hoặc mật khẩu không đúng.");
+    :Hiển thị lại giao diện đăng nhập;
+  endif
+else (Không)
+  :Hiển thị lại giao diện đăng nhập;
+endif
+
+stop
+
+@enduml

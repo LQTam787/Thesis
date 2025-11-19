@@ -1,0 +1,29 @@
+@startuml progress_report_activity_diagram
+start
+:Người dùng truy cập trang báo cáo tiến độ;
+:Hệ thống yêu cầu IKeHoachDinhDuongDAO.layKeHoachHienTai(nguoiDungId: String);
+:Hệ thống lấy DuLieuThucTe của người dùng;
+:ProgressReportPage.hienThiBieuDoTienDo();
+:IReportDAO.taoBieuDoTienDo(keHoachId: String, duLieuThucTe: List<DuLieuThucTe>);
+:Hệ thống hiển thị biểu đồ tiến độ;
+
+:ProgressReportPage.hienThiBaoCaoDinhDuong();
+:IReportDAO.taoBaoCaoDinhDuong(keHoachId: String, duLieuThucTe: DuLieuThucTe);
+:Hệ thống hiển thị báo cáo dinh dưỡng;
+
+:ProgressReportPage.hienThiGoiYDieuChinh();
+:IReportDAO.taoGoiYDieuChinh(baoCao: BaoCaoDinhDuong, mucTieu: MucTieuDinhDuong);
+:Hệ thống hiển thị gợi ý điều chỉnh;
+
+if (Người dùng muốn tải lại báo cáo?) then (Có)
+  :ProgressReportPage.taiLaiBaoCao();
+  repeat
+    :Hệ thống cập nhật và hiển thị lại báo cáo;
+  backward:Tải lại báo cáo;
+  repeat while (Có lỗi xảy ra hoặc người dùng muốn tiếp tục tải lại?) is (Có)
+  -> Kết thúc tải lại;
+else (Không)
+endif
+
+stop
+@enduml

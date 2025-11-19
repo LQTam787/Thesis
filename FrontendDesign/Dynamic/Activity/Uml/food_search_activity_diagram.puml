@@ -1,0 +1,38 @@
+@startuml food_search_activity_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Hoạt động - Tìm kiếm Món ăn/Thực phẩm
+
+start
+
+:Người dùng truy cập trang Tìm kiếm Món ăn/Thực phẩm;
+
+partition "FoodSearchPageUI" {
+  :Người dùng nhập từ khóa tìm kiếm;
+  note right: Gọi phương thức layTuKhoaTimKiem()
+  :Người dùng nhấn nút "Tìm kiếm";
+  :Hiển thị kết quả tìm kiếm;
+  note right: Gọi phương thức hienThiKetQuaTimKiem()
+  :Hiển thị thông báo (nếu có);
+  note right: Gọi phương thức hienThiThongBao()
+}
+
+partition "NutritionService" {
+  :Thực hiện tìm kiếm món ăn và thực phẩm;
+  note right: Gọi phương thức timKiemMonAnVaThucPham(tuKhoa: string)
+}
+
+partition "MonAnDAO" {
+  :Tìm kiếm món ăn theo từ khóa;
+  note right: Gọi phương thức findByName(tenMonAn: string)
+}
+
+partition "ThucPhamDAO" {
+  :Tìm kiếm thực phẩm theo từ khóa;
+  note right: Gọi phương thức findByName(tenThucPham: string)
+}
+
+end
+
+@enduml

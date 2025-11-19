@@ -1,0 +1,42 @@
+@startuml login_sequence_diagram
+
+participant "Người dùng" as User
+participant "LoginPageUI" as LoginPageUI
+participant "AuthService" as AuthService
+participant "TaiKhoanDAO" as TaiKhoanDAO
+
+User -> LoginPageUI: Nhập tên tài khoản và mật khẩu
+activate LoginPageUI
+
+User -> LoginPageUI: Nhấn nút Đăng nhập
+
+LoginPageUI -> LoginPageUI: layTenTaiKhoan()
+activate LoginPageUI
+deactivate LoginPageUI
+
+LoginPageUI -> LoginPageUI: layMatKhau()
+activate LoginPageUI
+deactivate LoginPageUI
+
+LoginPageUI -> AuthService: login(tenTaiKhoan, matKhau)
+activate AuthService
+
+AuthService -> TaiKhoanDAO: findByTenTaiKhoan(tenTaiKhoan)
+activate TaiKhoanDAO
+TaiKhoanDAO --> AuthService: TaiKhoan (hoặc null)
+deactivate TaiKhoanDAO
+
+alt Đăng nhập thành công
+  AuthService -> AuthService: So sánh mật khẩu
+  AuthService --> LoginPageUI: JWTToken
+  LoginPageUI -> User: Chuyển hướng đến trang chính
+else Đăng nhập thất bại (tên tài khoản hoặc mật khẩu không đúng)
+  AuthService --> LoginPageUI: Lỗi xác thực
+  LoginPageUI -> LoginPageUI: hienThiThongBao("Tên tài khoản hoặc mật khẩu không đúng.")
+  LoginPageUI -> User: Hiển thị thông báo lỗi
+end
+
+deactivate AuthService
+deactivate LoginPageUI
+
+@enduml

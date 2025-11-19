@@ -1,0 +1,79 @@
+@startuml shared_content_management_activity_diagram
+!pragma layout smetana
+
+title Biểu đồ Hoạt động: Quản lý Nội dung Chia sẻ (Admin)
+
+start
+
+:Admin Dashboard View;
+:Chọn "Quản lý Nội dung Chia sẻ";
+
+partition "Shared Content Management View" {
+  :hiển thị Danh Sách Nội dung Chia sẻ;
+  split
+    :hiển thị Chi Tiết Nội dung;
+  split again
+    :lọc Nội dung Theo Trạng thái;
+  split again
+    :tìm Kiếm Nội dung;
+  split again
+    :hiển thị Thông Báo;
+  split again
+    :Chọn hành động (Duyệt/Từ chối/Xóa);
+  split end
+
+  if (Hành động là Duyệt) then (Có)
+    :chọn Nội dung cần duyệt;
+    :gọi xuLyDuyetNoiDung();
+  else if (Hành động là Từ chối) then (Có)
+    :chọn Nội dung cần từ chối;
+    :gọi xuLyTuChoiNoiDung();
+  else if (Hành động là Xóa) then (Có)
+    :chọn Nội dung cần xóa;
+    :xác nhận xóa;
+    :gọi xuLyXoaNoiDung();
+  else if (Hành động là Lọc) then (Có)
+    :chọn trạng thái lọc;
+    :gọi xuLyLocNoiDung();
+  else if (Hành động là Tìm kiếm) then (Có)
+    :nhập từ khóa tìm kiếm;
+    :gọi xuLyTimKiemNoiDung();
+  endif
+}
+
+partition "Shared Content Management Controller" {
+  if (xuLyDuyetNoiDung được gọi) then (Có)
+    :gọi capNhatTrangThaiNoiDung() từ INoiDungChiaSeDAO với trạng thái "Đã duyệt";
+    if (cập nhật thành công?) then (Có)
+      :hiển thị Thông Báo thành công;
+    else (Không)
+      :hiển thị Thông Báo lỗi;
+    endif
+  else if (xuLyTuChoiNoiDung được gọi) then (Có)
+    :gọi capNhatTrangThaiNoiDung() từ INoiDungChiaSeDAO với trạng thái "Đã từ chối";
+    if (cập nhật thành công?) then (Có)
+      :hiển thị Thông Báo thành công;
+    else (Không)
+      :hiển thị Thông Báo lỗi;
+    endif
+  else if (xuLyXoaNoiDung được gọi) then (Có)
+    :gọi xoaNoiDungChiaSe() từ INoiDungChiaSeDAO;
+    if (xóa thành công?) then (Có)
+      :hiển thị Thông Báo thành công;
+    else (Không)
+      :hiển thị Thông Báo lỗi;
+    endif
+  else if (xuLyLocNoiDung được gọi) then (Có)
+    :gọi locNoiDungTheoTrangThai() từ INoiDungChiaSeDAO;
+    :hiển thị kết quả lọc;
+  else if (xuLyTimKiemNoiDung được gọi) then (Có)
+    :gọi timKiemNoiDung() từ INoiDungChiaSeDAO;
+    :hiển thị kết quả tìm kiếm;
+  endif
+}
+
+:Kết thúc;
+
+stop
+
+@enduml

@@ -1,0 +1,59 @@
+@startuml share_plan_activity_diagram
+
+skinparam style strictuml
+skinparam activity {
+  BorderColor #42728D
+  BackgroundColor #D8EBF2
+  BarColor #42728D
+  ArrowColor #2F5B73
+  FontColor #2F5B73
+}
+
+title Biểu Đồ Hoạt Động Chia Sẻ Kế Hoạch/Hoạt Động
+
+start
+
+partition "Người Dùng" {
+  :Truy cập trang Chia Sẻ Kế Hoạch/Hoạt Động;
+  :Nhập tiêu đề;
+  :Nhập nội dung;
+  :Chọn kế hoạch dinh dưỡng để chia sẻ (tùy chọn);
+  :Chọn trạng thái chia sẻ (công khai/riêng tư);
+  :Nhấn nút "Chia Sẻ";
+}
+
+partition "Hệ Thống (UI)" {
+  (A)
+  #orange:UISharePlanActivityPage.loadNutritionPlans(userId);
+  note right: Tải danh sách kế hoạch dinh dưỡng của người dùng
+  #orange:UISharePlanActivityPage.handleSubmit();
+  note right: Xử lý dữ liệu đầu vào và gửi yêu cầu tạo nội dung chia sẻ
+  if (Dữ liệu hợp lệ?) then (Có)
+    :Chuyển dữ liệu đến lớp DAO;
+  else (Không)
+    #orange:UISharePlanActivityPage.displayMessage("error", "Lỗi: Dữ liệu không hợp lệ.");
+    note right: Hiển thị thông báo lỗi
+    stop
+  endif
+}
+
+partition "Hệ Thống (DAO)" {
+  :INoiDungChiaSeDAO.taoNoiDungChiaSe(noiDung);
+  note right: Lưu nội dung chia sẻ vào cơ sở dữ liệu
+  if (Lưu thành công?) then (Có)
+    :INoiDungChiaSeDAO.capNhatNoiDungChiaSe(noiDung);
+    note right: Cập nhật thông tin nội dung chia sẻ nếu cần (ví dụ: trạng thái chia sẻ)
+  else (Không)
+    #orange:UISharePlanActivityPage.displayMessage("error", "Lỗi: Không thể chia sẻ nội dung.");
+    note right: Hiển thị thông báo lỗi
+    stop
+  endif
+}
+
+partition "Người Dùng" {
+  :Xem thông báo "Chia sẻ thành công";
+}
+
+stop
+
+@enduml

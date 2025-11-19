@@ -1,0 +1,46 @@
+@startuml profile_management_activity_diagram
+!pragma layout smetana
+
+title Biểu đồ Hoạt động: Quản lý Hồ sơ Cá nhân
+
+start
+
+:Người dùng truy cập trang Quản lý Hồ sơ;
+:Hệ thống tải dữ liệu hồ sơ hiện tại;
+:Hiển thị dữ liệu hồ sơ (displayProfile);
+
+if (Người dùng muốn chỉnh sửa?) then (Có)
+    :Người dùng chỉnh sửa thông tin hồ sơ;
+    if (Người dùng muốn thay đổi mật khẩu?) then (Có)
+        :Người dùng nhập mật khẩu mới và xác nhận;
+        if (Mật khẩu mới hợp lệ?) then (Có)
+            :Lấy dữ liệu tài khoản đã chỉnh sửa (getEditedAccountData);
+            :Cập nhật tài khoản (updateTaiKhoan);
+        else (Không)
+            :Hiển thị thông báo lỗi (showErrorMessage);
+            end
+        endif
+    endif
+
+    :Lấy dữ liệu hồ sơ đã chỉnh sửa (getEditedProfileData);
+    :Cập nhật người dùng (updateNguoiDung);
+
+    :Lấy dữ liệu đặc điểm cá nhân đã chỉnh sửa (getEditedDacDiemCaNhanData);
+
+    if (Dữ liệu đặc điểm cá nhân tồn tại?) then (Có)
+        :Cập nhật đặc điểm cá nhân (updateDacDiemCaNhan);
+    else (Không)
+        :Tạo đặc điểm cá nhân (createDacDiemCaNhan);
+    endif
+
+    if (Lưu thành công?) then (Có)
+        :Hiển thị thông báo thành công (showSuccessMessage);
+    else (Không)
+        :Hiển thị thông báo lỗi (showErrorMessage);
+    endif
+else (Không)
+    :Hủy chỉnh sửa (cancelEdit);
+endif
+
+stop
+@enduml

@@ -1,0 +1,80 @@
+@startuml nutritional_needs_sequence_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Tuần tự - Tính toán Nhu cầu Dinh dưỡng
+
+actor "Người dùng" as User
+participant "NutritionalNeedsInputPageUI" as UI
+participant "NutritionService" as Service
+participant "NhuCauDinhDuongDAO" as DAO
+participant "Cơ sở dữ liệu" as DB
+
+User -> UI: Truy cập trang Nhập liệu Nhu cầu Dinh dưỡng
+activate UI
+UI --> User: Hiển thị giao diện nhập liệu
+
+User -> UI: Nhập thông tin cá nhân và nhấn "Tính toán" / "Lưu"
+activate UI
+UI -> UI: layThongTinNhuCau()
+activate UI
+deactivate UI
+
+UI -> Service: tinhToanNhuCauCalo(canNang: number, chieuCao: number, tuoi: number, gioiTinh: string, mucDoHoatDong: string)
+activate Service
+Service --> UI: Trả về CaloMacronutrientData
+deactivate Service
+
+UI -> UI: hienThiKhuyenNghi(calo: number, protein: number, fat: number, carb: number)
+activate UI
+deactivate UI
+UI --> User: Hiển thị nhu cầu calo và macro khuyến nghị
+
+opt Người dùng lưu nhu cầu dinh dưỡng
+  UI -> Service: luuNhuCauDinhDuong(nhuCau: NhuCauDinhDuongData)
+  activate Service
+  Service -> DAO: findByMaNguoiDung(maNguoiDung: string)
+  activate DAO
+  DAO -> DB: SELECT * FROM NhuCauDinhDuong WHERE maNguoiDung = maNguoiDung
+  activate DB
+  DB --> DAO: Trả về NhuCauDinhDuong (nếu có)
+  deactivate DB
+  DAO --> Service: Trả về NhuCauDinhDuong (nếu có)
+  deactivate DAO
+
+  alt Nhu cầu đã tồn tại (Cập nhật)
+    Service -> DAO: update(nhuCau: NhuCauDinhDuong)
+    activate DAO
+    DAO -> DB: UPDATE NhuCauDinhDuong SET ... WHERE maNguoiDung = maNguoiDung
+    activate DB
+    DB --> DAO: Trả về NhuCauDinhDuong đã cập nhật
+    deactivate DB
+    DAO --> Service: Trả về NhuCauDinhDuong đã cập nhật
+    deactivate DAO
+  else Nhu cầu chưa tồn tại (Lưu mới)
+    Service -> DAO: save(nhuCau: NhuCauDinhDuong)
+    activate DAO
+    DAO -> DB: INSERT INTO NhuCauDinhDuong
+    activate DB
+    DB --> DAO: Trả về NhuCauDinhDuong đã lưu
+    deactivate DB
+    DAO --> Service: Trả về NhuCauDinhDuong đã lưu
+    deactivate DAO
+  end
+
+  Service --> UI: true / false
+  deactivate Service
+
+  alt Lưu thành công
+    UI -> UI: hienThiThongBao("Lưu nhu cầu thành công", "success")
+    activate UI
+    deactivate UI
+  else Lưu thất bại
+    UI -> UI: hienThiThongBao("Lưu nhu cầu thất bại", "error")
+    activate UI
+    deactivate UI
+  end
+end
+deactivate UI
+
+@enduml

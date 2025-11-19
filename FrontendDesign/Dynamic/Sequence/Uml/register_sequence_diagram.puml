@@ -1,0 +1,66 @@
+@startuml register_sequence_diagram
+
+participant "Người dùng" as User
+participant "RegisterPageUI" as RegisterPageUI
+participant "AuthService" as AuthService
+participant "TaiKhoanDAO" as TaiKhoanDAO
+participant "NguoiDungDAO" as NguoiDungDAO
+
+User -> RegisterPageUI: Nhập thông tin đăng ký và xác nhận mật khẩu
+activate RegisterPageUI
+
+User -> RegisterPageUI: Nhấn nút Đăng ký
+
+RegisterPageUI -> RegisterPageUI: layTenThat()
+activate RegisterPageUI
+deactivate RegisterPageUI
+
+RegisterPageUI -> RegisterPageUI: layEmail()
+activate RegisterPageUI
+deactivate RegisterPageUI
+
+RegisterPageUI -> RegisterPageUI: layTenTaiKhoan()
+activate RegisterPageUI
+deactivate RegisterPageUI
+
+RegisterPageUI -> RegisterPageUI: layMatKhau()
+activate RegisterPageUI
+deactivate RegisterPageUI
+
+RegisterPageUI -> RegisterPageUI: layXacNhanMatKhau()
+activate RegisterPageUI
+deactivate RegisterPageUI
+
+alt Mật khẩu và xác nhận mật khẩu khớp
+  RegisterPageUI -> AuthService: register(nguoiDungData)
+  activate AuthService
+
+  AuthService -> TaiKhoanDAO: save(taiKhoan)
+  activate TaiKhoanDAO
+  TaiKhoanDAO --> AuthService: TaiKhoan
+  deactivate TaiKhoanDAO
+
+  AuthService -> NguoiDungDAO: save(nguoiDung)
+  activate NguoiDungDAO
+  NguoiDungDAO --> AuthService: NguoiDung
+  deactivate NguoiDungDAO
+
+  alt Đăng ký thành công
+    AuthService --> RegisterPageUI: true
+    RegisterPageUI -> RegisterPageUI: hienThiThongBao("Đăng ký thành công! Vui lòng đăng nhập.")
+    RegisterPageUI -> User: Chuyển hướng đến trang Đăng nhập
+  else Đăng ký thất bại (tên tài khoản hoặc email đã tồn tại)
+    AuthService --> RegisterPageUI: false
+    RegisterPageUI -> RegisterPageUI: hienThiThongBao("Tên tài khoản hoặc email đã tồn tại.")
+    RegisterPageUI -> User: Hiển thị thông báo lỗi
+  end
+
+  deactivate AuthService
+else Mật khẩu và xác nhận mật khẩu không khớp
+  RegisterPageUI -> RegisterPageUI: hienThiThongBao("Mật khẩu và xác nhận mật khẩu không khớp.")
+  RegisterPageUI -> User: Hiển thị thông báo lỗi
+end
+
+deactivate RegisterPageUI
+
+@enduml

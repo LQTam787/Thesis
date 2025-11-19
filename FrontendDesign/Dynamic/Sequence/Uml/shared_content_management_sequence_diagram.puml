@@ -1,0 +1,125 @@
+@startuml shared_content_management_sequence_diagram
+!pragma layout smetana
+
+title Biểu đồ Tuần tự: Quản lý Nội dung Chia sẻ (Admin)
+
+actor Admin
+participant AdminDashboardView
+participant SharedContentManagementView
+participant SharedContentManagementController
+participant INoiDungChiaSeDAO
+
+Admin -> AdminDashboardView: Chọn "Quản lý Nội dung Chia sẻ"
+activate AdminDashboardView
+AdminDashboardView -> SharedContentManagementView: dieuHuongQuanLyNoiDungChiaSe()
+deactivate AdminDashboardView
+
+activate SharedContentManagementView
+SharedContentManagementView -> SharedContentManagementController: taiDanhSachNoiDung()
+activate SharedContentManagementController
+SharedContentManagementController -> INoiDungChiaSeDAO: layTatCaNoiDungChiaSe()
+activate INoiDungChiaSeDAO
+INoiDungChiaSeDAO --> SharedContentManagementController: List<NoiDungChiaSe>
+deactivate INoiDungChiaSeDAO
+SharedContentManagementController --> SharedContentManagementView: List<NoiDungChiaSe>
+deactivate SharedContentManagementController
+SharedContentManagementView -> SharedContentManagementView: hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+
+loop Hành động quản lý nội dung chia sẻ
+  Admin -> SharedContentManagementView: Chọn hành động (Duyệt/Từ chối/Xóa/Lọc/Tìm kiếm)
+
+  alt Duyệt nội dung
+    SharedContentManagementView -> SharedContentManagementController: xuLyDuyetNoiDung(id: String)
+    activate SharedContentManagementController
+    SharedContentManagementController -> INoiDungChiaSeDAO: capNhatTrangThaiNoiDung(id: String, trangThai: "Đã duyệt")
+    activate INoiDungChiaSeDAO
+    INoiDungChiaSeDAO --> SharedContentManagementController: boolean (thành công/thất bại)
+    deactivate INoiDungChiaSeDAO
+    alt Thành công
+      SharedContentManagementController -> SharedContentManagementView: hienThiThongBao(tinNhan: String)
+      SharedContentManagementController -> SharedContentManagementController: taiDanhSachNoiDung()
+      activate SharedContentManagementController
+      SharedContentManagementController -> INoiDungChiaSeDAO: layTatCaNoiDungChiaSe()
+      activate INoiDungChiaSeDAO
+      INoiDungChiaSeDAO --> SharedContentManagementController: List<NoiDungChiaSe>
+      deactivate INoiDungChiaSeDAO
+      SharedContentManagementController --> SharedContentManagementView: List<NoiDungChiaSe>
+      deactivate SharedContentManagementController
+      SharedContentManagementView -> SharedContentManagementView: hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+    else Thất bại
+      SharedContentManagementController -> SharedContentManagementView: hienThiThongBao(tinNhan: String)
+    end
+    deactivate SharedContentManagementController
+
+  else Từ chối nội dung
+    SharedContentManagementView -> SharedContentManagementController: xuLyTuChoiNoiDung(id: String)
+    activate SharedContentManagementController
+    SharedContentManagementController -> INoiDungChiaSeDAO: capNhatTrangThaiNoiDung(id: String, trangThai: "Đã từ chối")
+    activate INoiDungChiaSeDAO
+    INoiDungChiaSeDAO --> SharedContentManagementController: boolean (thành công/thất bại)
+    deactivate INoiDungChiaSeDAO
+    alt Thành công
+      SharedContentManagementController -> SharedContentManagementView: hienThiThongBao(tinNhan: String)
+      SharedContentManagementController -> SharedContentManagementController: taiDanhSachNoiDung()
+      activate SharedContentManagementController
+      SharedContentManagementController -> INoiDungChiaSeDAO: layTatCaNoiDungChiaSe()
+      activate INoiDungChiaSeDAO
+      INoiDungChiaSeDAO --> SharedContentManagementController: List<NoiDungChiaSe>
+      deactivate INoiDungChiaSeDAO
+      SharedContentManagementController --> SharedContentManagementView: List<NoiDungChiaSe>
+      deactivate SharedContentManagementController
+      SharedContentManagementView -> SharedContentManagementView: hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+    else Thất bại
+      SharedContentManagementController -> SharedContentManagementView: hienThiThongBao(tinNhan: String)
+    end
+    deactivate SharedContentManagementController
+
+  else Xóa nội dung
+    SharedContentManagementView -> SharedContentManagementController: xuLyXoaNoiDung(id: String)
+    activate SharedContentManagementController
+    SharedContentManagementController -> INoiDungChiaSeDAO: xoaNoiDungChiaSe(id: String)
+    activate INoiDungChiaSeDAO
+    INoiDungChiaSeDAO --> SharedContentManagementController: boolean (thành công/thất bại)
+    deactivate INoiDungChiaSeDAO
+    alt Thành công
+      SharedContentManagementController -> SharedContentManagementView: hienThiThongBao(tinNhan: String)
+      SharedContentManagementController -> SharedContentManagementController: taiDanhSachNoiDung()
+      activate SharedContentManagementController
+      SharedContentManagementController -> INoiDungChiaSeDAO: layTatCaNoiDungChiaSe()
+      activate INoiDungChiaSeDAO
+      INoiDungChiaSeDAO --> SharedContentManagementController: List<NoiDungChiaSe>
+      deactivate INoiDungChiaSeDAO
+      SharedContentManagementController --> SharedContentManagementView: List<NoiDungChiaSe>
+      deactivate SharedContentManagementController
+      SharedContentManagementView -> SharedContentManagementView: hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+    else Thất bại
+      SharedContentManagementController -> SharedContentManagementView: hienThiThongBao(tinNhan: String)
+    end
+    deactivate SharedContentManagementController
+
+  else Lọc nội dung
+    SharedContentManagementView -> SharedContentManagementController: xuLyLocNoiDung(trangThai: String)
+    activate SharedContentManagementController
+    SharedContentManagementController -> INoiDungChiaSeDAO: locNoiDungTheoTrangThai(trangThai: String)
+    activate INoiDungChiaSeDAO
+    INoiDungChiaSeDAO --> SharedContentManagementController: List<NoiDungChiaSe>
+    deactivate INoiDungChiaSeDAO
+    SharedContentManagementController --> SharedContentManagementView: List<NoiDungChiaSe>
+    deactivate SharedContentManagementController
+    SharedContentManagementView -> SharedContentManagementView: hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+
+  else Tìm kiếm nội dung
+    SharedContentManagementView -> SharedContentManagementController: xuLyTimKiemNoiDung(tuKhoa: String)
+    activate SharedContentManagementController
+    SharedContentManagementController -> INoiDungChiaSeDAO: timKiemNoiDung(tuKhoa: String)
+    activate INoiDungChiaSeDAO
+    INoiDungChiaSeDAO --> SharedContentManagementController: List<NoiDungChiaSe>
+    deactivate INoiDungChiaSeDAO
+    SharedContentManagementController --> SharedContentManagementView: List<NoiDungChiaSe>
+    deactivate SharedContentManagementController
+    SharedContentManagementView -> SharedContentManagementView: hienThiDanhSachNoiDung(noiDung: List<NoiDungChiaSe>)
+  end
+end
+deactivate SharedContentManagementView
+
+@enduml

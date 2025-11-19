@@ -1,0 +1,37 @@
+@startuml create_nutrition_plan_activity_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Hoạt động - Tạo mới Chế độ Dinh dưỡng
+
+start
+
+:Người dùng truy cập trang Quản lý Chế độ Dinh dưỡng;
+:Người dùng chọn chức năng "Tạo mới Chế độ Dinh dưỡng";
+
+partition "NutritionPlanPageUI" {
+  :Người dùng nhập thông tin chế độ dinh dưỡng;
+  note right: Gọi phương thức layThongTinCheDo()
+  :Hiển thị thông báo thành công/thất bại;
+  note right: Gọi phương thức hienThiThongBao()
+  :Làm sạch form;
+  note right: Gọi phương thức lamSachForm()
+}
+
+partition "NutritionService" {
+  :Kiểm tra và xử lý dữ liệu;
+  :Lưu chế độ dinh dưỡng;
+  note right: Gọi phương thức luuCheDoDinhDuong(cheDo: CheDoDinhDuong)
+}
+
+partition "CheDoDinhDuongDAO" {
+  :Thực hiện lưu dữ liệu vào cơ sở dữ liệu;
+  note right: Gọi phương thức save(cheDo: CheDoDinhDuong)
+}
+
+:Hiển thị danh sách chế độ dinh dưỡng cập nhật;
+note right: Gọi phương thức hienThiDanhSachCheDo()
+
+end
+
+@enduml

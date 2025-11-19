@@ -1,0 +1,35 @@
+@startuml nutritional_needs_activity_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Hoạt động - Tính toán Nhu cầu Dinh dưỡng
+
+start
+
+:Người dùng truy cập trang Nhập liệu Nhu cầu Dinh dưỡng;
+
+partition "NutritionalNeedsInputPageUI" {
+  :Người dùng nhập thông tin cá nhân (chiều cao, cân nặng, tuổi, giới tính, mức độ hoạt động, mục tiêu dinh dưỡng);
+  note right: Gọi phương thức layThongTinNhuCau()
+  :Người dùng nhấn nút "Tính toán" hoặc "Lưu";
+  :Hiển thị nhu cầu calo và macro khuyến nghị;
+  note right: Gọi phương thức hienThiKhuyenNghi()
+  :Hiển thị thông báo (nếu có);
+  note right: Gọi phương thức hienThiThongBao()
+}
+
+partition "NutritionService" {
+  :Tính toán nhu cầu calo và macronutrient;
+  note right: Gọi phương thức tinhToanNhuCauCalo()
+  :Lưu nhu cầu dinh dưỡng của người dùng (nếu có);
+  note right: Gọi phương thức luuNhuCauDinhDuong()
+}
+
+partition "NhuCauDinhDuongDAO" {
+  :Thực hiện lưu/cập nhật dữ liệu vào cơ sở dữ liệu;
+  note right: Gọi phương thức save()/update()
+}
+
+end
+
+@enduml

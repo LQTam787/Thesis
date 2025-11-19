@@ -1,0 +1,106 @@
+@startuml user_management_sequence_diagram
+!pragma layout smetana
+
+title Biểu đồ Tuần tự: Quản lý Người dùng (Admin)
+
+actor Admin
+participant AdminDashboardView
+participant UserManagementView
+participant UserManagementController
+participant INguoiDungDAO
+
+Admin -> AdminDashboardView: Chọn "Quản lý Người dùng"
+activate AdminDashboardView
+AdminDashboardView -> UserManagementView: dieuHuongQuanLyNguoiDung()
+deactivate AdminDashboardView
+
+activate UserManagementView
+UserManagementView -> UserManagementController: taiDanhSachNguoiDung()
+activate UserManagementController
+UserManagementController -> INguoiDungDAO: layTatCaNguoiDung()
+activate INguoiDungDAO
+INguoiDungDAO --> UserManagementController: List<NguoiDung>
+deactivate INguoiDungDAO
+UserManagementController --> UserManagementView: List<NguoiDung>
+deactivate UserManagementController
+UserManagementView -> UserManagementView: hienThiDanhSachNguoiDung(nguoiDung: List<NguoiDung>)
+
+loop Hành động quản lý người dùng
+  Admin -> UserManagementView: Chọn hành động (Thêm/Sửa/Xóa)
+
+  alt Thêm người dùng
+    Admin -> UserManagementView: moFormThemNguoiDung()
+    UserManagementView -> UserManagementController: xuLyThemNguoiDung(nguoiDung: NguoiDung)
+    activate UserManagementController
+    UserManagementController -> INguoiDungDAO: themNguoiDung(nguoiDung: NguoiDung)
+    activate INguoiDungDAO
+    INguoiDungDAO --> UserManagementController: boolean (thành công/thất bại)
+    deactivate INguoiDungDAO
+    alt Thành công
+      UserManagementController -> UserManagementView: hienThiThongBao(tinNhan: String)
+      UserManagementController -> UserManagementController: taiDanhSachNguoiDung()
+      activate UserManagementController
+      UserManagementController -> INguoiDungDAO: layTatCaNguoiDung()
+      activate INguoiDungDAO
+      INguoiDungDAO --> UserManagementController: List<NguoiDung>
+      deactivate INguoiDungDAO
+      UserManagementController --> UserManagementView: List<NguoiDung>
+      deactivate UserManagementController
+      UserManagementView -> UserManagementView: hienThiDanhSachNguoiDung(nguoiDung: List<NguoiDung>)
+    else Thất bại
+      UserManagementController -> UserManagementView: hienThiThongBao(tinNhan: String)
+    end
+    deactivate UserManagementController
+
+  else Sửa người dùng
+    Admin -> UserManagementView: moFormSuaNguoiDung(nguoiDungId: String)
+    UserManagementView -> UserManagementController: xuLySuaNguoiDung(nguoiDung: NguoiDung)
+    activate UserManagementController
+    UserManagementController -> INguoiDungDAO: capNhatNguoiDung(nguoiDung: NguoiDung)
+    activate INguoiDungDAO
+    INguoiDungDAO --> UserManagementController: boolean (thành công/thất bại)
+    deactivate INguoiDungDAO
+    alt Thành công
+      UserManagementController -> UserManagementView: hienThiThongBao(tinNhan: String)
+      UserManagementController -> UserManagementController: taiDanhSachNguoiDung()
+      activate UserManagementController
+      UserManagementController -> INguoiDungDAO: layTatCaNguoiDung()
+      activate INguoiDungDAO
+      INguoiDungDAO --> UserManagementController: List<NguoiDung>
+      deactivate INguoiDungDAO
+      UserManagementController --> UserManagementView: List<NguoiDung>
+      deactivate UserManagementController
+      UserManagementView -> UserManagementView: hienThiDanhSachNguoiDung(nguoiDung: List<NguoiDung>)
+    else Thất bại
+      UserManagementController -> UserManagementView: hienThiThongBao(tinNhan: String)
+    end
+    deactivate UserManagementController
+
+  else Xóa người dùng
+    Admin -> UserManagementView: Xác nhận xóa người dùng
+    UserManagementView -> UserManagementController: xuLyXoaNguoiDung(id: String)
+    activate UserManagementController
+    UserManagementController -> INguoiDungDAO: xoaNguoiDung(id: String)
+    activate INguoiDungDAO
+    INguoiDungDAO --> UserManagementController: boolean (thành công/thất bại)
+    deactivate INguoiDungDAO
+    alt Thành công
+      UserManagementController -> UserManagementView: hienThiThongBao(tinNhan: String)
+      UserManagementController -> UserManagementController: taiDanhSachNguoiDung()
+      activate UserManagementController
+      UserManagementController -> INguoiDungDAO: layTatCaNguoiDung()
+      activate INguoiDungDAO
+      INguoiDungDAO --> UserManagementController: List<NguoiDung>
+      deactivate INguoiDungDAO
+      UserManagementController --> UserManagementView: List<NguoiDung>
+      deactivate UserManagementController
+      UserManagementView -> UserManagementView: hienThiDanhSachNguoiDung(nguoiDung: List<NguoiDung>)
+    else Thất bại
+      UserManagementController -> UserManagementView: hienThiThongBao(tinNhan: String)
+    end
+    deactivate UserManagementController
+  end
+end
+deactivate UserManagementView
+
+@enduml

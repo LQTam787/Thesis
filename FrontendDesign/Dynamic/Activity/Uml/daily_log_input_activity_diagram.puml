@@ -1,0 +1,41 @@
+@startuml daily_log_input_activity_diagram
+start
+:Người dùng truy cập trang nhập liệu dữ liệu hàng ngày;
+:Hệ thống hiển thị form nhập liệu;
+(A)
+:Người dùng nhập thông tin bữa ăn và hoạt động thể chất;
+if (Người dùng muốn thêm món ăn?) then (Có)
+  :DailyLogInputPage.themMonAn(monAn: ThucPham, dinhLuong: Float);
+  :IThucPhamDAO.timKiemThucPham(ten: String);
+  :IThucPhamDAO.layThongTinThucPham(thucPhamId: String);
+  note right
+    Dữ liệu món ăn được thêm vào danh sách tạm thời.
+  end note
+else (Không)
+endif
+if (Người dùng muốn thêm hoạt động?) then (Có)
+  :DailyLogInputPage.themHoatDong(hoatDong: HoatDongTheChat, thoiLuong: Int, cuongDo: String);
+  note right
+    Dữ liệu hoạt động được thêm vào danh sách tạm thời.
+  end note
+else (Không)
+endif
+repeat
+  if (Người dùng muốn chỉnh sửa/xóa mục đã thêm?) then (Có)
+    :Hệ thống cho phép chỉnh sửa/xóa;
+  else (Không)
+  endif
+backward:Người dùng tiếp tục nhập liệu;
+repeat while (Người dùng chưa hoàn tất nhập liệu?) is (Có)
+-> Hoàn tất;
+
+:Người dùng xác nhận lưu dữ liệu;
+:DailyLogInputPage.luuDuLieuHangNgay();
+:IDuLieuThucTeDAO.luuDuLieu(duLieu: DuLieuThucTe);
+:IHoatDongTheChatDAO.themHoatDong(hoatDong: HoatDongTheChat);
+note right
+  Lưu dữ liệu vào hệ thống.
+end note
+:Hệ thống thông báo lưu thành công;
+stop
+@enduml

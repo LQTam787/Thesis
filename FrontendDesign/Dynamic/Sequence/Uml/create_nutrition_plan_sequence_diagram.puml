@@ -1,0 +1,68 @@
+@startuml create_nutrition_plan_sequence_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Tuần tự - Tạo mới Chế độ Dinh dưỡng
+
+actor "Người dùng" as User
+participant "NutritionPlanPageUI" as UI
+participant "NutritionService" as Service
+participant "CheDoDinhDuongDAO" as DAO
+participant "Cơ sở dữ liệu" as DB
+
+User -> UI: Truy cập trang Quản lý Chế độ Dinh dưỡng
+activate UI
+UI --> User: Hiển thị giao diện quản lý chế độ dinh dưỡng
+
+User -> UI: Chọn "Tạo mới Chế độ Dinh dưỡng"
+UI --> User: Hiển thị form tạo mới chế độ
+
+User -> UI: Nhập thông tin chế độ dinh dưỡng và nhấn "Lưu"
+activate UI
+UI -> UI: layThongTinCheDo()
+activate UI
+deactivate UI
+
+UI -> Service: luuCheDoDinhDuong(cheDo: CheDoDinhDuongData)
+activate Service
+Service -> DAO: save(cheDo: CheDoDinhDuong)
+activate DAO
+DAO -> DB: INSERT INTO CheDoDinhDuong
+activate DB
+DB --> DAO: Trả về kết quả (thành công/thất bại)
+deactivate DB
+DAO --> Service: Trả về CheDoDinhDuong đã lưu
+deactivate DAO
+Service --> UI: true / false
+deactivate Service
+
+alt Thành công
+  UI -> UI: hienThiThongBao("Tạo chế độ thành công", "success")
+  activate UI
+  deactivate UI
+  UI -> UI: lamSachForm()
+  activate UI
+  deactivate UI
+  UI -> Service: layTatCaCheDoDinhDuong()
+  activate Service
+  Service -> DAO: findAll()
+  activate DAO
+  DAO -> DB: SELECT * FROM CheDoDinhDuong
+  activate DB
+  DB --> DAO: Trả về danh sách chế độ dinh dưỡng
+  deactivate DB
+  DAO --> Service: Trả về danh sách CheDoDinhDuong
+  deactivate DAO
+  Service --> UI: Trả về danh sách CheDoDinhDuongData[]
+  deactivate Service
+  UI -> UI: hienThiDanhSachCheDo(plans: CheDoDinhDuongData[])
+  activate UI
+  deactivate UI
+else Thất bại (Dữ liệu không hợp lệ hoặc lỗi hệ thống)
+  UI -> UI: hienThiThongBao("Tạo chế độ thất bại", "error")
+  activate UI
+  deactivate UI
+end
+deactivate UI
+
+@enduml

@@ -1,0 +1,68 @@
+@startuml user_management_activity_diagram
+!pragma layout smetana
+
+title Biểu đồ Hoạt động: Quản lý Người dùng (Admin)
+
+start
+
+:Admin Dashboard View;
+:Chọn "Quản lý Người dùng";
+
+partition "User Management View" {
+  :hiển thị Danh Sách Người Dùng;
+  split
+    :hiển thị Chi Tiết Người Dùng;
+  split again
+    :mở Form Thêm Người Dùng;
+  split again
+    :mở Form Sửa Người Dùng;
+  split again
+    :hiển thị Thông Báo;
+  split again
+    :Chọn hành động (Thêm/Sửa/Xóa);
+  split end
+
+  if (Hành động là Thêm) then (Có)
+    :nhập thông tin Người Dùng mới;
+    :gọi xuLyThemNguoiDung();
+  else if (Hành động là Sửa) then (Có)
+    :chọn Người Dùng cần sửa;
+    :cập nhật thông tin Người Dùng;
+    :gọi xuLySuaNguoiDung();
+  else if (Hành động là Xóa) then (Có)
+    :chọn Người Dùng cần xóa;
+    :xác nhận xóa;
+    :gọi xuLyXoaNguoiDung();
+  endif
+}
+
+partition "User Management Controller" {
+  if (xuLyThemNguoiDung được gọi) then (Có)
+    :gọi themNguoiDung() từ INguoiDungDAO;
+    if (themNguoiDung thành công?) then (Có)
+      :hiển thị Thông Báo thành công;
+    else (Không)
+      :hiển thị Thông Báo lỗi;
+    endif
+  else if (xuLySuaNguoiDung được gọi) then (Có)
+    :gọi capNhatNguoiDung() từ INguoiDungDAO;
+    if (capNhatNguoiDung thành công?) then (Có)
+      :hiển thị Thông Báo thành công;
+    else (Không)
+      :hiển thị Thông Báo lỗi;
+    endif
+  else if (xuLyXoaNguoiDung được gọi) then (Có)
+    :gọi xoaNguoiDung() từ INguoiDungDAO;
+    if (xoaNguoiDung thành công?) then (Có)
+      :hiển thị Thông Báo thành công;
+    else (Không)
+      :hiển thị Thông Báo lỗi;
+    endif
+  endif
+}
+
+:Kết thúc;
+
+stop
+
+@enduml

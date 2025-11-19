@@ -1,0 +1,86 @@
+@startuml daily_log_input_sequence_diagram
+autonumber
+actor NgườiDùng
+participant DailyLogInputPage
+participant IThucPhamDAO
+participant IHoatDongTheChatDAO
+participant IDuLieuThucTeDAO
+box "Logic Xử Lý"
+  participant LogicTheoDoi
+end box
+box "Cơ Sở Dữ Liệu"
+  database ThucPhamDB
+  database HoatDongTheChatDB
+  database DuLieuThucTeDB
+end box
+
+NgườiDùng -> DailyLogInputPage: truy cập trang nhập liệu dữ liệu hàng ngày
+activate DailyLogInputPage
+DailyLogInputPage --> NgườiDùng: hiển thị form nhập liệu
+
+NgườiDùng -> DailyLogInputPage: nhập thông tin bữa ăn (tenMonAn, dinhLuong)
+activate DailyLogInputPage
+NgườiDùng -> DailyLogInputPage: chọn "Thêm món ăn"
+DailyLogInputPage -> LogicTheoDoi: themMonAn(monAn: ThucPham, dinhLuong: Float)
+activate LogicTheoDoi
+LogicTheoDoi -> IThucPhamDAO: timKiemThucPham(ten: String)
+activate IThucPhamDAO
+IThucPhamDAO -> ThucPhamDB: SELECT * FROM ThucPham WHERE tenThucPham LIKE ten
+activate ThucPhamDB
+ThucPhamDB --> IThucPhamDAO: List<ThucPham> results
+deactivate ThucPhamDB
+IThucPhamDAO --> LogicTheoDoi: results
+deactivate IThucPhamDAO
+
+LogicTheoDoi -> IThucPhamDAO: layThongTinThucPham(thucPhamId: String)
+activate IThucPhamDAO
+IThucPhamDAO -> ThucPhamDB: SELECT * FROM ThucPham WHERE id = thucPhamId
+activate ThucPhamDB
+ThucPhamDB --> IThucPhamDAO: ThucPham info
+deactivate ThucPhamDB
+IThucPhamDAO --> LogicTheoDoi: ThucPham info
+deactivate IThucPhamDAO
+LogicTheoDoi --> DailyLogInputPage: Món ăn được thêm vào danh sách tạm thời
+deactivate LogicTheoDoi
+DailyLogInputPage --> NgườiDùng: hiển thị món ăn đã thêm
+deactivate DailyLogInputPage
+
+NgườiDùng -> DailyLogInputPage: nhập thông tin hoạt động (tenHoatDong, thoiLuong, cuongDo)
+activate DailyLogInputPage
+NgườiDùng -> DailyLogInputPage: chọn "Thêm hoạt động"
+DailyLogInputPage -> LogicTheoDoi: themHoatDong(hoatDong: HoatDongTheChat, thoiLuong: Int, cuongDo: String)
+activate LogicTheoDoi
+LogicTheoDoi --> DailyLogInputPage: Hoạt động được thêm vào danh sách tạm thời
+deactivate LogicTheoDoi
+DailyLogInputPage --> NgườiDùng: hiển thị hoạt động đã thêm
+deactivate DailyLogInputPage
+
+NgườiDùng -> DailyLogInputPage: chọn "Lưu"
+activate DailyLogInputPage
+DailyLogInputPage -> LogicTheoDoi: luuDuLieuHangNgay()
+activate LogicTheoDoi
+
+LogicTheoDoi -> IDuLieuThucTeDAO: luuDuLieu(duLieu: DuLieuThucTe)
+activate IDuLieuThucTeDAO
+IDuLieuThucTeDAO -> DuLieuThucTeDB: INSERT INTO DuLieuThucTe (thoiGianNhap, ...)
+activate DuLieuThucTeDB
+DuLieuThucTeDB --> IDuLieuThucTeDAO: success/fail
+deactivate DuLieuThucTeDB
+IDuLieuThucTeDAO --> LogicTheoDoi: Boolean result
+deactivate IDuLieuThucTeDAO
+
+LogicTheoDoi -> IHoatDongTheChatDAO: themHoatDong(hoatDong: HoatDongTheChat)
+activate IHoatDongTheChatDAO
+IHoatDongTheChatDAO -> HoatDongTheChatDB: INSERT INTO HoatDongTheChat (tenHoatDong, ...)
+activate HoatDongTheChatDB
+HoatDongTheChatDB --> IHoatDongTheChatDAO: success/fail
+deactivate HoatDongTheChatDB
+IHoatDongTheChatDAO --> LogicTheoDoi: Boolean result
+deactivate IHoatDongTheChatDAO
+
+LogicTheoDoi --> DailyLogInputPage: thông báo lưu thành công
+deactivate LogicTheoDoi
+DailyLogInputPage --> NgườiDùng: hiển thị thông báo "Dữ liệu hàng ngày đã được lưu thành công."
+deactivate DailyLogInputPage
+
+@enduml

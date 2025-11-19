@@ -1,0 +1,53 @@
+@startuml deployment_diagram
+
+skinparam titleFontSize 24
+skinparam defaultFontSize 16
+
+title Biểu đồ triển khai hệ thống quản lý dinh dưỡng thông minh
+
+node "Thiết bị người dùng" as client_device {
+  component "Trình duyệt Web" as web_browser
+  component "Giao diện người dùng (Frontend)" as frontend
+}
+
+node "Máy chủ ứng dụng" as app_server {
+  component "Ứng dụng Backend" as backend
+  component "Cơ sở dữ liệu (Database)" as database_instance
+}
+
+node "Máy chủ AI/NLP" as ai_nlp_server {
+  component "Mô hình NLP" as nlp_model
+  component "Hệ thống AI (Machine Learning)" as ai_system
+  component "Hệ thống Thị giác máy tính (Vision) (Tùy chọn)" as vision_system
+}
+
+cloud "Internet" as internet {
+}
+
+client_device -- internet
+internet -- app_server
+internet -- ai_nlp_server
+
+web_browser --> frontend
+
+app_server -- ai_nlp_server : "Truy vấn/Huấn luyện AI/NLP"
+backend -- database_instance : "Đọc/Ghi dữ liệu"
+backend <--> frontend : "API REST/GraphQL"
+
+ai_nlp_server -- database_instance : "Đọc/Ghi dữ liệu (cho huấn luyện/lưu kết quả)"
+
+legend
+  |= Thành phần |= Mô tả |
+  | **Thiết bị người dùng** | Máy tính, điện thoại, máy tính bảng của người dùng cuối |
+  | **Trình duyệt Web** | Ứng dụng để người dùng tương tác với hệ thống |
+  | **Giao diện người dùng (Frontend)** | Các trang HTML, CSS, JavaScript chạy trên trình duyệt |
+  | **Máy chủ ứng dụng** | Máy chủ chứa logic nghiệp vụ và giao tiếp với CSDL/AI |
+  | **Ứng dụng Backend** | Các dịch vụ xử lý yêu cầu, xác thực, quản lý dữ liệu |
+  | **Cơ sở dữ liệu (Database)** | Nơi lưu trữ toàn bộ dữ liệu của hệ thống |
+  | **Máy chủ AI/NLP** | Máy chủ chuyên dụng cho các mô hình trí tuệ nhân tạo và xử lý ngôn ngữ tự nhiên |
+  | **Mô hình NLP** | Xử lý và hiểu ngôn ngữ tự nhiên từ người dùng |
+  | **Hệ thống AI (Machine Learning)** | Tính toán dinh dưỡng, đề xuất thực đơn, phân tích tiến độ |
+  | **Hệ thống Thị giác máy tính (Vision)** | Nhận dạng thực phẩm từ hình ảnh (tùy chọn) |
+end legend
+
+@enduml

@@ -1,0 +1,65 @@
+@startuml share_plan_sequence_diagram
+
+skinparam style strictuml
+skinparam sequence {
+  ArrowColor #2F5B73
+  ActorBorderColor #42728D
+  ActorBackgroundColor #D8EBF2
+  ParticipantBorderColor #42728D
+  ParticipantBackgroundColor #D8EBF2
+  LifeLineBorderColor #42728D
+  LifeLineBackgroundColor #D8EBF2
+  BoxBorderColor #42728D
+  BoxBackgroundColor #EBF7FA
+}
+
+title Biểu Đồ Tuần Tự Chia Sẻ Kế Hoạch/Hoạt Động
+
+actor "Người Dùng" as User
+participant "UISharePlanActivityPage" as UI
+participant "IKeHoachDinhDuongDAO" as KeHoachDAO
+participant "INoiDungChiaSeDAO" as NoiDungDAO
+entity "Cơ Sở Dữ Liệu" as DB
+
+User -> UI: Truy cập trang chia sẻ
+activate UI
+
+UI -> KeHoachDAO: <<call>> loadNutritionPlans(userId)
+activate KeHoachDAO
+KeHoachDAO -> DB: <<query>> SELECT * FROM KeHoachDinhDuong WHERE nguoiDungId = :userId
+activate DB
+DB --> KeHoachDAO: Trả về danh sách kế hoạch dinh dưỡng
+deactivate DB
+KeHoachDAO --> UI: Trả về danh sách kế hoạch
+deactivate KeHoachDAO
+
+User -> UI: Nhập thông tin chia sẻ và nhấn "Chia Sẻ"
+activate UI
+UI -> UI: <<call>> handleSubmit()
+activate UI
+
+alt Dữ liệu hợp lệ
+  UI -> NoiDungDAO: <<call>> taoNoiDungChiaSe(noiDung)
+  activate NoiDungDAO
+  NoiDungDAO -> DB: <<insert>> INSERT INTO NoiDungChiaSe (...)
+  activate DB
+  DB --> NoiDungDAO: Trả về kết quả thành công
+  deactivate DB
+
+  NoiDungDAO -> DB: <<update>> capNhatNoiDungChiaSe(noiDung)
+  activate DB
+  DB --> NoiDungDAO: Trả về kết quả thành công
+  deactivate DB
+
+  NoiDungDAO --> UI: Trả về true
+  deactivate NoiDungDAO
+
+  UI -> UI: <<call>> displayMessage("success", "Nội dung đã được chia sẻ thành công!")
+  deactivate UI
+else Dữ liệu không hợp lệ
+  UI -> UI: <<call>> displayMessage("error", "Lỗi: Vui lòng nhập đầy đủ tiêu đề và nội dung.")
+  deactivate UI
+end
+deactivate UI
+
+@enduml

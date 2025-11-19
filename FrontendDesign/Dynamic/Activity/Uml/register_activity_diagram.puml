@@ -1,0 +1,35 @@
+@startuml register_activity_diagram
+
+start
+
+:Người dùng truy cập trang Đăng ký;
+:RegisterPageUI hiển thị giao diện đăng ký;
+
+if (Người dùng nhập đầy đủ thông tin và xác nhận mật khẩu khớp) then (Có)
+  :RegisterPageUI.layTenThat();
+  :RegisterPageUI.layEmail();
+  :RegisterPageUI.layTenTaiKhoan();
+  :RegisterPageUI.layMatKhau();
+  :RegisterPageUI.layXacNhanMatKhau();
+
+  if (Mật khẩu và xác nhận mật khẩu khớp?) then (Có)
+    :AuthService.register(nguoiDungData);
+
+    if (Đăng ký thành công?) then (Có)
+      :RegisterPageUI.hienThiThongBao("Đăng ký thành công! Vui lòng đăng nhập.");
+      :Chuyển hướng đến trang Đăng nhập;
+    else (Không)
+      :RegisterPageUI.hienThiThongBao("Tên tài khoản hoặc email đã tồn tại.");
+      :Hiển thị lại giao diện đăng ký;
+    endif
+  else (Không)
+    :RegisterPageUI.hienThiThongBao("Mật khẩu và xác nhận mật khẩu không khớp.");
+    :Hiển thị lại giao diện đăng ký;
+  endif
+else (Không)
+  :Hiển thị lại giao diện đăng ký;
+endif
+
+stop
+
+@enduml

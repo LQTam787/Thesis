@@ -1,0 +1,35 @@
+@startuml delete_nutrition_plan_activity_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Hoạt động - Xóa Chế độ Dinh dưỡng
+
+start
+
+:Người dùng truy cập trang Quản lý Chế độ Dinh dưỡng;
+
+partition "NutritionPlanPageUI" {
+  :Hiển thị danh sách chế độ dinh dưỡng;
+  note right: Gọi phương thức hienThiDanhSachCheDo()
+  :Người dùng chọn một chế độ dinh dưỡng để xóa;
+  :Người dùng xác nhận xóa;
+  :Hiển thị thông báo thành công/thất bại;
+  note right: Gọi phương thức hienThiThongBao()
+}
+
+partition "NutritionService" {
+  :Xóa chế độ dinh dưỡng;
+  note right: Gọi phương thức xoaCheDoDinhDuong(maCheDo: string)
+}
+
+partition "CheDoDinhDuongDAO" {
+  :Thực hiện xóa dữ liệu khỏi cơ sở dữ liệu;
+  note right: Gọi phương thức delete(maCheDo: string)
+}
+
+:Hiển thị danh sách chế độ dinh dưỡng cập nhật;
+note right: Gọi phương thức hienThiDanhSachCheDo()
+
+end
+
+@enduml

@@ -1,0 +1,58 @@
+@startuml food_search_sequence_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Tuần tự - Tìm kiếm Món ăn/Thực phẩm
+
+actor "Người dùng" as User
+participant "FoodSearchPageUI" as UI
+participant "NutritionService" as Service
+participant "MonAnDAO" as MonAnDAO
+participant "ThucPhamDAO" as ThucPhamDAO
+participant "Cơ sở dữ liệu" as DB
+
+User -> UI: Truy cập trang Tìm kiếm Món ăn/Thực phẩm
+activate UI
+UI --> User: Hiển thị giao diện tìm kiếm
+
+User -> UI: Nhập từ khóa tìm kiếm và nhấn "Tìm kiếm"
+activate UI
+UI -> UI: layTuKhoaTimKiem()
+activate UI
+deactivate UI
+UI -> Service: timKiemMonAnVaThucPham(tuKhoa: string)
+activate Service
+
+Service -> MonAnDAO: findByName(tenMonAn: string)
+activate MonAnDAO
+MonAnDAO -> DB: SELECT * FROM MonAn WHERE tenMonAn LIKE '%tuKhoa%'
+activate DB
+DB --> MonAnDAO: Trả về danh sách MonAn
+deactivate DB
+MonAnDAO --> Service: Trả về danh sách MonAn
+deactivate MonAnDAO
+
+Service -> ThucPhamDAO: findByName(tenThucPham: string)
+activate ThucPhamDAO
+ThucPhamDAO -> DB: SELECT * FROM ThucPham WHERE tenThucPham LIKE '%tuKhoa%'
+activate DB
+DB --> ThucPhamDAO: Trả về danh sách ThucPham
+deactivate DB
+ThucPhamDAO --> Service: Trả về danh sách ThucPham
+deactivate ThucPhamDAO
+
+Service --> UI: Trả về danh sách FoodItem[]
+deactivate Service
+
+alt Có kết quả tìm kiếm
+  UI -> UI: hienThiKetQuaTimKiem(results: FoodItemData[])
+  activate UI
+  deactivate UI
+else Không có kết quả tìm kiếm
+  UI -> UI: hienThiThongBao("Không tìm thấy kết quả", "info")
+  activate UI
+  deactivate UI
+end
+deactivate UI
+
+@enduml

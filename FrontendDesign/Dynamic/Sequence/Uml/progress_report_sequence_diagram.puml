@@ -1,0 +1,88 @@
+@startuml progress_report_sequence_diagram
+autonumber
+actor NgườiDùng
+participant ProgressReportPage
+box "Logic Xử Lý"
+  participant LogicBaoCao
+end box
+participant IKeHoachDinhDuongDAO
+participant IDuLieuThucTeDAO
+participant IReportDAO
+box "Cơ Sở Dữ Liệu"
+  database KeHoachDinhDuongDB
+  database DuLieuThucTeDB
+  database MucTieuDinhDuongDB
+end box
+
+NgườiDùng -> ProgressReportPage: truy cập trang báo cáo tiến độ
+activate ProgressReportPage
+
+ProgressReportPage -> LogicBaoCao: layVaHienThiBaoCao(nguoiDungId: String)
+activate LogicBaoCao
+
+LogicBaoCao -> IKeHoachDinhDuongDAO: layKeHoachHienTai(nguoiDungId: String)
+activate IKeHoachDinhDuongDAO
+IKeHoachDinhDuongDAO -> KeHoachDinhDuongDB: SELECT * FROM KeHoachDinhDuong WHERE nguoiDungId = nguoiDungId
+activate KeHoachDinhDuongDB
+KeHoachDinhDuongDB --> IKeHoachDinhDuongDAO: KeHoachDinhDuong currentPlan
+deactivate KeHoachDinhDuongDB
+IKeHoachDinhDuongDAO --> LogicBaoCao: currentPlan
+deactivate IKeHoachDinhDuongDAO
+
+LogicBaoCao -> IDuLieuThucTeDAO: layTatCaDuLieuTheoNguoiDung(nguoiDungId: String)
+' Giả định có phương thức này để lấy list dữ liệu
+activate IDuLieuThucTeDAO
+IDuLieuThucTeDAO -> DuLieuThucTeDB: SELECT * FROM DuLieuThucTe WHERE nguoiDungId = nguoiDungId
+activate DuLieuThucTeDB
+DuLieuThucTeDB --> IDuLieuThucTeDAO: List<DuLieuThucTe> actualDataList
+deactivate DuLieuThucTeDB
+IDuLieuThucTeDAO --> LogicBaoCao: actualDataList
+deactivate IDuLieuThucTeDAO
+
+LogicBaoCao -> IReportDAO: taoBieuDoTienDo(keHoachId: String, duLieuThucTe: List<DuLieuThucTe>)
+activate IReportDAO
+IReportDAO --> LogicBaoCao: BieuDoTienDo progressChart
+deactivate IReportDAO
+LogicBaoCao -> ProgressReportPage: hienThiBieuDoTienDo(progressChart)
+activate ProgressReportPage
+ProgressReportPage --> NgườiDùng: hiển thị biểu đồ tiến độ
+deactivate ProgressReportPage
+
+LogicBaoCao -> IReportDAO: taoBaoCaoDinhDuong(keHoachId: String, duLieuThucTe: DuLieuThucTe)
+' Giả định lấy DuLieuThucTe gần nhất cho báo cáo dinh dưỡng
+activate IReportDAO
+IReportDAO --> LogicBaoCao: BaoCaoDinhDuong nutritionReport
+deactivate IReportDAO
+LogicBaoCao -> ProgressReportPage: hienThiBaoCaoDinhDuong(nutritionReport)
+activate ProgressReportPage
+ProgressReportPage --> NgườiDùng: hiển thị báo cáo dinh dưỡng
+deactivate ProgressReportPage
+
+LogicBaoCao -> MucTieuDinhDuongDB: layMucTieuDinhDuongCuaNguoiDung(nguoiDungId: String)
+activate MucTieuDinhDuongDB
+MucTieuDinhDuongDB --> LogicBaoCao: MucTieuDinhDuong userGoal
+deactivate MucTieuDinhDuongDB
+
+LogicBaoCao -> IReportDAO: taoGoiYDieuChinh(baoCao: BaoCaoDinhDuong, mucTieu: MucTieuDinhDuong)
+activate IReportDAO
+IReportDAO --> LogicBaoCao: GoiYDieuChinh adjustmentSuggestion
+deactivate IReportDAO
+LogicBaoCao -> ProgressReportPage: hienThiGoiYDieuChinh(adjustmentSuggestion)
+activate ProgressReportPage
+ProgressReportPage --> NgườiDùng: hiển thị gợi ý điều chỉnh
+deactivate ProgressReportPage
+
+deactivate LogicBaoCao
+deactivate ProgressReportPage
+
+NgườiDùng -> ProgressReportPage: chọn "Tải lại báo cáo"
+activate ProgressReportPage
+ProgressReportPage -> LogicBaoCao: taiLaiBaoCao(nguoiDungId: String)
+activate LogicBaoCao
+' Các bước từ 5 đến 18 được lặp lại bên trong LogicBaoCao
+LogicBaoCao --> ProgressReportPage: báo cáo đã cập nhật
+deactivate LogicBaoCao
+ProgressReportPage --> NgườiDùng: hiển thị báo cáo đã cập nhật
+deactivate ProgressReportPage
+
+@enduml

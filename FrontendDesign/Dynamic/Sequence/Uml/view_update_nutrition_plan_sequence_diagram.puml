@@ -1,0 +1,81 @@
+@startuml view_update_nutrition_plan_sequence_diagram
+
+!pragma layout smetana
+
+title Biểu đồ Tuần tự - Xem/Cập nhật Chế độ Dinh dưỡng
+
+actor "Người dùng" as User
+participant "NutritionPlanPageUI" as UI
+participant "NutritionService" as Service
+participant "CheDoDinhDuongDAO" as DAO
+participant "Cơ sở dữ liệu" as DB
+
+User -> UI: Truy cập trang Quản lý Chế độ Dinh dưỡng
+activate UI
+UI --> User: Hiển thị danh sách chế độ dinh dưỡng
+
+User -> UI: Chọn chế độ dinh dưỡng để xem/cập nhật (maCheDo)
+activate UI
+UI -> Service: layCheDoDinhDuongTheoMa(maCheDo: string)
+activate Service
+Service -> DAO: findById(maCheDo: string)
+activate DAO
+DAO -> DB: SELECT * FROM CheDoDinhDuong WHERE maCheDo = maCheDo
+activate DB
+DB --> DAO: Trả về CheDoDinhDuong
+deactivate DB
+DAO --> Service: Trả về CheDoDinhDuong
+deactivate DAO
+Service --> UI: Trả về CheDoDinhDuongData
+deactivate Service
+UI -> UI: dienThongTinCheDo(plan: CheDoDinhDuongData)
+activate UI
+deactivate UI
+UI --> User: Hiển thị thông tin chi tiết của chế độ
+deactivate UI
+
+opt Người dùng cập nhật thông tin
+  User -> UI: Chỉnh sửa thông tin và nhấn "Lưu"
+  activate UI
+  UI -> UI: layThongTinCheDo()
+  activate UI
+  deactivate UI
+  UI -> Service: capNhatCheDoDinhDuong(cheDo: CheDoDinhDuongData)
+  activate Service
+  Service -> DAO: update(cheDo: CheDoDinhDuong)
+  activate DAO
+  DAO -> DB: UPDATE CheDoDinhDuong SET ... WHERE maCheDo = maCheDo
+  activate DB
+  DB --> DAO: Trả về kết quả (thành công/thất bại)
+  deactivate DB
+  DAO --> Service: Trả về CheDoDinhDuong đã cập nhật
+  deactivate DAO
+  Service --> UI: true / false
+  deactivate Service
+
+  alt Cập nhật thành công
+    UI -> UI: hienThiThongBao("Cập nhật thành công", "success")
+    activate UI
+    deactivate UI
+    UI -> Service: layTatCaCheDoDinhDuong()
+    activate Service
+    Service -> DAO: findAll()
+    activate DAO
+    DAO -> DB: SELECT * FROM CheDoDinhDuong
+    activate DB
+    DB --> DAO: Trả về danh sách chế độ dinh dưỡng
+    deactivate DB
+    DAO --> Service: Trả về danh sách CheDoDinhDuong
+    deactivate Service
+    UI -> UI: hienThiDanhSachCheDo(plans: CheDoDinhDuongData[])
+    activate UI
+    deactivate UI
+  else Cập nhật thất bại
+    UI -> UI: hienThiThongBao("Cập nhật thất bại", "error")
+    activate UI
+    deactivate UI
+  end
+  deactivate UI
+end
+
+@enduml
