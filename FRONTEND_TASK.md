@@ -13,12 +13,13 @@
 
 ### **II. Giai đoạn Khởi tạo và Cài đặt (Setup & Initialization)**
 
-- [ ] **Khởi tạo dự án ReactJS**: Sử dụng Vite hoặc Create React App để tạo cấu trúc dự án.
-- [ ] **Cài đặt thư viện Routing**: Cài đặt React Router DOM.
-- [ ] **Cài đặt thư viện Styling**: Cài đặt và cấu hình Tailwind CSS hoặc Material UI/Bootstrap.
-- [ ] **Thiết lập Cấu trúc Thư mục Frontend**: Tạo các thư mục `src/components`, `src/pages`, `src/services`, `src/context` (hoặc `src/store`).
-- [ ] **Cài đặt thư viện Quản lý API**: Cài đặt Axios và thiết lập cấu hình cơ bản (Base URL cho Backend và AI Service).
-- [ ] **Thiết lập Quản lý State**: Cấu hình Redux Toolkit để quản lý trạng thái Đăng nhập (User, Token JWT).
+- [x] **Khởi tạo dự án ReactJS**: Sử dụng Vite hoặc Create React App để tạo cấu trúc dự án.
+- [x] **Cài đặt thư viện Routing**: Cài đặt React Router DOM.
+- [x] **Cài đặt thư viện Styling**: Cài đặt và cấu hình Tailwind CSS hoặc Material UI/Bootstrap.
+- [x] **Thiết lập Cấu trúc Thư mục Frontend**: Tạo các thư mục `src/components`, `src/pages`, `src/services`, `src/context` (hoặc `src/store`).
+- [x] **Cài đặt thư viện Quản lý API**: Cài đặt Axios và thiết lập cấu hình cơ bản (Base URL cho Backend và AI Service).
+- [x] **Thiết lập cấu hình Axios instance**: Tạo tệp `src/services/api.ts` (hoặc `axios.ts`) để cấu hình Axios instance với `baseURL` cho Backend và AI Service.
+- [x] **Thiết lập Quản lý State**: Sử dụng React Context API cho giai đoạn khởi tạo và cài đặt. (Sẽ tích hợp Redux Toolkit cho quản lý trạng thái phức tạp hơn sau này)
 
 ### **III. Giai đoạn Phát triển (Implementation)**
 

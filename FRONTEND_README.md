@@ -32,7 +32,7 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 | Hạng mục           | Công nghệ                             | Mục đích                                    |
 | :---------------- | :------------------------------------ | :------------------------------------------ |
 | **Framework**     | ReactJS                               | Xây dựng giao diện dựa trên Component       |
-| **Quản lý State** | Redux Toolkit                         | Quản lý trạng thái ứng dụng phức tạp       |
+| **Quản lý State** | React Context API               | Quản lý trạng thái ứng dụng cho giai đoạn khởi tạo và cài đặt; Redux Toolkit (khi cần) | Quản lý trạng thái ứng dụng phức tạp       |
 | **Giao diện/Styling** | Tailwind CSS / Material UI / Bootstrap | Xây dựng UI nhanh chóng, đảm bảo Responsive |
 | **Biểu đồ Dữ liệu** | Chart.js / Recharts                   | Trực quan hóa tiến độ                       |
 | **Quản lý API**   | Axios                                 | Gọi API đến Backend Spring Boot và AI Service |
@@ -213,12 +213,90 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 ## G. Hướng dẫn cài đặt và chạy
 
-(Chưa cập nhật)
+Để cài đặt và chạy dự án frontend, làm theo các bước sau:
+
+1.  **Di chuyển vào thư mục dự án:**
+    ```bash
+    cd ImplementationFrontend
+    ```
+
+2.  **Cài đặt các gói phụ thuộc:**
+    ```bash
+    npm install
+    ```
+
+3.  **Cài đặt thư viện quản lý API (Axios):**
+    ```bash
+    npm install axios
+    ```
+
+4.  **Khởi chạy máy chủ phát triển:**
+    ```bash
+    npm run dev
+    ```
+
+    Ứng dụng sẽ chạy tại `http://localhost:5173/` (hoặc một cổng khác nếu 5173 đã được sử dụng).
 
 ## H. Tài liệu API
 
-(Chưa cập nhật)
+Sau khi cài đặt Axios, bạn có thể tạo một instance để quản lý các cuộc gọi API. Ví dụ, bạn có thể tạo một tệp `src/services/api.ts` hoặc `src/services/axios.ts` với nội dung sau:
+
+```typescript
+import axios from 'axios';
+
+const api = axios.create({
+  baseURL: 'http://localhost:8080/api', // Thay đổi thành URL backend của bạn
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export default api;
+```
+
+Sau đó, bạn có thể sử dụng `api` instance này trong các `service` hoặc `component` của mình để gọi API:
+
+```typescript
+import api from './api';
+
+// Ví dụ về cách gọi API
+export const getUser = async (id: string) => {
+  try {
+    const response = await api.get(`/users/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching user:', error);
+    throw error;
+  }
+};
+```
 
 ## K. Kiểm thử (Testing)
 
 (Chưa cập nhật)
+
+### State Management cho Giai đoạn Khởi tạo và Cài đặt
+
+Đối với giai đoạn khởi tạo và cài đặt, chúng tôi sử dụng React Context API để quản lý các trạng thái toàn cục một cách nhẹ nhàng và hiệu quả. Các trạng thái này bao gồm trạng thái khởi tạo (`isInitialized`) và các thiết lập ban đầu của ứng dụng.
+
+- **SetupContext**: Cung cấp một Context để lưu trữ trạng thái liên quan đến quá trình khởi tạo và thiết lập của ứng dụng.
+- **SetupProvider**: Một component Provider bao bọc ứng dụng để cung cấp `SetupContext` cho tất cả các component con. Nó quản lý trạng thái `isInitialized` và cung cấp một hàm `setInitialized` để cập nhật trạng thái này.
+- **useSetup Hook**: Một custom hook giúp dễ dàng truy cập `isInitialized` và `setInitialized` từ bất kỳ component nào trong cây React được bao bọc bởi `SetupProvider`.
+
+**Cách sử dụng:**
+
+```typescript
+// Trong component cần truy cập trạng thái khởi tạo
+import { useSetup } from './src/store/setup-context.tsx';
+
+const MyComponent = () => {
+  const { isInitialized, setInitialized } = useSetup();
+
+  // Sử dụng isInitialized để hiển thị UI phù hợp
+  if (!isInitialized) {
+    return <div>Đang khởi tạo ứng dụng...</div>;
+  }
+
+  return <div>Ứng dụng đã sẵn sàng!</div>;
+};
+```
