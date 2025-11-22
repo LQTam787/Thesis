@@ -10,29 +10,36 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 - **Lớp Giao diện (Presentation Layer)**: Các React Components tương tác trực tiếp với người dùng, hiển thị dữ liệu và thu thập đầu vào.
 - **Lớp Logic Ứng dụng (Application Layer - Frontend)**: Quản lý trạng thái ứng dụng (sử dụng Redux Toolkit), xử lý routing (React Router DOM) và gọi các API đến Backend Spring Boot và AI/ML Processing Layer.
-- **Lớp Tích hợp API (API Integration Layer)**: Sử dụng Axios để quản lý các cuộc gọi API đến Backend Spring Boot (qua REST API, sử dụng JWT cho Spring Security) và Dịch vụ AI/ML (qua API riêng cho các tác vụ Vision, NLP).
+- **Lớp Tích hợp API (API Integration Layer)**: Sử dụng Fetch API (hoặc Axios khi cần) để quản lý các cuộc gọi API đến Backend Spring Boot (qua REST API, sử dụng JWT cho Spring Security) và Dịch vụ AI/ML (qua API riêng cho các tác vụ Vision, NLP).
 
 ## C. Tính năng chính
 
 ### 1. Đối với Người dùng (User)
-- **Tư vấn dinh dưỡng thông minh**: Giao diện chatbox thân thiện để trò chuyện với AI, nhận lời khuyên và điều chỉnh kế hoạch ăn uống.
+
+- **Xác thực và Ủy quyền**: Cung cấp các chức năng đăng ký, đăng nhập và đăng xuất an toàn. Bảo vệ các tuyến đường yêu cầu xác thực để chỉ cho phép người dùng đã đăng nhập truy cập.
+- **Tư vấn dinh dưỡng thông minh**: Giao diện chatbox thân thiện để trò chuyện với AI, nhận lời khuyên và điều chỉnh kế hoạch ăn uống. Hiện tại đã triển khai chức năng nhập thông tin cá nhân và mục tiêu dinh dưỡng, tính toán nhu cầu calo và macro khuyến nghị, và tạo kế hoạch dinh dưỡng cơ bản từ các khuyến nghị này.
 - **Nhận dạng món ăn**: Tải lên hình ảnh bữa ăn để hệ thống nhận dạng và ghi nhận thông tin dinh dưỡng.
-- **Lập kế hoạch cá nhân hóa**: Tạo, chỉnh sửa và quản lý các kế hoạch dinh dưỡng dựa trên mục tiêu cá nhân.
-- **Theo dõi tiến độ**: Ghi lại nhật ký bữa ăn hàng ngày, theo dõi lượng calo, macro và các chỉ số dinh dưỡng khác thông qua biểu đồ trực quan.
-- **Cộng đồng**: Chia sẻ công thức, kế hoạch và tương tác với người dùng khác thông qua tính năng thích và bình luận.
-- **Quản lý hồ sơ cá nhân**: Cập nhật thông tin sinh trắc học, mục tiêu sức khỏe và sở thích ăn uống.
+- **Lập kế hoạch cá nhân hóa**: Tạo, chỉnh sửa, xem chi tiết và quản lý các kế hoạch dinh dưỡng dựa trên mục tiêu cá nhân. Hiện tại, các chức năng này được triển khai với `localStorage` để lưu trữ dữ liệu.
+- **Theo dõi tiến độ**: Ghi lại nhật ký bữa ăn hàng ngày, theo dõi lượng calo, macro và các chỉ số dinh dưỡng khác thông qua biểu đồ trực quan, và cung cấp báo cáo tiến độ cùng gợi ý điều chỉnh. Các chức năng này đã được triển khai giao diện người dùng cơ bản.
+- **Cộng đồng**: Chia sẻ công thức, kế hoạch và tương tác với người dùng khác thông qua tính năng thích và bình luận. Đã triển khai các trang cho phép người dùng chia sẻ kế hoạch/hoạt động dinh dưỡng, xem nội dung chia sẻ từ cộng đồng (bao gồm thích, bình luận và lưu).
+- **Quản lý hồ sơ cá nhân**: Cập nhật thông tin sinh trắc học, mục tiêu sức khỏe và sở thích ăn uống. Module này bao gồm chức năng xem hồ sơ, cập nhật các thông tin cá nhân cơ bản (tên thật, email), thông tin tài khoản (thay đổi mật khẩu) và các đặc điểm cá nhân (chiều cao, cân nặng, mức độ vận động, bệnh lý nền, dị ứng).
 
 ### 2. Đối với Quản trị viên (Admin)
-- **Quản lý Người dùng**: Xem, cập nhật và xóa tài khoản người dùng.
-- **Quản lý Dữ liệu Dinh dưỡng**: Thêm, sửa, xóa thông tin món ăn, thực phẩm.
-- **Kích hoạt huấn luyện lại AI**: Giao diện để kích hoạt các quy trình huấn luyện lại mô hình AI.
+
+- **Bảng điều khiển quản trị**: Cung cấp tổng quan về hệ thống và các liên kết nhanh đến các chức năng quản lý chính. (Đã triển khai: `AdminDashboardPage.tsx`)
+- **Quản lý Người dùng**: Xem, cập nhật và xóa tài khoản người dùng. (Đã triển khai: `UserManagementPage.tsx` với mock data)
+- **Quản lý Dữ liệu Dinh dưỡng**: Thêm, sửa, xóa thông tin món ăn, thực phẩm. (Chưa triển khai)
+- **Quản lý Nội dung Chia sẻ**: Duyệt, từ chối, xóa, lọc và tìm kiếm nội dung chia sẻ từ người dùng. (Đã triển khai: `SharedContentManagementPage.tsx` với mock data)
+- **Kích hoạt huấn luyện lại AI**: Giao diện để kích hoạt các quy trình huấn luyện lại mô hình AI. (Chưa triển khai)
 
 ## D. Công nghệ sử dụng
 
 | Hạng mục           | Công nghệ                             | Mục đích                                    |
 | :---------------- | :------------------------------------ | :------------------------------------------ |
 | **Framework**     | ReactJS                               | Xây dựng giao diện dựa trên Component       |
-| **Quản lý State** | React Context API               | Quản lý trạng thái ứng dụng cho giai đoạn khởi tạo và cài đặt; Redux Toolkit (khi cần) | Quản lý trạng thái ứng dụng phức tạp       |
+| **Quản lý State** | React Context API               | Quản lý trạng thái ứng dụng cho giai đoạn khởi tạo và cài đặt, và trạng thái xác thực người dùng |
+| **Quản lý State** | Redux Toolkit (khi cần) | Quản lý trạng thái ứng dụng phức tạp       |
+| **Bảo mật**       | JSON Web Tokens (JWT), LocalStorage | Xác thực người dùng và lưu trữ token an toàn (tạm thời) |
 | **Giao diện/Styling** | Tailwind CSS / Material UI / Bootstrap | Xây dựng UI nhanh chóng, đảm bảo Responsive |
 | **Biểu đồ Dữ liệu** | Chart.js / Recharts                   | Trực quan hóa tiến độ                       |
 | **Quản lý API**   | Axios                                 | Gọi API đến Backend Spring Boot và AI Service |
@@ -41,13 +48,61 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 ## E. Cấu trúc thư mục
 
-```
-.
-├── FrontendAnalysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
-├── FrontendDesign/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
-├── FrontendRequirements/     # Tài liệu yêu cầu nghiệp vụ và use case
-├── FRONTEND_PLANNING.md      # Kế hoạch và định hướng tổng thể của dự án Frontend
-└── FRONTEND_TASK.md          # Danh sách các công việc cần thực hiện cho Frontend
+```text
+
+ .
+ ├── FrontendAnalysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
+ ├── FrontendDesign/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
+ ├── FrontendRequirements/     # Tài liệu yêu cầu nghiệp vụ và use case
+ ├── ImplementationFrontend/   # Thư mục chứa mã nguồn frontend
+ │   ├── public/
+ │   ├── src/
+ │   │   ├── admin/              # Module quản trị viên
+ │   │   │   ├── pages/            # Các trang chính của module (AdminDashboardPage, UserManagementPage, SharedContentManagementPage)
+ │   │   │   ├── components/       # Các components con của module (nếu có)
+ │   │   │   ├── services/         # Các dịch vụ API của module (userService, sharedContentService)
+ │   │   │   ├── hooks/            # Các custom hooks của module (nếu có)
+ │   │   │   ├── utils/            # Các hàm tiện ích của module (nếu có)
+ │   │   │   └── types/            # Định nghĩa kiểu dữ liệu của module (User, SharedContent)
+ │   │   ├── auth/             # Module xác thực (đăng nhập, đăng ký)
+ │   │   │   ├── pages/            # Các trang liên quan đến xác thực (LoginPage, RegisterPage)
+ │   │   │   ├── services/         # Các dịch vụ xác thực (authService)
+ │   │   │   └── components/       # Các components liên quan đến xác thực (PrivateRoute)
+ │   │   ├── assets/
+ │   │   ├── components/         # Các React Components (ví dụ: NutritionPlanList, NutritionPlanForm, NutritionPlanDetail)
+ │   │   ├── hooks/
+ │   │   ├── layouts/
+ │   │   ├── pages/
+ │   │   ├── profile-management/ # Module quản lý hồ sơ cá nhân
+ │   │   │   ├── pages/            # Các trang chính của module (ProfileManagementPage)
+ │   │   │   └── components/       # Các components con của module (nếu có)
+ │   │   ├── services/
+ │   │   ├── store/
+ │   │   ├── tracking-evaluation/  # Module theo dõi và đánh giá
+ │   │   │   ├── pages/            # Các trang chính của module (DailyLogInputPage, ProgressReportPage, SharePlanActivityPage, ViewSharedContentPage)
+ │   │   │   ├── components/       # Các components con của module
+ │   │   │   ├── services/       # Các dịch vụ API của module
+ │   │   │   ├── utils/          # Các hàm tiện ích của module
+ │   │   │   └── types/          # Định nghĩa kiểu dữ liệu của module
+ │   │   │   
+ │   │   ├── types.ts            # Định nghĩa các TypeScript interfaces cho dữ liệu
+ │   │   ├── routes.tsx          # Định nghĩa các route cho ứng dụng
+ │   │   ├── App.css
+ │   │   ├── App.tsx
+ │   │   └── main.tsx
+ │   ├── .eslintrc.cjs
+ │   ├── .gitignore
+ │   ├── index.html
+ │   ├── package.json
+ │   ├── postcss.config.js
+ │   ├── README.md
+ │   ├── tailwind.config.js
+ │   ├── tsconfig.json
+ │   ├── tsconfig.node.json
+ │   └── vite.config.ts
+ ├── FRONTEND_PLANNING.md      # Kế hoạch và định hướng tổng thể của dự án Frontend
+ └── FRONTEND_TASK.md          # Danh sách các công việc cần thực hiện cho Frontend
+
 ```
 
 ## F. Tài liệu Phân tích & Thiết kế Hệ thống (System Analysis & Design Documents)
@@ -215,65 +270,89 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 Để cài đặt và chạy dự án frontend, làm theo các bước sau:
 
-1.  **Di chuyển vào thư mục dự án:**
+1. **Di chuyển vào thư mục dự án:**
+
     ```bash
+
     cd ImplementationFrontend
+
     ```
 
-2.  **Cài đặt các gói phụ thuộc:**
+2. **Cài đặt các gói phụ thuộc:**
+
     ```bash
+    
     npm install
+    
     ```
 
-3.  **Cài đặt thư viện quản lý API (Axios):**
+3. **Cài đặt thư viện quản lý API (Axios):**
+
     ```bash
+    
     npm install axios
+    
     ```
 
-4.  **Khởi chạy máy chủ phát triển:**
+4. **Khởi chạy máy chủ phát triển:**
+
     ```bash
+    
     npm run dev
+    
     ```
 
     Ứng dụng sẽ chạy tại `http://localhost:5173/` (hoặc một cổng khác nếu 5173 đã được sử dụng).
 
-## H. Tài liệu API
+### Tài liệu API cho AI Service
 
-Sau khi cài đặt Axios, bạn có thể tạo một instance để quản lý các cuộc gọi API. Ví dụ, bạn có thể tạo một tệp `src/services/api.ts` hoặc `src/services/axios.ts` với nội dung sau:
-
-```typescript
-import axios from 'axios';
-
-const api = axios.create({
-  baseURL: 'http://localhost:8080/api', // Thay đổi thành URL backend của bạn
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
-
-export default api;
-```
-
-Sau đó, bạn có thể sử dụng `api` instance này trong các `service` hoặc `component` của mình để gọi API:
+AI Service được truy cập thông qua `src/services/ai.ts` với các hàm chuyên biệt:
 
 ```typescript
-import api from './api';
+import { getNutritionalAdvice, editMealPlan } from './services/ai';
 
-// Ví dụ về cách gọi API
-export const getUser = async (id: string) => {
+// Ví dụ về cách sử dụng AI Service
+const handleConsultation = async (prompt: string) => {
   try {
-    const response = await api.get(`/users/${id}`);
-    return response.data;
+    const advice = await getNutritionalAdvice(prompt);
+    console.log('AI Advice:', advice);
   } catch (error) {
-    console.error('Error fetching user:', error);
-    throw error;
+    console.error('Failed to get AI advice:', error);
+  }
+};
+
+const handleEditPlan = async (currentPlan: any, editRequest: string) => {
+  try {
+    const updatedPlan = await editMealPlan(currentPlan, editRequest);
+    console.log('Updated Plan:', updatedPlan);
+  } catch (error) {
+    console.error('Failed to edit plan via AI:', error);
   }
 };
 ```
 
 ## K. Kiểm thử (Testing)
 
-(Chưa cập nhật)
+Dự án này sử dụng Jest và React Testing Library để thực hiện unit tests. Các bài kiểm thử giúp đảm bảo tính đúng đắn của các component và service một cách riêng lẻ.
+
+### Thiết lập Môi trường Kiểm thử
+
+1.  **Cài đặt Dependencies**: Các thư viện như `jest`, `ts-jest`, `@testing-library/react`, `@testing-library/jest-dom`, và `jest-environment-jsdom-global` đã được cài đặt trong `package.json`.
+2.  **Cấu hình Jest**: File `jest.config.ts` chứa cấu hình chính cho Jest, bao gồm `preset`, `testEnvironment`, `setupFilesAfterEnv`, và `moduleNameMapper`.
+3.  **Setup Tests**: File `src/setupTests.ts` được sử dụng để import `@testing-library/jest-dom` và cung cấp polyfill cho `TextEncoder` và `TextDecoder` để đảm bảo môi trường Node.js tương thích với các API trình duyệt.
+
+### Cách chạy Tests
+
+Để chạy tất cả các bài kiểm thử, hãy điều hướng đến thư mục `ImplementationFrontend` và sử dụng lệnh:
+
+```bash
+npm test
+```
+
+### Ví dụ về Unit Tests
+
+-   **Component Tests**: `src/pages/__tests__/HomePage.test.tsx` kiểm thử các chức năng của `HomePage` component, bao gồm việc render các sub-component và xử lý sự kiện đăng xuất.
+-   **Service Tests**: `src/auth/services/__tests__/authService.test.ts` kiểm thử các chức năng của `authService`, bao gồm đăng nhập, đăng ký, đăng xuất, và quản lý token/role trong `localStorage`.
 
 ### State Management cho Giai đoạn Khởi tạo và Cài đặt
 

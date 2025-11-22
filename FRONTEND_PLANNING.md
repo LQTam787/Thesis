@@ -11,11 +11,13 @@ Mục tiêu của frontend là tạo ra một giao diện người dùng (UI) **
 ## B. Tầm nhìn Thiết kế (Design Vision)
 
 ### 1. Nguyên tắc Thiết kế
+
 * **Mobile-First/Responsive**: Ưu tiên thiết kế cho màn hình di động trước do tính chất ứng dụng theo dõi hàng ngày, sau đó mở rộng cho giao diện web.
 * **Thân thiện và Tương tác**: Sử dụng các Component (thẻ, biểu đồ, hình ảnh) rõ ràng để giảm gánh nặng nhận thức. Giao diện chatbox phải là điểm nhấn.
 * **Trực quan hóa Dữ liệu**: Sử dụng các thư viện biểu đồ mạnh mẽ để biến dữ liệu thô (calo, macro, tiến độ) thành thông tin dễ hiểu.
 
 ### 2. Các Modules Giao diện Chính (Dựa trên BusinessModel.md)
+
 | Module | Mô tả trọng tâm | Công nghệ Tích hợp |
 | :--- | :--- | :--- |
 | **Xác thực** | Đăng ký, Đăng nhập (sử dụng JWT) | Backend Spring Boot (Spring Security) |

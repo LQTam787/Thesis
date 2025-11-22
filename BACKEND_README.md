@@ -16,6 +16,7 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 ## C. Tính năng chính
 
 ### 1. Đối với Người dùng (User)
+
 - **Tư vấn dinh dưỡng thông minh**: Trò chuyện với AI để nhận lời khuyên, điều chỉnh kế hoạch ăn uống.
 - **Nhận dạng món ăn**: Chụp ảnh bữa ăn để hệ thống nhận dạng và ghi nhận (sử dụng Vision AI).
 - **Lập kế hoạch cá nhân hóa**: Tạo và quản lý kế hoạch dinh dưỡng dựa trên mục tiêu (tăng cân, giảm cân, v.v.).
@@ -23,6 +24,7 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 - **Cộng đồng**: Chia sẻ công thức, kế hoạch và tương tác với người dùng khác.
 
 ### 2. Đối với Quản trị viên (Admin)
+
 - **Quản lý Người dùng**: Xem, cập nhật và xóa tài khoản người dùng.
 - **Quản lý Dữ liệu Dinh dưỡng**: Thêm, sửa, xóa công thức món ăn, thực phẩm.
 - **Quản lý Hệ thống**: Giám sát và quản lý các kế hoạch, mục tiêu của người dùng.
@@ -40,7 +42,8 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 
 ## E. Cấu trúc thư mục
 
-```
+```text
+
 .
 ├── BackendAnalysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
 ├── BackendDesign/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
@@ -184,18 +187,27 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 Bạn có thể tải về mã nguồn dự án bằng một trong các cách sau:
 
 **HTTPS:**
+
 ```shell
+
 git clone https://github.com/LQTam787/Thesis.git
+
 ```
 
 **SSH:**
+
 ```shell
+
 git clone git@github.com:LQTam787/Thesis.git
+
 ```
 
 **GitHub CLI:**
+
 ```shell
+
 gh repo clone LQTam787/Thesis
+
 ```
 
 ### 1. Backend (Spring Boot)
@@ -245,12 +257,13 @@ c.  **Tải dữ liệu**: Các mô hình AI trong `nlp_service.py`, `vision_ser
 ## K. Tài liệu API
 
 Sau khi khởi chạy, tài liệu API có thể được truy cập tại:
+
 - **Backend API**: [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)
 - **AI Service API**: [http://localhost:5000/apidocs/](http://localhost:5000/apidocs/)
 
 ## L. Kiểm thử (Testing)
 
-### 1. Backend (Spring Boot)
+### 1. Backend (Spring Boot) với JUnit 5 và Mockito
 
 **Chạy Unit Tests**:
     - Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
@@ -258,7 +271,7 @@ Sau khi khởi chạy, tài liệu API có thể được truy cập tại:
     - Chạy lệnh sau: `mvn test`.
     - Maven sẽ tự động tìm và chạy tất cả các Unit Tests trong thư mục `src/test/java`.
 
-### 2. AI/ML (Python)
+### 2. AI/ML (Python) với Pytest
 
 **Chạy Unit Tests**:
     - Điều hướng đến thư mục `ImplementationAi`.
