@@ -2,7 +2,7 @@ import axios from 'axios';
 import authService from '../auth/services/authService';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080', // Thay đổi thành URL backend của bạn
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080', // Sử dụng biến môi trường hoặc mặc định
   headers: {
     'Content-Type': 'application/json',
   },

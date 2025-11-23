@@ -81,7 +81,7 @@
 
 ## **IV. Giai đoạn Bảo mật (Security)**
 
-- [ ] **Cấu hình phân quyền (Authorization) frontend**: Đảm bảo các route/component chỉ hiển thị/truy cập được bởi người dùng có vai trò phù hợp (USER, ADMIN).
+- [x] **Cấu hình phân quyền (Authorization) frontend**: Đảm bảo các route/component chỉ hiển thị/truy cập được bởi người dùng có vai trò phù hợp (USER, ADMIN).
 
 ## **V. Giai đoạn Kiểm thử (Testing)**
 

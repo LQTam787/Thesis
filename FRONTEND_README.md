@@ -326,6 +326,15 @@ const handleEditPlan = async (currentPlan: any, editRequest: string) => {
 };
 ```
 
+## H. Các biện pháp Bảo mật
+
+Để tăng cường bảo mật cho ứng dụng frontend, các biện pháp sau đã được triển khai:
+
+- **Content Security Policy (CSP)**: Được cấu hình thông qua thẻ `<meta>` trong `index.html` để giảm thiểu rủi ro tấn công Cross-Site Scripting (XSS) bằng cách chỉ định các nguồn tài nguyên đáng tin cậy mà trình duyệt được phép tải.
+- **Làm sạch đầu vào (Input Sanitization)**: Thư viện `dompurify` đã được tích hợp để làm sạch dữ liệu đầu vào từ người dùng trên client-side, đặc biệt là trong các trường nhập liệu như email, nhằm ngăn chặn việc chèn các đoạn mã độc hại.
+- **Quản lý API an toàn**: `baseURL` cho các cuộc gọi API đã được cập nhật để sử dụng biến môi trường (`VITE_API_BASE_URL`), cho phép cấu hình linh hoạt và an toàn giữa các môi trường. Cơ chế thêm Token JWT vào `Authorization` header cho các yêu cầu API đã được kiểm tra và xác nhận hoạt động đúng cách.
+- **Bảo vệ Route**: Component `PrivateRoute` được sử dụng để bảo vệ các route nhạy cảm, đảm bảo rằng chỉ những người dùng đã xác thực và có vai trò phù hợp mới có thể truy cập các phần nhất định của ứng dụng.
+
 ## K. Kiểm thử (Testing)
 
 (Chưa cập nhật)

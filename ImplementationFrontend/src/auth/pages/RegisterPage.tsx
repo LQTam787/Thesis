@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import authService from '../services/authService';
 import { useAuth } from '../AuthContext'; // Import useAuth
+import DOMPurify from 'dompurify';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -10,6 +11,10 @@ const RegisterPage: React.FC = () => {
   const navigate = useNavigate();
   const { login } = useAuth(); // Use useAuth hook to update context after registration
 
+  const sanitizeInput = (input: string) => {
+    return DOMPurify.sanitize(input);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -17,7 +22,8 @@ const RegisterPage: React.FC = () => {
       return;
     }
     try {
-      const response = await authService.register({ email, password });
+      const sanitizedEmail = sanitizeInput(email);
+      const response = await authService.register({ email: sanitizedEmail, password });
       login(response.token, response.role); // Update AuthContext with token and role
       navigate('/'); // Redirect to home page on successful registration
     } catch (error: any) {
@@ -40,7 +46,7 @@ const RegisterPage: React.FC = () => {
                 className="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600"
                 id="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={(e) => setEmail(sanitizeInput(e.target.value))}
               />
             </div>
             <div className="mt-4">
