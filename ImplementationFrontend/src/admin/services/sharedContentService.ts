@@ -1,6 +1,6 @@
 import { SharedContent } from '../types/SharedContent';
 
-export let mockSharedContent: SharedContent[] = [
+let mockSharedContent: SharedContent[] = [
   {
     id: 'sc1',
     tieuDe: 'Kế hoạch ăn uống lành mạnh',

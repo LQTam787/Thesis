@@ -10,13 +10,12 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 - **Lớp Giao diện (Presentation Layer)**: Các React Components tương tác trực tiếp với người dùng, hiển thị dữ liệu và thu thập đầu vào.
 - **Lớp Logic Ứng dụng (Application Layer - Frontend)**: Quản lý trạng thái ứng dụng (sử dụng Redux Toolkit), xử lý routing (React Router DOM) và gọi các API đến Backend Spring Boot và AI/ML Processing Layer.
-- **Lớp Tích hợp API (API Integration Layer)**: Sử dụng Fetch API (hoặc Axios khi cần) để quản lý các cuộc gọi API đến Backend Spring Boot (qua REST API, sử dụng JWT cho Spring Security) và Dịch vụ AI/ML (qua API riêng cho các tác vụ Vision, NLP).
+- **Lớp Tích hợp API (API Integration Layer)**: Sử dụng Axios để quản lý các cuộc gọi API đến Backend Spring Boot (qua REST API, sử dụng JWT cho Spring Security) và Dịch vụ AI/ML (qua API riêng cho các tác vụ Vision, NLP).
 
 ## C. Tính năng chính
 
 ### 1. Đối với Người dùng (User)
 
-- **Xác thực và Ủy quyền**: Cung cấp các chức năng đăng ký, đăng nhập và đăng xuất an toàn. Bảo vệ các tuyến đường yêu cầu xác thực để chỉ cho phép người dùng đã đăng nhập truy cập.
 - **Tư vấn dinh dưỡng thông minh**: Giao diện chatbox thân thiện để trò chuyện với AI, nhận lời khuyên và điều chỉnh kế hoạch ăn uống. Hiện tại đã triển khai chức năng nhập thông tin cá nhân và mục tiêu dinh dưỡng, tính toán nhu cầu calo và macro khuyến nghị, và tạo kế hoạch dinh dưỡng cơ bản từ các khuyến nghị này.
 - **Nhận dạng món ăn**: Tải lên hình ảnh bữa ăn để hệ thống nhận dạng và ghi nhận thông tin dinh dưỡng.
 - **Lập kế hoạch cá nhân hóa**: Tạo, chỉnh sửa, xem chi tiết và quản lý các kế hoạch dinh dưỡng dựa trên mục tiêu cá nhân. Hiện tại, các chức năng này được triển khai với `localStorage` để lưu trữ dữ liệu.
@@ -37,9 +36,8 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 | Hạng mục           | Công nghệ                             | Mục đích                                    |
 | :---------------- | :------------------------------------ | :------------------------------------------ |
 | **Framework**     | ReactJS                               | Xây dựng giao diện dựa trên Component       |
-| **Quản lý State** | React Context API               | Quản lý trạng thái ứng dụng cho giai đoạn khởi tạo và cài đặt, và trạng thái xác thực người dùng |
+| **Quản lý State** | React Context API               | Quản lý trạng thái ứng dụng cho giai đoạn khởi tạo và cài đặt |
 | **Quản lý State** | Redux Toolkit (khi cần) | Quản lý trạng thái ứng dụng phức tạp       |
-| **Bảo mật**       | JSON Web Tokens (JWT), LocalStorage | Xác thực người dùng và lưu trữ token an toàn (tạm thời) |
 | **Giao diện/Styling** | Tailwind CSS / Material UI / Bootstrap | Xây dựng UI nhanh chóng, đảm bảo Responsive |
 | **Biểu đồ Dữ liệu** | Chart.js / Recharts                   | Trực quan hóa tiến độ                       |
 | **Quản lý API**   | Axios                                 | Gọi API đến Backend Spring Boot và AI Service |
@@ -65,9 +63,6 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
  │   │   │   ├── utils/            # Các hàm tiện ích của module (nếu có)
  │   │   │   └── types/            # Định nghĩa kiểu dữ liệu của module (User, SharedContent)
  │   │   ├── auth/             # Module xác thực (đăng nhập, đăng ký)
- │   │   │   ├── pages/            # Các trang liên quan đến xác thực (LoginPage, RegisterPage)
- │   │   │   ├── services/         # Các dịch vụ xác thực (authService)
- │   │   │   └── components/       # Các components liên quan đến xác thực (PrivateRoute)
  │   │   ├── assets/
  │   │   ├── components/         # Các React Components (ví dụ: NutritionPlanList, NutritionPlanForm, NutritionPlanDetail)
  │   │   ├── hooks/
@@ -333,26 +328,7 @@ const handleEditPlan = async (currentPlan: any, editRequest: string) => {
 
 ## K. Kiểm thử (Testing)
 
-Dự án này sử dụng Jest và React Testing Library để thực hiện unit tests. Các bài kiểm thử giúp đảm bảo tính đúng đắn của các component và service một cách riêng lẻ.
-
-### Thiết lập Môi trường Kiểm thử
-
-1.  **Cài đặt Dependencies**: Các thư viện như `jest`, `ts-jest`, `@testing-library/react`, `@testing-library/jest-dom`, và `jest-environment-jsdom-global` đã được cài đặt trong `package.json`.
-2.  **Cấu hình Jest**: File `jest.config.ts` chứa cấu hình chính cho Jest, bao gồm `preset`, `testEnvironment`, `setupFilesAfterEnv`, và `moduleNameMapper`.
-3.  **Setup Tests**: File `src/setupTests.ts` được sử dụng để import `@testing-library/jest-dom` và cung cấp polyfill cho `TextEncoder` và `TextDecoder` để đảm bảo môi trường Node.js tương thích với các API trình duyệt.
-
-### Cách chạy Tests
-
-Để chạy tất cả các bài kiểm thử, hãy điều hướng đến thư mục `ImplementationFrontend` và sử dụng lệnh:
-
-```bash
-npm test
-```
-
-### Ví dụ về Unit Tests
-
--   **Component Tests**: `src/pages/__tests__/HomePage.test.tsx` kiểm thử các chức năng của `HomePage` component, bao gồm việc render các sub-component và xử lý sự kiện đăng xuất.
--   **Service Tests**: `src/auth/services/__tests__/authService.test.ts` kiểm thử các chức năng của `authService`, bao gồm đăng nhập, đăng ký, đăng xuất, và quản lý token/role trong `localStorage`.
+(Chưa cập nhật)
 
 ### State Management cho Giai đoạn Khởi tạo và Cài đặt
 

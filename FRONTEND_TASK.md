@@ -29,9 +29,6 @@
 - [x] **Triển khai Service Xác thực (`authService.js`)**:
   - [x] Hàm `login(username, password)`: Gọi API Backend (`POST /api/auth/login`), lưu Token JWT vào Local Storage và Redux State.
   - [x] Hàm `register(userData)`: Gọi API Backend (`POST /api/auth/register`).
-  - [x] Hàm `logout()`: Xóa Token JWT khỏi Local Storage.
-  - [x] Hàm `getToken()`: Lấy Token JWT từ Local Storage.
-  - [x] Hàm `isAuthenticated()`: Kiểm tra trạng thái xác thực.
 - [x] **Triển khai Auth Guard/Private Routes**: Sử dụng React Router DOM để bảo vệ các route cần đăng nhập.
 
 ### B. Module Tư vấn Dinh dưỡng
@@ -82,17 +79,15 @@
 
 ## **IV. Giai đoạn Bảo mật (Security)**
 
-- [x] **Tích hợp Axios Interceptors để đính kèm JWT cho các yêu cầu API được bảo vệ**
-- [x] **Cấu hình phân quyền (Authorization) frontend**: Đảm bảo các route/component chỉ hiển thị/truy cập được bởi người dùng có vai trò phù hợp (USER, ADMIN).
+- [ ] **Cấu hình phân quyền (Authorization) frontend**: Đảm bảo các route/component chỉ hiển thị/truy cập được bởi người dùng có vai trò phù hợp (USER, ADMIN).
 
 ## **V. Giai đoạn Kiểm thử (Testing)**
 
-- [x] **Unit Tests**: Viết Unit Test cho các Component và Service.
-  - Đã viết unit test cho HomePage component và authService.
+- [ ] **Unit Tests**: Viết Unit Test cho các Component và Service.
 - [ ] **Integration Tests**: Viết Integration Test cho các luồng nghiệp vụ chính và tích hợp API.
 
 ## **VI. Giai đoạn Hoàn thiện (Finalization)**
 
-- [x] **Tối ưu hóa hiệu suất**: Tối ưu hóa các React Component và việc gọi API.
-- [x] **Cập nhật FRONTEND_README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API sau khi triển khai.
+- [ ] **Tối ưu hóa hiệu suất**: Tối ưu hóa các React Component và việc gọi API.
+- [ ] **Cập nhật FRONTEND_README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API sau khi triển khai.
 - [ ] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.

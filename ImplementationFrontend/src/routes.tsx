@@ -4,9 +4,9 @@ import NutritionPlanList from './components/NutritionPlanList';
 import NutritionPlanForm from './components/NutritionPlanForm';
 import NutritionPlanDetail from './components/NutritionPlanDetail';
 import HomePage from './pages/HomePage';
-import LoginPage from './auth/pages/LoginPage';
-import RegisterPage from './auth/pages/RegisterPage';
-import PrivateRoute from './auth/components/PrivateRoute';
+import LoginPage from './auth/LoginPage';
+import RegisterPage from './auth/RegisterPage';
+import PrivateRoute from './auth/PrivateRoute';
 import DailyLogInputPage from './tracking-evaluation/pages/DailyLogInputPage';
 import ProgressReportPage from './tracking-evaluation/pages/ProgressReportPage';
 import SharePlanActivityPage from './tracking-evaluation/pages/SharePlanActivityPage';
@@ -30,7 +30,7 @@ const routes: RouteObject[] = [
     element: <RegisterPage />,
   },
   {
-    element: <PrivateRoute requiredRoles={['USER', 'ADMIN']} />,
+    element: <PrivateRoute />,
     children: [
       {
         path: '/nutrition-plans',
@@ -69,21 +69,16 @@ const routes: RouteObject[] = [
         element: <ProfileManagementPage />,
       },
       {
-        element: <PrivateRoute requiredRoles={['ADMIN']} />,
-        children: [
-          {
-            path: '/admin/dashboard',
-            element: <AdminDashboardPage />,
-          },
-          {
-            path: '/admin/users',
-            element: <UserManagementPage />,
-          },
-          {
-            path: '/admin/shared-content',
-            element: <SharedContentManagementPage />,
-          },
-        ],
+        path: '/admin/dashboard',
+        element: <AdminDashboardPage />,
+      },
+      {
+        path: '/admin/users',
+        element: <UserManagementPage />,
+  },
+  {
+        path: '/admin/shared-content',
+    element: <SharedContentManagementPage />,
       },
     ],
   },
