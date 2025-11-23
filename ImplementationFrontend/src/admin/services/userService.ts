@@ -1,6 +1,6 @@
 import { User } from '../types/User';
 
-const mockUsers: User[] = [
+let mockUsers: User[] = [
   { id: '1', tenThat: 'Nguyễn Văn A', email: 'nguyenvana@example.com', tenTaiKhoan: 'vana' },
   { id: '2', tenThat: 'Trần Thị B', email: 'tranthib@example.com', tenTaiKhoan: 'thib' },
   { id: '3', tenThat: 'Lê Văn C', email: 'levanc@example.com', tenTaiKhoan: 'vanc' },

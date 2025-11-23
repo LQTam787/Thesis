@@ -32,6 +32,36 @@ describe('authService', () => {
     (global.fetch as jest.Mock).mockRestore();
   });
 
+  test('login fails and throws default error message if no message from API', async () => {
+    // Mock a response where response.ok is false but errorData.message is undefined
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({}), // Empty error data
+      }),
+    ) as jest.Mock;
+
+    const credentials = { email: 'any@example.com', password: 'password' };
+    await expect(authService.login(credentials)).rejects.toThrow('Login failed');
+    expect(localStorage.getItem('userToken')).toBeNull();
+    expect(localStorage.getItem('userRole')).toBeNull();
+  });
+
+  test('register fails and throws default error message if no message from API', async () => {
+    // Mock a response where response.ok is false but errorData.message is undefined
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        ok: false,
+        json: () => Promise.resolve({}), // Empty error data
+      }),
+    ) as jest.Mock;
+
+    const credentials = { email: 'any@example.com', password: 'password' };
+    await expect(authService.register(credentials)).rejects.toThrow('Registration failed');
+    expect(localStorage.getItem('userToken')).toBeNull();
+    expect(localStorage.getItem('userRole')).toBeNull();
+  });
+
   test('login successfully and store token/role', async () => {
     const credentials = { email: 'test@example.com', password: 'password' };
     const response = await authService.login(credentials);
