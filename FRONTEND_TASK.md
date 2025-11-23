@@ -1,4 +1,6 @@
-# **I. Giai đoạn Phân tích và Thiết kế (Analysis & Design)**
+# Hệ thống Tư vấn Dinh dưỡng AI (Frontend)
+
+## **I. Giai đoạn Phân tích và Thiết kế (Analysis & Design)**
 
 - [x] **Thiết kế Biểu đồ Use Case (Use Case Diagram)**
 - [x] **Thiết kế Biểu đồ Lớp Thực thể (Entity Class Diagram - Analysis & Design)**
