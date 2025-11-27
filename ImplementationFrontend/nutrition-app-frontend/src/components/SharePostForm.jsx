@@ -46,10 +46,25 @@ function SharePostForm({ onPostCreated, onClose }) {
                     <Share2 className="w-6 h-6 mr-2" />
                     Chia sẻ Hoạt động/Kế hoạch
                 </h2>
-                <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
-                    <X className="w-6 h-6" />
+                <button
+                    type="button"
+                    onClick={onClose}
+                    className="w-8 h-8 flex items-center justify-center text-gray-500 hover:text-gray-900 absolute top-4 right-4"
+                    aria-label="Nút đóng" // <--- DÒNG ĐƯỢC THÊM VÀO
+                >
+                    <X className="w-5 h-5" />
                 </button>
             </div>
+
+            {/* KHẮC PHỤC LỖI: Thêm logic hiển thị lỗi với role="alert" */}
+            {error && (
+                <div
+                    role="alert" // <--- DÒNG QUAN TRỌNG NHẤT CHO TEST PASS VÀ A11Y
+                    className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
+                >
+                    <span className="block sm:inline">{error}</span>
+                </div>
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
                 {error && <div className="p-2 text-sm text-red-700 bg-red-100 rounded-lg">{error}</div>}
@@ -69,8 +84,11 @@ function SharePostForm({ onPostCreated, onClose }) {
                 {/* Tùy chọn Liên kết Kế hoạch/Nhật ký */}
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <label className="flex items-center text-sm font-medium text-gray-700 mb-1"><FileText className="w-4 h-4 mr-1 text-blue-500" /> ID Kế hoạch (Tùy chọn)</label>
+                        <label htmlFor="plan-id" className="flex items-center text-sm font-medium text-gray-700 mb-1">{/* Đảm bảo icon đã đúng */}
+                            <Share2 className="w-4 h-4 mr-1 text-green-500" /> ID Kế hoạch (Tùy chọn)
+                        </label>
                         <input
+                            id="plan-id" // CẬP NHẬT: Thêm id="plan-id"
                             type="text"
                             value={planId}
                             onChange={(e) => setPlanId(e.target.value)}
@@ -79,8 +97,11 @@ function SharePostForm({ onPostCreated, onClose }) {
                         />
                     </div>
                     <div>
-                        <label className="flex items-center text-sm font-medium text-gray-700 mb-1"><Link className="w-4 h-4 mr-1 text-red-500" /> ID Nhật ký (Tùy chọn)</label>
+                        <label htmlFor="log-id" className="flex items-center text-sm font-medium text-gray-700 mb-1">
+                            <FileText className="w-4 h-4 mr-1 text-red-500" /> ID Nhật ký (Tùy chọn)
+                        </label>
                         <input
+                            id="log-id" // CẬP NHẬT: Thêm id="log-id"
                             type="text"
                             value={logId}
                             onChange={(e) => setLogId(e.target.value)}
