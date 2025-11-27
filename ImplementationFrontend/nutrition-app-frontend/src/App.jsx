@@ -14,6 +14,8 @@ import NutritionPlanDetailPage from './pages/NutritionPlanDetailPage';
 import RecipeDetail from './components/RecipeDetail'; // Lưu ý: RecipeDetail là component, không phải page
 import DailyLogInputPage from './pages/DailyLogInputPage';
 import ProgressReportPage from './pages/ProgressReportPage';
+import CommunityFeedPage from './pages/CommunityFeedPage';
+import ProfileManagementPage from './pages/ProfileManagementPage';
 
 // Component Tạm thời cho Dashboard
 const TempDashboard = () => {
@@ -76,6 +78,10 @@ function App() {
                 {/* THÊM CÁC ROUTE THEO DÕI NÀY */}
                 <Route path="/log" element={<DailyLogInputPage />} />
                 <Route path="/report" element={<ProgressReportPage />} />
+                {/* THÊM ROUTE CỘNG ĐỒNG NÀY */}
+                <Route path="/community" element={<CommunityFeedPage />} />
+                {/* THÊM ROUTE HỒ SƠ NÀY */}
+                <Route path="/profile" element={<ProfileManagementPage />} />
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
 
@@ -92,6 +98,10 @@ function App() {
                 {/*    /!* THÊM CÁC ROUTE THEO DÕI NÀY *!/*/}
                 {/*    <Route path="/log" element={<DailyLogInputPage />} />*/}
                 {/*    <Route path="/report" element={<ProgressReportPage />} />*/}
+                {/*    /!* THÊM ROUTE CỘNG ĐỒNG NÀY *!/*/}
+                {/*    <Route path="/community" element={<CommunityFeedPage />} />*/}
+                {/*    /!* THÊM ROUTE HỒ SƠ NÀY *!/*/}
+                {/*    <Route path="/profile" element={<ProfileManagementPage />} />*/}
                 {/*    <Route path="/" element={<Navigate to="/dashboard" replace />} />*/}
                 {/*</Route>*/}
 
