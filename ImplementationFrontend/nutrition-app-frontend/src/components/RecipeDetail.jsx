@@ -45,10 +45,11 @@ function RecipeDetail() {
                     Thông tin Dinh dưỡng (Mỗi khẩu phần)
                 </h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-                    <NutrientBox label="Calo (kcal)" value={recipe.calories || 'N/A'} color="bg-yellow-100 text-yellow-800" />
-                    <NutrientBox label="Protein (g)" value={recipe.protein || 'N/A'} color="bg-blue-100 text-blue-800" />
-                    <NutrientBox label="Carb (g)" value={recipe.carb || 'N/A'} color="bg-red-100 text-red-800" />
-                    <NutrientBox label="Chất béo (g)" value={recipe.fat || 'N/A'} color="bg-green-100 text-green-800" />
+                    {/* SỬA LỖI: Dùng ?? thay vì || để 0 được hiển thị (0 không bị coi là thiếu) */}
+                    <NutrientBox label="Calo (kcal)" value={recipe.calories ?? 'N/A'} color="bg-yellow-100 text-yellow-800" />
+                    <NutrientBox label="Protein (g)" value={recipe.protein ?? 'N/A'} color="bg-blue-100 text-blue-800" />
+                    <NutrientBox label="Carb (g)" value={recipe.carb ?? 'N/A'} color="bg-red-100 text-red-800" />
+                    <NutrientBox label="Chất béo (g)" value={recipe.fat ?? 'N/A'} color="bg-green-100 text-green-800" />
                 </div>
             </section>
 
