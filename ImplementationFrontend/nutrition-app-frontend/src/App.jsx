@@ -9,6 +9,9 @@ import { useDispatch } from 'react-redux';
 import { logout, setCredentials, setLoading } from './store/authSlice';
 import authService from './services/authService';
 import NutritionAdvicePage from './pages/NutritionAdvicePage';
+import NutritionPlanPage from './pages/NutritionPlanPage';
+import NutritionPlanDetailPage from './pages/NutritionPlanDetailPage';
+import RecipeDetail from './components/RecipeDetail'; // Lưu ý: RecipeDetail là component, không phải page
 
 // Component Tạm thời cho Dashboard
 const TempDashboard = () => {
@@ -65,6 +68,9 @@ function App() {
                 {/* THÊM ROUTE NÀY */}
                 <Route path="/advice" element={<NutritionAdvicePage />} />
                 {/* Thêm các route cần bảo vệ khác tại đây */}
+                <Route path="/plans" element={<NutritionPlanPage />} />
+                <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />
+                <Route path="/recipes/:recipeId" element={<RecipeDetail />} />
                 <Route path="/" element={<Navigate to="/dashboard" replace />} />
 
 
@@ -75,6 +81,9 @@ function App() {
                 {/*    /!* THÊM ROUTE NÀY *!/*/}
                 {/*    <Route path="/advice" element={<NutritionAdvicePage />} />*/}
                 {/*    /!* Thêm các route cần bảo vệ khác tại đây *!/*/}
+                {/*    <Route path="/plans" element={<NutritionPlanPage />} />*/}
+                {/*    <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />*/}
+                {/*    <Route path="/recipes/:recipeId" element={<RecipeDetail />} />*/}
                 {/*    <Route path="/" element={<Navigate to="/dashboard" replace />} />*/}
                 {/*</Route>*/}
 
