@@ -5,10 +5,16 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 const AdminRoute = () => {
     const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-    // Giả định vai trò được lưu trong state.auth.user.roles là một mảng string (ví dụ: ['USER', 'ADMIN'])
-    const userRoles = useSelector((state) => state.auth.user?.roles || []);
+
+    // Tách việc truy cập và xác thực mảng vai trò.
+    const rawRoles = useSelector((state) => state.auth.user?.roles);
+
+    // SỬA LỖI: Đảm bảo userRoles LUÔN là một mảng, ngay cả khi rawRoles là null, undefined, hoặc một giá trị không phải mảng.
+    const userRoles = Array.isArray(rawRoles) ? rawRoles : [];
+
     const location = useLocation();
 
+    // Bây giờ, userRoles chắc chắn là một mảng, không còn lỗi TypeError: userRoles.includes is not a function
     const isAdmin = userRoles.includes('ADMIN');
 
     if (!isAuthenticated) {

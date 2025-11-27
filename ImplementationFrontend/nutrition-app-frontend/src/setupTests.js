@@ -1,11 +1,13 @@
-import '@testing-library/jest-dom'; // Thêm các matcher của jest-dom
-import { server } from './mocks/server'; // Import server MSW đã được setup
+// src/setupTests.js (Nội dung mới)
 
-// Khởi động server MSW trước khi chạy tất cả các test
-beforeAll(() => server.listen());
+import { beforeAll, afterEach, afterAll } from 'vitest';
+import '@testing-library/jest-dom';
 
-// Reset các mock handlers sau mỗi test để đảm bảo tính độc lập
+// 1. Setup Mock Service Worker (MSW)
+// Bây giờ import này sẽ chạy sau khi setupGlobalMocks.js đã định nghĩa localStorage
+import { server } from './mocks/server';
+
+// 2. Thiết lập lifecycle của MSW
+beforeAll(() => server.listen({ onUnhandledRequest: 'warn' }));
 afterEach(() => server.resetHandlers());
-
-// Đóng server MSW sau khi tất cả test đã chạy xong
 afterAll(() => server.close());
