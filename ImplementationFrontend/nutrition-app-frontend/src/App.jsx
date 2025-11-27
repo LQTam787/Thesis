@@ -16,6 +16,10 @@ import DailyLogInputPage from './pages/DailyLogInputPage';
 import ProgressReportPage from './pages/ProgressReportPage';
 import CommunityFeedPage from './pages/CommunityFeedPage';
 import ProfileManagementPage from './pages/ProfileManagementPage';
+import AdminRoute from './components/AdminRoute';
+import UserManagementPage from './pages/admin/UserManagementPage'; // Import Admin Page
+import FoodDataManagementPage from './pages/admin/FoodDataManagementPage';
+import AITrainingTriggerPage from './pages/admin/AITrainingTriggerPage';
 
 // Component Tạm thời cho Dashboard
 const TempDashboard = () => {
@@ -67,43 +71,57 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
+                {/*<Route path="/dashboard" element={<TempDashboard />} />*/}
+                {/*/!* THÊM ROUTE NÀY *!/*/}
+                {/*<Route path="/advice" element={<NutritionAdvicePage />} />*/}
+                {/*/!* Thêm các route cần bảo vệ khác tại đây *!/*/}
+                {/*<Route path="/plans" element={<NutritionPlanPage />} />*/}
+                {/*<Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />*/}
+                {/*<Route path="/recipes/:recipeId" element={<RecipeDetail />} />*/}
+                {/*/!* THÊM CÁC ROUTE THEO DÕI NÀY *!/*/}
+                {/*<Route path="/log" element={<DailyLogInputPage />} />*/}
+                {/*<Route path="/report" element={<ProgressReportPage />} />*/}
+                {/*/!* THÊM ROUTE CỘNG ĐỒNG NÀY *!/*/}
+                {/*<Route path="/community" element={<CommunityFeedPage />} />*/}
+                {/*/!* THÊM ROUTE HỒ SƠ NÀY *!/*/}
+                {/*<Route path="/profile" element={<ProfileManagementPage />} />*/}
+                {/*<Route path="/" element={<Navigate to="/dashboard" replace />} />*/}
 
-                <Route path="/dashboard" element={<TempDashboard />} />
-                {/* THÊM ROUTE NÀY */}
-                <Route path="/advice" element={<NutritionAdvicePage />} />
-                {/* Thêm các route cần bảo vệ khác tại đây */}
-                <Route path="/plans" element={<NutritionPlanPage />} />
-                <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />
-                <Route path="/recipes/:recipeId" element={<RecipeDetail />} />
-                {/* THÊM CÁC ROUTE THEO DÕI NÀY */}
-                <Route path="/log" element={<DailyLogInputPage />} />
-                <Route path="/report" element={<ProgressReportPage />} />
-                {/* THÊM ROUTE CỘNG ĐỒNG NÀY */}
-                <Route path="/community" element={<CommunityFeedPage />} />
-                {/* THÊM ROUTE HỒ SƠ NÀY */}
-                <Route path="/profile" element={<ProfileManagementPage />} />
-                <Route path="/" element={<Navigate to="/dashboard" replace />} />
-
+                {/*<Route path="/admin/users" element={<UserManagementPage />} />*/}
+                {/*/!* THÊM ROUTE QUẢN LÝ THỰC PHẨM NÀY *!/*/}
+                {/*<Route path="/admin/foods" element={<FoodDataManagementPage />} />*/}
+                {/*/!* Các route Admin khác sẽ được thêm tại đây *!/*/}
+                {/*/!* THÊM ROUTE QUẢN LÝ AI NÀY *!/*/}
+                {/*<Route path="/admin/ai-retrain" element={<AITrainingTriggerPage />} />*/}
 
                 {/* Private Routes (Cần đăng nhập) */}
+                <Route element={<PrivateRoute />}>
+                    <Route path="/dashboard" element={<TempDashboard />} />
+                    {/* THÊM ROUTE NÀY */}
+                    <Route path="/advice" element={<NutritionAdvicePage />} />
+                    {/* Thêm các route cần bảo vệ khác tại đây */}
+                    <Route path="/plans" element={<NutritionPlanPage />} />
+                    <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />
+                    <Route path="/recipes/:recipeId" element={<RecipeDetail />} />
+                    {/* THÊM CÁC ROUTE THEO DÕI NÀY */}
+                    <Route path="/log" element={<DailyLogInputPage />} />
+                    <Route path="/report" element={<ProgressReportPage />} />
+                    {/* THÊM ROUTE CỘNG ĐỒNG NÀY */}
+                    <Route path="/community" element={<CommunityFeedPage />} />
+                    {/* THÊM ROUTE HỒ SƠ NÀY */}
+                    <Route path="/profile" element={<ProfileManagementPage />} />
+                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                </Route>
 
-                {/*<Route element={<PrivateRoute />}>*/}
-                {/*    <Route path="/dashboard" element={<TempDashboard />} />*/}
-                {/*    /!* THÊM ROUTE NÀY *!/*/}
-                {/*    <Route path="/advice" element={<NutritionAdvicePage />} />*/}
-                {/*    /!* Thêm các route cần bảo vệ khác tại đây *!/*/}
-                {/*    <Route path="/plans" element={<NutritionPlanPage />} />*/}
-                {/*    <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />*/}
-                {/*    <Route path="/recipes/:recipeId" element={<RecipeDetail />} />*/}
-                {/*    /!* THÊM CÁC ROUTE THEO DÕI NÀY *!/*/}
-                {/*    <Route path="/log" element={<DailyLogInputPage />} />*/}
-                {/*    <Route path="/report" element={<ProgressReportPage />} />*/}
-                {/*    /!* THÊM ROUTE CỘNG ĐỒNG NÀY *!/*/}
-                {/*    <Route path="/community" element={<CommunityFeedPage />} />*/}
-                {/*    /!* THÊM ROUTE HỒ SƠ NÀY *!/*/}
-                {/*    <Route path="/profile" element={<ProfileManagementPage />} />*/}
-                {/*    <Route path="/" element={<Navigate to="/dashboard" replace />} />*/}
-                {/*</Route>*/}
+                {/* --- ADMIN Routes (Cần vai trò ADMIN) --- */}
+                <Route element={<AdminRoute />}>
+                    <Route path="/admin/users" element={<UserManagementPage />} />
+                    {/* THÊM ROUTE QUẢN LÝ THỰC PHẨM NÀY */}
+                    <Route path="/admin/foods" element={<FoodDataManagementPage />} />
+                    {/* Các route Admin khác sẽ được thêm tại đây */}
+                    {/* THÊM ROUTE QUẢN LÝ AI NÀY */}
+                    <Route path="/admin/ai-retrain" element={<AITrainingTriggerPage />} />
+                </Route>
 
                 {/* Catch-all route cho trang 404 hoặc chuyển hướng */}
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
