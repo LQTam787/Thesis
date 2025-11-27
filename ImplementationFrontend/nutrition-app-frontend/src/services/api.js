@@ -1,44 +1,50 @@
 // src/services/api.js
 import axios from 'axios';
+// Cần truy cập store và action logout để xử lý state tập trung
+import { store } from '../store/store';
+import { logout } from '../store/authSlice';
 
-// Định nghĩa Base URL cho Backend (API chính)
-const API_BASE_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8080/api';
+// Lấy BASE_URL từ biến môi trường
+// Đảm bảo bạn đã cấu hình biến này trong file .env (ví dụ: VITE_API_BASE_URL="http://localhost:8080/api")
+const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
-// Định nghĩa Base URL cho AI Service
-export const AI_SERVICE_BASE_URL = import.meta.env.VITE_AI_SERVICE_API_URL || 'http://localhost:5000/api';
-
-// 1. Instance cho Backend (API chính)
 const api = axios.create({
-    baseURL: API_BASE_URL,
+    baseURL: VITE_API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
 });
 
-// Thêm Interceptor để đính kèm Token JWT vào mỗi Request
-api.interceptors.request.use(
-    (config) => {
-        // Lấy token từ Local Storage
-        const token = localStorage.getItem('token');
-
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-        return config;
+// --- Interceptor Xử lý Lỗi API Tập trung ---
+api.interceptors.response.use(
+    (response) => {
+        // Trả về response nếu không có lỗi
+        return response;
     },
     (error) => {
+        const status = error.response ? error.response.status : null;
+
+        // Xử lý lỗi 401 (Unauthorized - Token hết hạn) hoặc 403 (Forbidden - Không có quyền)
+        if (status === 401 || status === 403) {
+            console.error(`Lỗi bảo mật ${status}: Truy cập bị từ chối hoặc token hết hạn.`, error.response);
+
+            // 1. Dispatch action logout để xóa token khỏi Redux state và Local Storage
+            store.dispatch(logout());
+
+            // 2. Chuyển hướng người dùng về trang đăng nhập
+            // Kiểm tra để tránh chuyển hướng liên tục nếu người dùng đã ở trang login
+            if (window.location.pathname !== '/login') {
+                // Dùng window.location.replace để thay thế lịch sử trình duyệt, giúp người dùng không bị mắc kẹt.
+                window.location.replace('/login');
+            }
+
+            // Trả về một Promise bị reject để ngăn luồng nghiệp vụ API gọi bị lỗi tiếp tục
+            return Promise.reject(error);
+        }
+
+        // Xử lý các lỗi khác (500, 404, v.v.)
         return Promise.reject(error);
     }
 );
-
-// Tạm thời export một instance AI Service cơ bản
-// Bạn sẽ sử dụng cái này trong aiService.js
-export const aiApi = axios.create({
-    baseURL: AI_SERVICE_BASE_URL,
-    // AI Service có thể cần Content-Type khác nhau (ví dụ: cho file ảnh)
-    headers: {
-        'Content-Type': 'application/json',
-    },
-});
 
 export default api;

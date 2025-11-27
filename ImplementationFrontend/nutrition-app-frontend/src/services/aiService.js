@@ -1,6 +1,6 @@
 // src/services/aiService.js
 
-import { aiApi } from './api'; // Import aiApi instance
+import api from '../services/api'; // Import aiApi instance
 
 // --- Hàm Tư vấn Dinh dưỡng bằng Văn bản (NLP) ---
 const getNutritionAdvice = async (message, userId) => {
