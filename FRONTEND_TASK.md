@@ -90,8 +90,8 @@
 
 ### **IV. Giai đoạn Bảo mật (Security)**
 
-* [ ] **Cấu hình phân quyền (Authorization) frontend**: Đảm bảo các route/component chỉ hiển thị/truy cập được bởi người dùng có vai trò phù hợp (USER, ADMIN).
-* [ ] **Xử lý lỗi API tập trung**: Xử lý các lỗi 401 (Unauthorized) và 403 (Forbidden) bằng cách chuyển hướng đến trang đăng nhập hoặc hiển thị thông báo.
+* [x] **Cấu hình phân quyền (Authorization) frontend**: Đảm bảo các route/component chỉ hiển thị/truy cập được bởi người dùng có vai trò phù hợp (USER, ADMIN).
+* [x] **Xử lý lỗi API tập trung**: Xử lý các lỗi 401 (Unauthorized) và 403 (Forbidden) bằng cách chuyển hướng đến trang đăng nhập hoặc hiển thị thông báo.
 
 ---
 
