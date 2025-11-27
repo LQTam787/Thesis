@@ -8,6 +8,7 @@ import PrivateRoute from './components/PrivateRoute';
 import { useDispatch } from 'react-redux';
 import { logout, setCredentials, setLoading } from './store/authSlice';
 import authService from './services/authService';
+import NutritionAdvicePage from './pages/NutritionAdvicePage';
 
 // Component Tạm thời cho Dashboard
 const TempDashboard = () => {
@@ -59,12 +60,23 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
+
+                <Route path="/dashboard" element={<TempDashboard />} />
+                {/* THÊM ROUTE NÀY */}
+                <Route path="/advice" element={<NutritionAdvicePage />} />
+                {/* Thêm các route cần bảo vệ khác tại đây */}
+                <Route path="/" element={<Navigate to="/dashboard" replace />} />
+
+
                 {/* Private Routes (Cần đăng nhập) */}
-                <Route element={<PrivateRoute />}>
-                    <Route path="/dashboard" element={<TempDashboard />} />
-                    {/* Thêm các route cần bảo vệ khác tại đây */}
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
-                </Route>
+
+                {/*<Route element={<PrivateRoute />}>*/}
+                {/*    <Route path="/dashboard" element={<TempDashboard />} />*/}
+                {/*    /!* THÊM ROUTE NÀY *!/*/}
+                {/*    <Route path="/advice" element={<NutritionAdvicePage />} />*/}
+                {/*    /!* Thêm các route cần bảo vệ khác tại đây *!/*/}
+                {/*    <Route path="/" element={<Navigate to="/dashboard" replace />} />*/}
+                {/*</Route>*/}
 
                 {/* Catch-all route cho trang 404 hoặc chuyển hướng */}
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
