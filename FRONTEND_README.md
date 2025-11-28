@@ -29,24 +29,41 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 ## D. Công nghệ sử dụng
 
-| Hạng mục           | Công nghệ                             | Mục đích                                    |
-| :---------------- | :------------------------------------ | :------------------------------------------ |
-| **Framework**     | ReactJS                               | Xây dựng giao diện dựa trên Component       |
-| **Quản lý State** | Redux Toolkit                         | Quản lý trạng thái ứng dụng phức tạp       |
-| **Giao diện/Styling** | Tailwind CSS / Material UI / Bootstrap | Xây dựng UI nhanh chóng, đảm bảo Responsive |
-| **Biểu đồ Dữ liệu** | Chart.js / Recharts                   | Trực quan hóa tiến độ                       |
-| **Quản lý API**   | Axios                                 | Gọi API đến Backend Spring Boot và AI Service |
-| **Build Tool**    | Vite / Create React App               | Khởi tạo và tối ưu hóa dự án                |
-| **Thiết kế**      | PlantUML                              | Thiết kế biểu đồ UML                        |
+| Hạng mục | Công nghệ | Mục đích |
+| :--- | :--- | :--- |
+| **Framework** | React | Xây dựng giao diện người dùng dựa trên component. |
+| **Build Tool** | Vite | Khởi tạo và tối ưu hóa dự án. |
+| **Routing** | React Router | Xử lý điều hướng phía máy khách. |
+| **Quản lý State** | Redux Toolkit | Quản lý trạng thái ứng dụng toàn cục. |
+| **Styling** | Tailwind CSS | Xây dựng giao diện tùy chỉnh nhanh chóng. |
+| **Gọi API** | Axios | Thực hiện các yêu cầu HTTP đến backend. |
+| **Biểu đồ** | Recharts | Hiển thị dữ liệu trực quan. |
+| **Kiểm thử** | Vitest, React Testing Library | Viết và chạy unit test và integration test. |
 
-## E. Cấu trúc thư mục
+## E. Cấu trúc dự án
+
+Dự án tuân theo một cấu trúc dựa trên tính năng để tổ chức mã nguồn một cách hợp lý.
 
 ```
 .
 ├── FrontendAnalysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
 ├── FrontendDesign/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
 ├── FrontendRequirements/     # Tài liệu yêu cầu nghiệp vụ và use case
-├── ImplementationFrontend/   # Mã nguồn Frontend (ReactJS)
+├── ImplementationFrontend/nutrition-app-frontend/
+│   ├── public/              # Chứa các tài sản tĩnh (static assets)
+│   ├── src/                 # Thư mục mã nguồn chính
+│   │   ├── assets/          # Hình ảnh, fonts và các tài sản khác
+│   │   ├── components/      # Các React component có thể tái sử dụng
+│   │   ├── context/         # React context providers
+│   │   ├── hooks/           # Các custom React hook
+│   │   ├── mocks/           # Mock server và handlers cho kiểm thử (MSW)
+│   │   ├── pages/           # Các component trang chính, được liên kết với các route
+│   │   ├── services/        # Các module để tương tác với API backend
+│   │   ├── store/           # Redux Toolkit store, slices và logic
+│   │   └── main.jsx         # Điểm vào của ứng dụng
+│   ├── .env.development     # Cấu hình biến môi trường cho môi trường phát triển
+│   ├── package.json         # Liệt kê các dependency và script của dự án
+│   └── vite.config.js       # Cấu hình cho Vite
 ├── FRONTEND_PLANNING.md      # Kế hoạch và định hướng tổng thể của dự án Frontend
 └── FRONTEND_TASK.md          # Danh sách các công việc cần thực hiện cho Frontend
 ```
@@ -212,56 +229,63 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 - 'Giao diện chia sẻ kế hoạch và hoạt động': Trang chia sẻ kế hoạch và hoạt động. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/SharePlanActivityPage.html`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/SharePlanActivityPage.html)
 - 'Giao diện xem nội dung chia sẻ': Trang xem nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/ViewSharedContentPage.html`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/ViewSharedContentPage.html)
 
-## G. Hướng dẫn cài đặt và chạy
+## G. Hướng dẫn Cài đặt và Chạy
 
-Dự án này yêu cầu **Node.js** và **npm** (hoặc yarn/pnpm) đã được cài đặt trên máy.
+### 1. Yêu cầu
+- Node.js (phiên bản 18.x trở lên)
+- npm, yarn, hoặc pnpm
 
-### 1. Cài đặt các Thư viện Phụ thuộc (Dependencies)
+### 2. Cài đặt
+1.  Di chuyển đến thư mục gốc của dự án frontend:
+    ```bash
+    cd ImplementationFrontend/nutrition-app-frontend
+    ```
+2.  Cài đặt các dependency:
+    ```bash
+    npm install
+    ```
 
-Mở Terminal hoặc Command Prompt, di chuyển đến thư mục gốc của dự án frontend và chạy lệnh:
+### 3. Cấu hình Biến Môi trường
+1.  Tạo một tệp `.env.development` trong thư mục gốc của frontend (`ImplementationFrontend/nutrition-app-frontend`).
+2.  Thêm URL của API backend vào tệp:
+    ```
+    VITE_API_BASE_URL="http://localhost:8080/api"
+    ```
+    *Lưu ý: Vite yêu cầu tiền tố `VITE_` cho các biến môi trường được sử dụng ở phía client.*
 
-```Bash
-npm install  
-# Hoặc nếu dùng yarn:  
-# yarn install
+### 4. Chạy Ứng dụng
+Để khởi động máy chủ phát triển, chạy lệnh sau:
+```bash
+npm run dev
 ```
+Ứng dụng sẽ có sẵn tại `http://localhost:5173` (hoặc một cổng khác nếu 5173 đang được sử dụng).
 
-### 2. Cấu hình Biến Môi trường (Environment Variables)
+### 5. Chạy Kiểm thử
+Dự án sử dụng Vitest để kiểm thử. Bạn có thể chạy các bài kiểm thử bằng các lệnh sau:
+- Chạy tất cả các bài kiểm thử một lần:
+  ```bash
+  npm test
+  ```
+- Chạy kiểm thử và xem phạm vi bao phủ (coverage):
+  ```bash
+  npm run test:coverage
+  ```
+- Chạy kiểm thử ở chế độ theo dõi (watch mode) để phát triển:
+  ```bash
+  npm run test:watch
+  ```
 
-Tạo một file có tên là **.env** (hoặc .env.local) trong thư mục gốc của dự án frontend. Cấu hình URL của Backend API tại đây:
-
+### 6. Build cho Production
+Để tạo một bản build tối ưu hóa cho production, chạy:
+```bash
+npm run build
 ```
-# Thay thế URL bên dưới bằng địa chỉ Backend Spring Boot của bạn  
-VITE_API_BASE_URL="http://localhost:8080/api"
-```
-
-*Ghi chú: Vite sử dụng tiền tố VITE\_ cho các biến môi trường dành cho frontend.*
-
-### 3. Chạy Ứng dụng
-
-Chạy lệnh sau để khởi động máy chủ phát triển (Development Server):
-
-```Bash
-npm run dev  
-# Hoặc nếu dùng yarn:  
-# yarn dev
-```
-
-Ứng dụng sẽ tự động mở trong trình duyệt của bạn (thường là **http://localhost:5173** hoặc một cổng khác).
-
-### 4. Build (Tạo bản phát hành)
-
-Để tạo bản build sẵn sàng cho việc triển khai Production:
-
-```Bash
-npm run build  
-# Bản build sẽ được tạo trong thư mục 'dist/'
-```
+Các tệp đã build sẽ được đặt trong thư mục `dist/`.
 
 ## H. Tài liệu API
 
 (Chưa cập nhật)
 
-## K. Kiểm thử (Testing)
+## I. Kiểm thử (Testing)
 
 (Chưa cập nhật)
