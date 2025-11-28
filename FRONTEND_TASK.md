@@ -98,18 +98,18 @@
 ### **V. Giai đoạn Kiểm thử (Testing)**
 
 #### **A. Cài đặt và Cấu hình Môi trường Kiểm thử**
-* [ ] **Cài đặt Dependencies**: Cài đặt `vitest`, `jsdom`, `@testing-library/react`, `user-event`, và `msw`.
-* [ ] **Cấu hình Vitest**: Tạo và cấu hình `vitest.config.js` để sử dụng `jsdom`, thiết lập `setupFiles`, và định nghĩa các tùy chọn báo cáo `coverage`.
-* [ ] **Thiết lập Global Setup**: Tạo file `src/setupTests.js` để import `@testing-library/jest-dom` và khởi động/dọn dẹp mock server `msw`.
+* [x] **Cài đặt Dependencies**: Cài đặt `vitest`, `jsdom`, `@testing-library/react`, `user-event`, và `msw`.
+* [x] **Cấu hình Vitest**: Tạo và cấu hình `vitest.config.js` để sử dụng `jsdom`, thiết lập `setupFiles`, và định nghĩa các tùy chọn báo cáo `coverage`.
+* [x] **Thiết lập Global Setup**: Tạo file `src/setupTests.js` để import `@testing-library/jest-dom` và khởi động/dọn dẹp mock server `msw`.
 
 #### **B. Thiết lập API Mocking (MSW)**
-* [ ] **Định nghĩa API Handlers**: Tạo `src/mocks/handlers.js` để giả lập các API endpoint (đăng nhập, lấy dữ liệu, v.v.).
-* [ ] **Khởi tạo Mock Server**: Tạo `src/mocks/server.js` để thiết lập `msw/node`.
+* [x] **Định nghĩa API Handlers**: Tạo `src/mocks/handlers.js` để giả lập các API endpoint (đăng nhập, lấy dữ liệu, v.v.).
+* [x] **Khởi tạo Mock Server**: Tạo `src/mocks/server.js` để thiết lập `msw/node`.
 
 #### **C. Viết Bài kiểm thử (Test Cases)**
 * [ ] **Unit Tests**:
-    * [ ] **Components**: Kiểm tra các component độc lập (`RecipeDetail`, `SharePostForm`) render đúng và xử lý sự kiện.
-    * [ ] **Redux Slices**: Kiểm tra các reducer của `authSlice` cập nhật state chính xác.
+    * [x] **Components**: Kiểm tra các component độc lập (`RecipeDetail`, `SharePostForm`) render đúng và xử lý sự kiện.
+    * [x] **Redux Slices**: Kiểm tra các reducer của `authSlice` cập nhật state chính xác.
     * [ ] **Services**: Kiểm tra các hàm service (`authService`, `planService`) gọi đúng API (sử dụng mock) và xử lý dữ liệu trả về.
 * [ ] **Integration Tests**:
     * [ ] **Luồng Xác thực**: Kiểm tra luồng đăng nhập/đăng xuất hoàn chỉnh, bao gồm cả cập nhật Redux state và điều hướng.
