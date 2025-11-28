@@ -107,10 +107,10 @@
 * [x] **Khởi tạo Mock Server**: Tạo `src/mocks/server.js` để thiết lập `msw/node`.
 
 #### **C. Viết Bài kiểm thử (Test Cases)**
-* [ ] **Unit Tests**:
+* [x] **Unit Tests**:
     * [x] **Components**: Kiểm tra các component độc lập (`RecipeDetail`, `SharePostForm`) render đúng và xử lý sự kiện.
     * [x] **Redux Slices**: Kiểm tra các reducer của `authSlice` cập nhật state chính xác.
-    * [ ] **Services**: Kiểm tra các hàm service (`authService`, `planService`) gọi đúng API (sử dụng mock) và xử lý dữ liệu trả về.
+    * [x] **Services**: Kiểm tra các hàm service (`authService`, `planService`) gọi đúng API (sử dụng mock) và xử lý dữ liệu trả về.
 * [ ] **Integration Tests**:
     * [ ] **Luồng Xác thực**: Kiểm tra luồng đăng nhập/đăng xuất hoàn chỉnh, bao gồm cả cập nhật Redux state và điều hướng.
     * [ ] **Luồng Phân quyền**: Kiểm tra `PrivateRoute` và `AdminRoute` bảo vệ route và điều hướng chính xác dựa trên vai trò người dùng.

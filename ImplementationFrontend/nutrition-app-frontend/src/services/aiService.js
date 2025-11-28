@@ -1,12 +1,12 @@
 // src/services/aiService.js
 
-import api from '../services/api'; // Import aiApi instance
+import api from './api'; // Import api instance
 
 // --- Hàm Tư vấn Dinh dưỡng bằng Văn bản (NLP) ---
 const getNutritionAdvice = async (message, userId) => {
     try {
         // Gọi API của AI/NLP Service
-        const response = await aiApi.post('/advice/chat', {
+        const response = await api.post('/advice/chat', {
             message,
             userId, // Gửi userId để AI cá nhân hóa phản hồi
         });
@@ -29,7 +29,7 @@ const analyzeFoodImage = async (imageFile, userId) => {
         formData.append('userId', userId);
 
         // Cần ghi đè Content-Type để gửi FormData
-        const response = await aiApi.post('/vision/analyze', formData, {
+        const response = await api.post('/vision/analyze', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },
