@@ -112,8 +112,8 @@
     * [x] **Redux Slices**: Kiểm tra các reducer của `authSlice` cập nhật state chính xác.
     * [x] **Services**: Kiểm tra các hàm service (`authService`, `planService`) gọi đúng API (sử dụng mock) và xử lý dữ liệu trả về.
 * [ ] **Integration Tests**:
-    * [ ] **Luồng Xác thực**: Kiểm tra luồng đăng nhập/đăng xuất hoàn chỉnh, bao gồm cả cập nhật Redux state và điều hướng.
-    * [ ] **Luồng Phân quyền**: Kiểm tra `PrivateRoute` và `AdminRoute` bảo vệ route và điều hướng chính xác dựa trên vai trò người dùng.
+    * [x] **Luồng Xác thực**: Kiểm tra luồng đăng nhập/đăng xuất hoàn chỉnh, bao gồm cả cập nhật Redux state và điều hướng.
+    * [x] **Luồng Phân quyền**: Kiểm tra `PrivateRoute` và `AdminRoute` bảo vệ route và điều hướng chính xác dựa trên vai trò người dùng.
     * [ ] **Luồng Nghiệp vụ chính**: Kiểm tra các trang chính (`DashboardPage`, `DailyLogInputPage`, `NutritionPlanPage`) hoạt động đúng khi tích hợp với API mock.
 * [ ] **Kiểm thử khả năng đáp ứng (Responsiveness Testing)**: Đảm bảo giao diện hoạt động tốt trên thiết bị di động (Mobile-First) và máy tính để bàn.
 
