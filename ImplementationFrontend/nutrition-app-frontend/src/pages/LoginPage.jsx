@@ -50,11 +50,12 @@ function LoginPage() {
 
                     {/* Trường Tên người dùng */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700"> {/* Added htmlFor */}
                             Tên người dùng
                         </label>
                         <input
                             type="text"
+                            id="username" // Added id
                             required
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
@@ -64,11 +65,12 @@ function LoginPage() {
 
                     {/* Trường Mật khẩu */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700"> {/* Added htmlFor */}
                             Mật khẩu
                         </label>
                         <input
                             type="password"
+                            id="password" // Added id
                             required
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}

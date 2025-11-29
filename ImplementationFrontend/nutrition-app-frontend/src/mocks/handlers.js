@@ -1,15 +1,16 @@
 import { http, HttpResponse } from 'msw';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api'; // Sử dụng biến môi trường
+// Đảm bảo BASE_URL khớp với axios instance trong src/services/api.js
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
 
 export const handlers = [
     // 1. Mock API Đăng nhập
     http.post(`${API_BASE_URL}/auth/login`, async ({ request }) => {
         const data = await request.json();
-        if (data.username === 'admin' && data.password === '123') {
+        if ((data.username === 'admin' && data.password === '123') || (data.username === 'testuser' && data.password === 'password')) {
             return HttpResponse.json({
-                token: 'mock-admin-token',
-                user: { id: 'admin1', username: 'admin', roles: ['USER', 'ADMIN'] }
+                token: 'mock-test-token',
+                user: { id: 'user1', username: data.username, roles: ['USER'] }
             }, { status: 200 });
         }
         return HttpResponse.json({ message: 'Invalid credentials' }, { status: 401 });

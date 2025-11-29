@@ -30,9 +30,14 @@ const authSlice = createSlice({
         },
         setLoading: (state, action) => {
             state.isLoading = action.payload;
-        }
+        },
+        // Thêm reducer để reset trạng thái về initialState
+        reset: (state) => {
+            Object.assign(state, initialState);
+            localStorage.removeItem('token'); // Đảm bảo token cũng bị xóa khỏi Local Storage khi reset
+        },
     },
 });
 
-export const { setCredentials, logout, setLoading } = authSlice.actions;
+export const { setCredentials, logout, setLoading, reset } = authSlice.actions; // Export action reset
 export default authSlice.reducer;
