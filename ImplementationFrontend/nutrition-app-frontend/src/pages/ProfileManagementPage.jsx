@@ -5,7 +5,7 @@ import { User, Target, Heart, Scale, Clock, AlertTriangle } from 'lucide-react';
 import { useSelector } from 'react-redux';
 
 // Dữ liệu giả định cho lần tải đầu tiên (để tránh lỗi)
-const INITIAL_PROFILE = {
+export const INITIAL_PROFILE = { // Exported INITIAL_PROFILE
     user: { fullName: 'Tên người dùng', email: 'user@example.com', username: 'username123' },
     characteristics: { height: 170, weight: 65, activityLevel: 'MODERATE', allergies: 'Không', underlyingDisease: 'Không' },
     goals: { goalType: 'MAINTAIN', durationDays: 30, targetDailyCalories: 2000 },
@@ -39,7 +39,8 @@ function ProfileManagementPage() {
         fetchProfile();
     }, [reduxUser]);
 
-    const handleUpdate = (type, updatedData, serviceCall) => async (e) => {
+    // Modified handleUpdate
+    const handleUpdate = (type, serviceCall) => async (e, updatedData) => {
         e.preventDefault();
         setMessage(null);
         try {
@@ -92,13 +93,13 @@ function ProfileManagementPage() {
             {/* 2. Form Cập nhật Đặc điểm Cá nhân */}
             <CharacteristicsForm
                 initialData={profile.characteristics}
-                onUpdate={handleUpdate('characteristics', profile.characteristics, profileService.updateCharacteristics)}
+                onUpdate={handleUpdate('characteristics', profileService.updateCharacteristics)}
             />
 
             {/* 3. Form Cập nhật Mục tiêu Dinh dưỡng */}
             <GoalsForm
                 initialData={profile.goals}
-                onUpdate={handleUpdate('goals', profile.goals, profileService.updateGoals)}
+                onUpdate={handleUpdate('goals', profileService.updateGoals)}
             />
 
         </div>
@@ -127,8 +128,8 @@ const CharacteristicsForm = ({ initialData, onUpdate }) => {
     };
 
     return (
-        <form onSubmit={onUpdate(data)} className="bg-white p-6 rounded-xl shadow-lg mb-8 border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-700 mb-4 flex items-center">
+        <form onSubmit={(e) => onUpdate(e, data)} className="bg-white p-6 rounded-xl shadow-lg mb-8 border border-gray-200" aria-labelledby="characteristics-form-title">
+            <h2 id="characteristics-form-title" className="text-xl font-bold text-gray-700 mb-4 flex items-center">
                 <Scale className="w-5 h-5 mr-2" />
                 Đặc điểm Sinh học & Sức khỏe
             </h2>
@@ -139,8 +140,9 @@ const CharacteristicsForm = ({ initialData, onUpdate }) => {
 
                 {/* Mức độ hoạt động */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Mức độ hoạt động</label>
+                    <label htmlFor="activityLevel" className="block text-sm font-medium text-gray-700">Mức độ hoạt động</label>
                     <select
+                        id="activityLevel" // Added id
                         name="activityLevel"
                         value={data.activityLevel}
                         onChange={handleChange}
@@ -190,8 +192,8 @@ const GoalsForm = ({ initialData, onUpdate }) => {
     };
 
     return (
-        <form onSubmit={onUpdate(data)} className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-            <h2 className="text-xl font-bold text-gray-700 mb-4 flex items-center">
+        <form onSubmit={(e) => onUpdate(e, data)} className="bg-white p-6 rounded-xl shadow-lg border border-gray-200" aria-labelledby="goals-form-title">
+            <h2 id="goals-form-title" className="text-xl font-bold text-gray-700 mb-4 flex items-center">
                 <Target className="w-5 h-5 mr-2" />
                 Mục tiêu Dinh dưỡng
             </h2>
@@ -199,8 +201,9 @@ const GoalsForm = ({ initialData, onUpdate }) => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Loại mục tiêu */}
                 <div>
-                    <label className="block text-sm font-medium text-gray-700">Mục tiêu</label>
+                    <label htmlFor="goalType" className="block text-sm font-medium text-gray-700">Mục tiêu</label>
                     <select
+                        id="goalType" // Added id
                         name="goalType"
                         value={data.goalType}
                         onChange={handleChange}
@@ -233,8 +236,9 @@ const GoalsForm = ({ initialData, onUpdate }) => {
 // Component Input Field tiện ích
 const InputField = ({ label, name, type, value, onChange, placeholder = '', required = false }) => (
     <div>
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
         <input
+            id={name} // Added id
             type={type}
             name={name}
             value={value}
