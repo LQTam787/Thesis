@@ -16,7 +16,7 @@ function RegisterPage() {
     const handleRegister = async (e) => {
         e.preventDefault();
         setError(null);
-        setSuccess(false);
+        setSuccess(false); // Reset success state
         setLoading(true);
 
         try {
@@ -24,15 +24,14 @@ function RegisterPage() {
             await authService.register(userData);
 
             setSuccess(true);
-            // Chuyển hướng đến trang Đăng nhập sau 2 giây
-            setTimeout(() => {
-                navigate('/login');
-            }, 2000);
+            // Chuyển hướng ngay lập tức đến trang Đăng nhập sau khi đăng ký thành công
+            navigate('/login');
 
         } catch (err) {
             // Giả định lỗi từ Backend có thể là response.data.message
             const errorMessage = err.response?.data?.message || 'Đăng ký thất bại. Vui lòng thử lại.';
             setError(errorMessage);
+            setSuccess(false); // Đảm bảo success là false khi có lỗi
             console.error(err);
         } finally {
             setLoading(false);
@@ -57,8 +56,9 @@ function RegisterPage() {
 
                     {/* Trường Tên người dùng */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Tên người dùng</label>
+                        <label htmlFor="username" className="block text-sm font-medium text-gray-700">Tên người dùng</label>
                         <input
+                            id="username"
                             type="text"
                             required
                             value={username}
@@ -69,8 +69,9 @@ function RegisterPage() {
 
                     {/* Trường Email */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Email</label>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
                         <input
+                            id="email"
                             type="email"
                             required
                             value={email}
@@ -81,8 +82,9 @@ function RegisterPage() {
 
                     {/* Trường Mật khẩu */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">Mật khẩu</label>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Mật khẩu</label>
                         <input
+                            id="password"
                             type="password"
                             required
                             value={password}
@@ -94,9 +96,9 @@ function RegisterPage() {
                     {/* Nút Đăng ký */}
                     <button
                         type="submit"
-                        disabled={loading || success}
+                        disabled={loading} // Chỉ disable khi đang loading, không phải khi success vì đã navigate
                         className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
-                            (loading || success) ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
+                            loading ? 'bg-green-400 cursor-not-allowed' : 'bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'
                         }`}
                     >
                         {loading ? 'Đang xử lý...' : 'Đăng Ký'}
