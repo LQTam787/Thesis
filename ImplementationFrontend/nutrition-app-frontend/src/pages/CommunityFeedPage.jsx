@@ -81,6 +81,7 @@ function CommunityFeedPage() {
             setLoading(true);
             const data = await shareService.getCommunityFeed();
             setPosts(data);
+            setError(null); // Clear any previous errors
         } catch (err) {
             setError('Không thể tải bảng tin cộng đồng.');
             // Giả định dữ liệu nếu lỗi
@@ -154,18 +155,23 @@ function CommunityFeedPage() {
             {/* Hiển thị Feed */}
             {loading ? (
                 <div className="p-8 text-center text-lg">Đang tải bảng tin...</div>
-            ) : error ? (
-                <div className="p-8 text-center text-red-600">{error} (Đang hiển thị dữ liệu giả định)</div>
             ) : (
                 <div className="max-w-3xl mx-auto">
+                    {error && (
+                        <div className="p-8 text-center text-red-600 mb-4">
+                            {error} (Đang hiển thị dữ liệu giả định)
+                        </div>
+                    )}
                     {posts.length > 0 ? (
                         posts.map((post) => (
                             <PostCard key={post.id} post={post} onLikeToggle={handleLikeToggle} />
                         ))
                     ) : (
-                        <div className="text-center p-10 border-2 border-dashed border-gray-300 rounded-xl bg-white">
-                            <p className="text-lg text-gray-600">Chưa có bài đăng nào. Hãy là người đầu tiên chia sẻ!</p>
-                        </div>
+                        !error && ( // Only show "No posts" message if there's no error and no posts
+                            <div className="text-center p-10 border-2 border-dashed border-gray-300 rounded-xl bg-white">
+                                <p className="text-lg text-gray-600">Chưa có bài đăng nào. Hãy là người đầu tiên chia sẻ!</p>
+                            </div>
+                        )
                     )}
                 </div>
             )}

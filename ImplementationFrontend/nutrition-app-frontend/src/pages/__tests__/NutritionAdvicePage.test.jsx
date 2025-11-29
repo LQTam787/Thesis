@@ -41,9 +41,6 @@ const renderWithProviders = (component) => {
     );
 };
 
-// Helper function to simulate async behavior
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
 describe('NutritionAdvicePage', () => {
     beforeAll(() => {
         // JSDOM doesn't implement scrollIntoView, so we mock it.
@@ -65,10 +62,11 @@ describe('NutritionAdvicePage', () => {
     });
 
     test('allows user to send a text message and receive a response', async () => {
-        // Mock the service to have a delay
-        aiService.getNutritionAdvice.mockImplementation(async () => {
-            await sleep(50); // Simulate network delay
-            return { text: 'Đây là lời khuyên cho bạn.' };
+        let resolveGetNutritionAdvicePromise;
+        aiService.getNutritionAdvice.mockImplementation(() => {
+            return new Promise(resolve => {
+                resolveGetNutritionAdvicePromise = () => resolve({ text: 'Đây là lời khuyên cho bạn.' });
+            });
         });
 
         renderWithProviders(<NutritionAdvicePage />);
@@ -91,10 +89,13 @@ describe('NutritionAdvicePage', () => {
 
         // Check for loading indicator and service call
         await waitFor(() => {
-            expect(screen.getByText('AI đang xử lý...')).toBeInTheDocument();
+            expect(screen.getByText((content, element) => content.includes('AI đang xử lý...'))).toBeInTheDocument();
             expect(aiService.getNutritionAdvice).toHaveBeenCalledTimes(1);
             expect(aiService.getNutritionAdvice).toHaveBeenCalledWith('Tôi nên ăn gì cho bữa sáng?', 'user123');
         });
+
+        // Resolve the promise to simulate AI response
+        resolveGetNutritionAdvicePromise();
 
         // Check if AI response appears after the delay
         await waitFor(() => {
@@ -102,7 +103,7 @@ describe('NutritionAdvicePage', () => {
         });
 
         // Loading indicator should be gone
-        expect(screen.queryByText('AI đang xử lý...')).not.toBeInTheDocument();
+        expect(screen.queryByText((content, element) => content.includes('AI đang xử lý...'))).not.toBeInTheDocument();
     });
 
 
@@ -120,13 +121,15 @@ describe('NutritionAdvicePage', () => {
         await waitFor(() => {
             expect(screen.getByText('Xin lỗi, đã có lỗi xảy ra khi kết nối với AI.')).toBeInTheDocument();
         });
-        expect(screen.queryByText('AI đang xử lý...')).not.toBeInTheDocument();
+        expect(screen.queryByText((content, element) => content.includes('AI đang xử lý...'))).not.toBeInTheDocument();
     });
 
     test('allows user to upload an image for analysis and receive a response', async () => {
-        aiService.analyzeFoodImage.mockImplementation(async () => {
-            await sleep(50);
-            return { recognizedFood: 'Phở Bò', calories: 450 };
+        let resolveAnalyzeFoodImagePromise;
+        aiService.analyzeFoodImage.mockImplementation(() => {
+            return new Promise(resolve => {
+                resolveAnalyzeFoodImagePromise = () => resolve({ recognizedFood: 'Phở Bò', calories: 450 });
+            });
         });
 
         renderWithProviders(<NutritionAdvicePage />);
@@ -158,16 +161,19 @@ describe('NutritionAdvicePage', () => {
 
         // Check for loading indicator and service call
         await waitFor(() => {
-            expect(screen.getByText('AI đang xử lý...')).toBeInTheDocument();
+            expect(screen.getByText((content, element) => content.includes('AI đang xử lý...'))).toBeInTheDocument();
             expect(aiService.analyzeFoodImage).toHaveBeenCalledTimes(1);
             expect(aiService.analyzeFoodImage).toHaveBeenCalledWith(file, 'user123');
         });
+
+        // Resolve the promise to simulate AI response
+        resolveAnalyzeFoodImagePromise();
 
         // Check if AI analysis result appears
         await waitFor(() => {
             expect(screen.getByText(/Kết quả nhận dạng: Phở Bò. Ước tính Calories: 450 kcal./i)).toBeInTheDocument();
         });
-        expect(screen.queryByText('AI đang xử lý...')).not.toBeInTheDocument();
+        expect(screen.queryByText((content, element) => content.includes('AI đang xử lý...'))).not.toBeInTheDocument();
     });
 
     test('handles error during image analysis', async () => {
@@ -185,7 +191,7 @@ describe('NutritionAdvicePage', () => {
         await waitFor(() => {
             expect(screen.getByText('Xin lỗi, không thể phân tích hình ảnh này.')).toBeInTheDocument();
         });
-        expect(screen.queryByText('AI đang xử lý...')).not.toBeInTheDocument();
+        expect(screen.queryByText((content, element) => content.includes('AI đang xử lý...'))).not.toBeInTheDocument();
     });
 
     test('send button is disabled when input is empty and no image is selected', () => {

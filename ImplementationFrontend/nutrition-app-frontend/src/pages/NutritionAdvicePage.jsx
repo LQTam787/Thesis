@@ -47,10 +47,10 @@ function NutritionAdvicePage() {
         e.preventDefault();
         if (!inputMessage.trim() || isLoading) return;
 
+        setIsLoading(true); // Di chuyển lên đầu
         const userMessage = inputMessage.trim();
         setMessages((prev) => [...prev, { sender: 'user', message: userMessage, type: 'text' }]);
         setInputMessage('');
-        setIsLoading(true);
 
         try {
             // Gọi AI Service (NLP)
@@ -69,10 +69,10 @@ function NutritionAdvicePage() {
     const handleImageUpload = async () => {
         if (!imageFile || isLoading) return;
 
+        setIsLoading(true); // Di chuyển lên đầu
         // Hiển thị tin nhắn của người dùng (chỉ là thông báo)
         setMessages((prev) => [...prev, { sender: 'user', message: `Đang phân tích hình ảnh: ${imageFile.name}`, type: 'image_upload' }]);
         setImageFile(null); // Xóa file đang chờ
-        setIsLoading(true);
 
         try {
             // Gọi AI Service (Vision)
