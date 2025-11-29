@@ -4,25 +4,13 @@ import logService from '../services/logService';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import { Activity, Clock } from 'lucide-react';
 
-// Dữ liệu giả định nếu API chưa hoạt động
-const dummyData = [
-    { date: '2025-11-01', loggedCalories: 2100, targetCalories: 2200 },
-    { date: '2025-11-02', loggedCalories: 2350, targetCalories: 2200 },
-    { date: '2025-11-03', loggedCalories: 2050, targetCalories: 2200 },
-    { date: '2025-11-04', loggedCalories: 2150, targetCalories: 2200 },
-    { date: '2025-11-05', loggedCalories: 2400, targetCalories: 2200 },
-    { date: '2025-11-06', loggedCalories: 2000, targetCalories: 2200 },
-    { date: '2025-11-07', loggedCalories: 2200, targetCalories: 2200 },
-];
-
 function ProgressReportPage() {
-    const [reportData, setReportData] = useState(dummyData);
-    const [loading, setLoading] = useState(false); // Đặt thành false để hiển thị dummyData
+    const [reportData, setReportData] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [range, setRange] = useState('7days'); // Tùy chọn xem: 7 ngày, 30 ngày
 
     useEffect(() => {
-        // Thực tế, bạn sẽ gọi API ở đây
         const fetchReport = async () => {
             setLoading(true);
             setError(null);
@@ -37,11 +25,8 @@ function ProgressReportPage() {
                 }
                 const startDateString = startDate.toISOString().slice(0, 10);
 
-                // const data = await logService.getProgressData(startDateString, endDate);
-                // setReportData(data);
-
-                // Tạm thời sử dụng dummyData
-                setReportData(dummyData.slice(dummyData.length - (range === '7days' ? 7 : 30)));
+                const data = await logService.getProgressData(startDateString, endDate);
+                setReportData(data);
 
             } catch (err) {
                 setError('Không thể tải dữ liệu báo cáo. Vui lòng thử lại.');
@@ -77,37 +62,39 @@ function ProgressReportPage() {
             {loading && <div className="text-center p-8">Đang tải dữ liệu báo cáo...</div>}
             {error && <div className="text-center p-8 text-red-600">{error}</div>}
 
-            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-700">Biểu đồ Lượng Calo Tiêu thụ vs. Mục tiêu</h2>
+            {!loading && !error && (
+                <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                    <h2 className="text-xl font-semibold mb-4 text-gray-700">Biểu đồ Lượng Calo Tiêu thụ vs. Mục tiêu</h2>
 
-                <ResponsiveContainer width="100%" height={400}>
-                    <LineChart data={reportData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                        <XAxis dataKey="date" />
-                        <YAxis label={{ value: 'Calo (kcal)', angle: -90, position: 'insideLeft' }} />
-                        <Tooltip />
-                        <Legend />
-                        {/* Lượng calo đã ghi */}
-                        <Line
-                            type="monotone"
-                            dataKey="loggedCalories"
-                            stroke="#10B981"
-                            name="Calo Đã Tiêu Thụ"
-                            activeDot={{ r: 8 }}
-                            strokeWidth={2}
-                        />
-                        {/* Mục tiêu calo */}
-                        <Line
-                            type="monotone"
-                            dataKey="targetCalories"
-                            stroke="#F59E0B"
-                            name="Mục Tiêu Hàng Ngày"
-                            strokeDasharray="5 5"
-                            strokeWidth={2}
-                        />
-                    </LineChart>
-                </ResponsiveContainer>
-            </div>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <LineChart data={reportData} margin={{ top: 5, right: 20, left: 0, bottom: 5 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                            <XAxis dataKey="date" />
+                            <YAxis label={{ value: 'Calo (kcal)', angle: -90, position: 'insideLeft' }} />
+                            <Tooltip />
+                            <Legend />
+                            {/* Lượng calo đã ghi */}
+                            <Line
+                                type="monotone"
+                                dataKey="loggedCalories"
+                                stroke="#10B981"
+                                name="Calo Đã Tiêu Thụ"
+                                activeDot={{ r: 8 }}
+                                strokeWidth={2}
+                            />
+                            {/* Mục tiêu calo */}
+                            <Line
+                                type="monotone"
+                                dataKey="targetCalories"
+                                stroke="#F59E0B"
+                                name="Mục Tiêu Hàng Ngày"
+                                strokeDasharray="5 5"
+                                strokeWidth={2}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
+            )}
 
             {/* Các báo cáo hoặc biểu đồ khác (ví dụ: Macro-nutrients chart) sẽ được thêm vào đây */}
         </div>
