@@ -110,8 +110,9 @@ function DailyLogInputPage() {
                     </h2>
                     <form onSubmit={handleImageAnalyze} className="flex items-end space-x-4">
                         <div className="flex-grow">
-                            <label className="block text-sm font-medium text-gray-700">Tải lên Hình ảnh Bữa ăn</label>
+                            <label htmlFor="image-upload-input" className="block text-sm font-medium text-gray-700">Tải lên Hình ảnh Bữa ăn</label>
                             <input
+                                id="image-upload-input"
                                 type="file"
                                 accept="image/*"
                                 onChange={(e) => setImageFile(e.target.files[0])}
@@ -120,7 +121,7 @@ function DailyLogInputPage() {
                             />
                             {imageFile && (
                                 <p className="mt-2 text-xs text-gray-500 flex items-center">
-                                    <X className="w-3 h-3 mr-1 cursor-pointer" onClick={() => setImageFile(null)} />
+                                    <X className="w-3 h-3 mr-1 cursor-pointer" onClick={() => setImageFile(null)} data-testid="x-icon" />
                                     {imageFile.name} đã sẵn sàng để phân tích.
                                 </p>
                             )}
@@ -147,8 +148,9 @@ function DailyLogInputPage() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {/* Tên món ăn */}
                         <div className="col-span-1">
-                            <label className="block text-sm font-medium text-gray-700">Tên Món ăn/Thực phẩm</label>
+                            <label htmlFor="foodName-input" className="block text-sm font-medium text-gray-700">Tên Món ăn/Thực phẩm</label>
                             <input
+                                id="foodName-input"
                                 type="text"
                                 required
                                 value={logData.foodName}
@@ -160,8 +162,9 @@ function DailyLogInputPage() {
 
                         {/* Loại bữa ăn */}
                         <div className="col-span-1">
-                            <label className="block text-sm font-medium text-gray-700">Loại Bữa ăn</label>
+                            <label htmlFor="mealType-select" className="block text-sm font-medium text-gray-700">Loại Bữa ăn</label>
                             <select
+                                id="mealType-select"
                                 required
                                 value={logData.mealType}
                                 onChange={(e) => setLogData({ ...logData, mealType: e.target.value })}
@@ -175,8 +178,9 @@ function DailyLogInputPage() {
 
                         {/* Ngày */}
                         <div className="col-span-1">
-                            <label className="block text-sm font-medium text-gray-700">Ngày Ghi nhật ký</label>
+                            <label htmlFor="date-input" className="block text-sm font-medium text-gray-700">Ngày Ghi nhật ký</label>
                             <input
+                                id="date-input"
                                 type="date"
                                 required
                                 value={logData.date}
@@ -190,11 +194,12 @@ function DailyLogInputPage() {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-2 border-t border-gray-100">
                         {/* Calo */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 flex items-center">
+                            <label htmlFor="calories-input" className="block text-sm font-medium text-gray-700 flex items-center">
                                 <Zap className="w-4 h-4 mr-1 text-yellow-500" />
                                 Calo (kcal)
                             </label>
                             <input
+                                id="calories-input"
                                 type="number"
                                 value={logData.calories}
                                 onChange={(e) => setLogData({ ...logData, calories: e.target.value })}
@@ -204,8 +209,9 @@ function DailyLogInputPage() {
                         </div>
                         {/* Protein */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Protein (g)</label>
+                            <label htmlFor="protein-input" className="block text-sm font-medium text-gray-700">Protein (g)</label>
                             <input
+                                id="protein-input"
                                 type="number"
                                 value={logData.protein}
                                 onChange={(e) => setLogData({ ...logData, protein: e.target.value })}
@@ -215,8 +221,9 @@ function DailyLogInputPage() {
                         </div>
                         {/* Carb */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Carb (g)</label>
+                            <label htmlFor="carb-input" className="block text-sm font-medium text-gray-700">Carb (g)</label>
                             <input
+                                id="carb-input"
                                 type="number"
                                 value={logData.carb}
                                 onChange={(e) => setLogData({ ...logData, carb: e.target.value })}
@@ -226,8 +233,9 @@ function DailyLogInputPage() {
                         </div>
                         {/* Fat */}
                         <div>
-                            <label className="block text-sm font-medium text-gray-700">Chất béo (g)</label>
+                            <label htmlFor="fat-input" className="block text-sm font-medium text-gray-700">Chất béo (g)</label>
                             <input
+                                id="fat-input"
                                 type="number"
                                 value={logData.fat}
                                 onChange={(e) => setLogData({ ...logData, fat: e.target.value })}

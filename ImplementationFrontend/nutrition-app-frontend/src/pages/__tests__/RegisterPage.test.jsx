@@ -27,12 +27,6 @@ describe('RegisterPage Integration Tests', () => {
         // Reset mocks before each test
         authService.register.mockReset();
         mockedUsedNavigate.mockReset();
-        // Removed vi.useFakeTimers();
-    });
-
-    afterEach(() => {
-        // Removed vi.clearAllTimers();
-        // Removed vi.useRealTimers();
     });
 
     test('should successfully register a user and navigate to login', async () => {
@@ -55,17 +49,16 @@ describe('RegisterPage Integration Tests', () => {
         // Expect loading state
         expect(screen.getByRole('button', { name: /Đang xử lý.../i })).toBeInTheDocument();
 
-        // Wait for the registration to complete
+        // Wait for the registration to complete and success message to appear
         await waitFor(() => {
             expect(authService.register).toHaveBeenCalledWith({
                 username: 'testuser',
                 email: 'test@example.com',
                 password: 'password123',
             });
+            // Use findByText which waits for the element to appear
+            expect(screen.getByText(/Đăng ký thành công! Đang chuyển hướng đến trang Đăng nhập.../i)).toBeInTheDocument();
         });
-
-        // Expect success message
-        expect(screen.getByText(/Đăng ký thành công! Đang chuyển hướng đến trang Đăng nhập.../i)).toBeInTheDocument();
 
         // Wait for navigation to login page
         await waitFor(() => {
@@ -96,8 +89,6 @@ describe('RegisterPage Integration Tests', () => {
         // Expect loading state
         expect(screen.getByRole('button', { name: /Đang xử lý.../i })).toBeInTheDocument();
 
-        // Removed vi.runOnlyPendingTimers();
-
         // Wait for the error message to appear
         await waitFor(() => {
             expect(screen.getByText(errorMessage)).toBeInTheDocument();
@@ -125,8 +116,6 @@ describe('RegisterPage Integration Tests', () => {
 
         // Submit the form
         fireEvent.click(screen.getByRole('button', { name: /Đăng Ký/i }));
-
-        // Removed vi.runOnlyPendingTimers();
 
         // Wait for the error message to appear
         await waitFor(() => {
