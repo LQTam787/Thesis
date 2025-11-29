@@ -115,7 +115,7 @@ function NutritionAdvicePage() {
                             <Image className="w-5 h-5 mr-2 text-green-600" />
                             <span className="text-sm font-medium">{imageFile.name} - Sẵn sàng phân tích.</span>
                         </div>
-                        <button onClick={() => setImageFile(null)} className="text-gray-500 hover:text-gray-800">
+                        <button data-testid="remove-image-button" onClick={() => setImageFile(null)} className="text-gray-500 hover:text-gray-800">
                             <X className="w-4 h-4" />
                         </button>
                     </div>
@@ -127,12 +127,15 @@ function NutritionAdvicePage() {
                     <label className="flex items-center justify-center w-12 h-12 text-gray-600 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300 transition duration-150">
                         <Camera className="w-6 h-6" />
                         <input
+                            data-testid="file-input"
                             type="file"
                             accept="image/*"
                             className="hidden"
                             onChange={(e) => {
-                                setImageFile(e.target.files[0]);
-                                setInputMessage(''); // Xóa tin nhắn nếu có ảnh
+                                if (e.target.files && e.target.files[0]) {
+                                    setImageFile(e.target.files[0]);
+                                    setInputMessage(''); // Xóa tin nhắn nếu có ảnh
+                                }
                             }}
                             disabled={isLoading}
                         />
