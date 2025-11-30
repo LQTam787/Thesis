@@ -234,7 +234,7 @@ const FoodFormModal = ({ foodData, isEditing, onClose, onSubmit, onChange }) => 
                     <h3 className="text-2xl font-bold text-red-700">
                         {isEditing ? 'Sửa' : 'Thêm'} Dữ liệu Thực phẩm
                     </h3>
-                    <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600">
+                    <button type="button" onClick={onClose} className="text-gray-400 hover:text-gray-600" aria-label="Đóng">
                         <X className="w-6 h-6" />
                     </button>
                 </div>
@@ -265,8 +265,9 @@ const FoodFormModal = ({ foodData, isEditing, onClose, onSubmit, onChange }) => 
 // Component Input Field tiện ích
 const InputField = ({ label, name, type, value, onChange, required = false }) => (
     <div>
-        <label className="block text-sm font-medium text-gray-700">{label}</label>
+        <label htmlFor={name} className="block text-sm font-medium text-gray-700">{label}</label>
         <input
+            id={name}
             type={type}
             name={name}
             value={value}
