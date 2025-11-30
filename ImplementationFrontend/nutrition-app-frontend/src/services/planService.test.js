@@ -8,31 +8,31 @@ import planService from './planService';
 // 1. Cài đặt Mock Server với http và HttpResponse
 const server = setupServer(
     // Mock cho getAllPlans
-    http.get('http://localhost:8080/api/plans', () => {
+    http.get('*/api/plans', () => {
         return HttpResponse.json([{ id: 1, name: 'Kế hoạch giảm cân' }], { status: 200 });
     }),
 
     // Mock cho getPlanDetails (thành công)
-    http.get('http://localhost:8080/api/plans/1', () => {
+    http.get('*/api/plans/1', () => {
         return HttpResponse.json({ id: 1, name: 'Chi tiết kế hoạch' }, { status: 200 });
     }),
     // Mock cho getPlanDetails (thất bại)
-    http.get('http://localhost:8080/api/plans/99', () => {
+    http.get('*/api/plans/99', () => {
         return HttpResponse.json({ message: 'Plan not found' }, { status: 404 });
     }),
 
     // Mock cho createPlan (thành công)
-    http.post('http://localhost:8080/api/plans', async ({ request }) => {
+    http.post('*/api/plans', async ({ request }) => {
         const newPlan = await request.json();
         return HttpResponse.json({ id: 2, ...newPlan }, { status: 201 });
     }),
 
     // Mock cho getRecipeDetail (thành công)
-    http.get('http://localhost:8080/api/recipes/101', () => {
+    http.get('*/api/recipes/101', () => {
         return HttpResponse.json({ id: 101, name: 'Công thức phở bò' }, { status: 200 });
     }),
     // Mock cho getRecipeDetail (thất bại)
-    http.get('http://localhost:8080/api/recipes/999', () => {
+    http.get('*/api/recipes/999', () => {
         return HttpResponse.json({ message: 'Recipe not found' }, { status: 404 });
     })
 );
@@ -56,20 +56,20 @@ describe('planService', () => {
 
     it('getAllPlans: nên ném ra lỗi khi API trả về lỗi server', async () => {
         server.use(
-            http.get('http://localhost:8080/api/plans', () => {
+            http.get('*/api/plans', () => {
                 return HttpResponse.json({ message: 'Internal Server Error' }, { status: 500 });
             })
         );
-        await expect(planService.getAllPlans()).rejects.toThrow();
+        await expect(planService.getAllPlans()).rejects.toThrow('Request failed with status code 500');
     });
 
     it('getAllPlans: nên ném ra lỗi khi có lỗi mạng', async () => {
         server.use(
-            http.get('http://localhost:8080/api/plans', () => {
+            http.get('*/api/plans', () => {
                 return HttpResponse.error(); // Giả lập lỗi mạng
             })
         );
-        await expect(planService.getAllPlans()).rejects.toThrow();
+        await expect(planService.getAllPlans()).rejects.toThrow('Network Error');
     });
 
     // --- Tests for getPlanDetails ---
@@ -79,16 +79,16 @@ describe('planService', () => {
     });
 
     it('getPlanDetails: nên ném ra lỗi khi planId không tồn tại', async () => {
-        await expect(planService.getPlanDetails(99)).rejects.toThrow();
+        await expect(planService.getPlanDetails(99)).rejects.toThrow('Request failed with status code 404');
     });
 
     it('getPlanDetails: nên ném ra lỗi khi có lỗi mạng', async () => {
         server.use(
-            http.get('http://localhost:8080/api/plans/1', () => {
+            http.get('*/api/plans/1', () => {
                 return HttpResponse.error();
             })
         );
-        await expect(planService.getPlanDetails(1)).rejects.toThrow();
+        await expect(planService.getPlanDetails(1)).rejects.toThrow('Network Error');
     });
 
     // --- Tests for createPlan ---
@@ -100,20 +100,20 @@ describe('planService', () => {
 
     it('createPlan: nên ném ra lỗi khi API trả về lỗi client', async () => {
         server.use(
-            http.post('http://localhost:8080/api/plans', () => {
+            http.post('*/api/plans', () => {
                 return HttpResponse.json({ message: 'Invalid data' }, { status: 400 });
             })
         );
-        await expect(planService.createPlan({})).rejects.toThrow();
+        await expect(planService.createPlan({})).rejects.toThrow('Request failed with status code 400');
     });
 
     it('createPlan: nên ném ra lỗi khi có lỗi mạng', async () => {
         server.use(
-            http.post('http://localhost:8080/api/plans', () => {
+            http.post('*/api/plans', () => {
                 return HttpResponse.error();
             })
         );
-        await expect(planService.createPlan({})).rejects.toThrow();
+        await expect(planService.createPlan({})).rejects.toThrow('Network Error');
     });
 
     // --- Tests for getRecipeDetail ---
@@ -123,15 +123,15 @@ describe('planService', () => {
     });
 
     it('getRecipeDetail: nên ném ra lỗi khi recipeId không tồn tại', async () => {
-        await expect(planService.getRecipeDetail(999)).rejects.toThrow();
+        await expect(planService.getRecipeDetail(999)).rejects.toThrow('Request failed with status code 404');
     });
 
     it('getRecipeDetail: nên ném ra lỗi khi có lỗi mạng', async () => {
         server.use(
-            http.get('http://localhost:8080/api/recipes/101', () => {
+            http.get('*/api/recipes/101', () => {
                 return HttpResponse.error();
             })
         );
-        await expect(planService.getRecipeDetail(101)).rejects.toThrow();
+        await expect(planService.getRecipeDetail(101)).rejects.toThrow('Network Error');
     });
 });

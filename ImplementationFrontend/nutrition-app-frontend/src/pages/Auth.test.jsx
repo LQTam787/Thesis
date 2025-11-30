@@ -7,7 +7,7 @@ import { reset } from '../store/authSlice'; // Import reset action
 import LoginPage from './LoginPage';
 import DashboardPage from './DashboardPage';
 import { server } from '../mocks/server';
-import { http } from 'msw';
+import { http, HttpResponse } from 'msw'; // Import HttpResponse
 
 // Mock DashboardPage to verify navigation
 vi.mock('./DashboardPage', () => ({
@@ -79,8 +79,11 @@ describe('Authentication Flow', () => {
     it('should show an error message on failed login', async () => {
         // Override the default msw handler to return an error
         server.use(
-            http.post('*/auth/login', (req, res, ctx) => {
-                return res(ctx.status(401), ctx.json({ message: 'Invalid credentials' }));
+            http.post('*/auth/login', () => {
+                return HttpResponse.json(
+                    { message: 'Invalid credentials' }, // Data cho error.response.data
+                    { status: 401 } // Status cho error.response.status
+                );
             })
         );
 

@@ -76,7 +76,14 @@ describe('RecipeDetail Component', () => {
 
     // Test Case 2: Hiển thị trạng thái Lỗi khi fetch thất bại
     test('Hiển thị thông báo lỗi khi không tìm thấy công thức', async () => {
-        planService.getRecipeDetail.mockRejectedValue(new Error('Fetch failed'));
+        // Mock một lỗi Axios với cấu trúc phù hợp
+        planService.getRecipeDetail.mockRejectedValue({
+            response: {
+                data: { message: 'Recipe not found' },
+                status: 404
+            },
+            message: 'Request failed with status code 404'
+        });
 
         render(<RecipeDetail />, { wrapper: Wrapper });
 

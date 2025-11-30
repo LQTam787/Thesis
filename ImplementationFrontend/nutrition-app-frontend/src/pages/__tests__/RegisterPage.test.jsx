@@ -23,10 +23,17 @@ vi.mock('react-router-dom', async (importOriginal) => {
 });
 
 describe('RegisterPage Integration Tests', () => {
+    // Mock console.error to prevent test output pollution
+    let consoleErrorSpy;
     beforeEach(() => {
         // Reset mocks before each test
         authService.register.mockReset();
         mockedUsedNavigate.mockReset();
+        consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    });
+
+    afterEach(() => {
+        consoleErrorSpy.mockRestore(); // Restore console.error after each test
     });
 
     test('should successfully register a user and navigate to login', async () => {

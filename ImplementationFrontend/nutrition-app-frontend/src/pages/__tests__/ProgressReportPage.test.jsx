@@ -70,8 +70,7 @@ describe('ProgressReportPage', () => {
         logService.getProgressData.mockResolvedValue(dummyData7days);
         renderWithRouter();
 
-        // The component uses dummy data on first load, so loading state might not be visible
-        // Let's ensure the API would have been called with correct default range
+        // Chờ cho đến khi dữ liệu được tải và hiển thị trên DOM
         await waitFor(() => {
             expect(logService.getProgressData).toHaveBeenCalledTimes(1);
             const endDate = new Date().toISOString().slice(0, 10);
@@ -79,18 +78,17 @@ describe('ProgressReportPage', () => {
             startDate.setDate(startDate.getDate() - 7);
             const startDateString = startDate.toISOString().slice(0, 10);
             expect(logService.getProgressData).toHaveBeenCalledWith(startDateString, endDate);
+
+            // Kiểm tra các phần tử DOM sau khi tải xong
+            expect(screen.getByText('Báo cáo & Theo dõi Tiến độ')).toBeInTheDocument();
+            expect(screen.getByText('Biểu đồ Lượng Calo Tiêu thụ vs. Mục tiêu')).toBeInTheDocument();
+            expect(screen.getByTestId('responsive-container')).toBeInTheDocument();
+            expect(screen.getByTestId('line-chart')).toBeInTheDocument();
+            expect(screen.getByTestId('line-Calo Đã Tiêu Thụ')).toBeInTheDocument();
+            expect(screen.getByTestId('line-Mục Tiêu Hàng Ngày')).toBeInTheDocument();
         });
-
-        // Check for title
-        expect(screen.getByText('Báo cáo & Theo dõi Tiến độ')).toBeInTheDocument();
-        // Check if the chart container is rendered
-        expect(screen.getByText('Biểu đồ Lượng Calo Tiêu thụ vs. Mục tiêu')).toBeInTheDocument();
-        expect(screen.getByTestId('responsive-container')).toBeInTheDocument();
-        expect(screen.getByTestId('line-chart')).toBeInTheDocument();
-
-        // Check for the lines in the chart
-        expect(screen.getByTestId('line-Calo Đã Tiêu Thụ')).toBeInTheDocument();
-        expect(screen.getByTestId('line-Mục Tiêu Hàng Ngày')).toBeInTheDocument();
+        // Đảm bảo trạng thái tải không còn
+        expect(screen.queryByText('Đang tải dữ liệu báo cáo...')).not.toBeInTheDocument();
     });
 
     test('displays error message on API failure', async () => {
@@ -112,6 +110,8 @@ describe('ProgressReportPage', () => {
 
         await waitFor(() => {
             expect(logService.getProgressData).toHaveBeenCalledTimes(1);
+            // Đảm bảo dữ liệu 7 ngày đã được render trước khi tương tác
+            expect(screen.getByTestId('line-chart')).toBeInTheDocument();
         });
 
         // Change to 30-day view
@@ -119,8 +119,10 @@ describe('ProgressReportPage', () => {
         const select = screen.getByRole('combobox');
         fireEvent.change(select, { target: { value: '30days' } });
 
-        // Check that the loading state appears for the new fetch
-        expect(screen.getByText('Đang tải dữ liệu báo cáo...')).toBeInTheDocument();
+        // Chờ cho đến khi trạng thái tải xuất hiện và sau đó dữ liệu mới được tải
+        await waitFor(() => {
+            expect(screen.getByText('Đang tải dữ liệu báo cáo...')).toBeInTheDocument();
+        });
 
         await waitFor(() => {
             expect(logService.getProgressData).toHaveBeenCalledTimes(2);
@@ -129,21 +131,23 @@ describe('ProgressReportPage', () => {
             startDate.setDate(startDate.getDate() - 30);
             const startDateString = startDate.toISOString().slice(0, 10);
             expect(logService.getProgressData).toHaveBeenCalledWith(startDateString, endDate);
+            // Đảm bảo chart vẫn hiển thị sau khi tải dữ liệu mới
+            expect(screen.getByTestId('line-chart')).toBeInTheDocument();
+            expect(screen.queryByText('Đang tải dữ liệu báo cáo...')).not.toBeInTheDocument();
         });
-
-        // Check that the chart is still there
-        expect(screen.getByTestId('line-chart')).toBeInTheDocument();
     });
 
-    test('renders the select dropdown with correct options', () => {
+    test('renders the select dropdown with correct options', async () => { // Thêm async
         logService.getProgressData.mockResolvedValue(dummyData7days);
         renderWithRouter();
 
-        const select = screen.getByRole('combobox');
-        expect(select).toBeInTheDocument();
-        expect(select).toHaveValue('7days');
-        expect(screen.getByRole('option', { name: '7 Ngày qua' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: '30 Ngày qua' })).toBeInTheDocument();
+        await waitFor(() => { // Thêm waitFor
+            const select = screen.getByRole('combobox');
+            expect(select).toBeInTheDocument();
+            expect(select).toHaveValue('7days');
+            expect(screen.getByRole('option', { name: '7 Ngày qua' })).toBeInTheDocument();
+            expect(screen.getByRole('option', { name: '30 Ngày qua' })).toBeInTheDocument();
+        });
     });
 
     test('disables dropdown while loading', async () => {

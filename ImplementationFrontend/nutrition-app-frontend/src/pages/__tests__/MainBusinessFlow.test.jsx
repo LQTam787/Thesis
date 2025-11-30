@@ -67,6 +67,7 @@ const renderWithProviders = (component, { route = '/', initialState: customIniti
                     <Route path="/log" element={<DailyLogInputPage />} />
                     <Route path="/report" element={<div>Progress Report Page Content</div>} />
                     <Route path="/plans" element={<NutritionPlanPage />} />
+                    <Route path="/plans/new" element={<div>Create New Plan Page Content</div>} /> {/* Thêm route này */}
                     <Route path="/profile" element={<div>Profile Management Page Content</div>} />
                     <Route path="/community" element={<div>Community Feed Page Content</div>} />
                     <Route path="/admin/users" element={<div>Admin Users Management Page Content</div>} />
@@ -285,7 +286,14 @@ describe('Main Business Flow Integration Tests', () => {
         });
 
         test('shows error message on fetch failure', async () => {
-            planService.getAllPlans.mockRejectedValueOnce(new Error('API Error'));
+            // Mock lỗi Axios với cấu trúc phù hợp
+            planService.getAllPlans.mockRejectedValueOnce({
+                response: {
+                    data: { message: 'API Error' },
+                    status: 500
+                },
+                message: 'Request failed with status code 500'
+            });
             renderWithProviders(<NutritionPlanPage />, { route: '/plans' });
             await waitFor(() => {
                 expect(screen.getByText('Không thể tải danh sách kế hoạch. Vui lòng thử lại.')).toBeInTheDocument();
@@ -322,14 +330,13 @@ describe('Main Business Flow Integration Tests', () => {
                 expect(screen.getByText(/Quản lý Kế hoạch Dinh dưỡng/i)).toBeInTheDocument();
             });
 
-            // Fix 5: Change getByRole('button') to getByRole('link') as it's an <a> tag
             const createPlanButton = screen.getByRole('link', { name: /Tạo Kế hoạch Mới/i });
             expect(createPlanButton).toBeInTheDocument();
             fireEvent.click(createPlanButton);
 
-            // Since the current setup navigates to /plans/new, we're not testing the form submission here.
-            // We are only verifying that the button exists and is clickable.
-            // A more comprehensive test would involve mocking navigation or rendering the creation form component.
+            await waitFor(() => {
+                expect(screen.getByText('Create New Plan Page Content')).toBeInTheDocument(); // Kiểm tra nội dung của route mới
+            });
         });
     });
 });

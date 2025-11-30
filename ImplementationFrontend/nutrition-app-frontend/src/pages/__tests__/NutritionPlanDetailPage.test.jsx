@@ -75,7 +75,14 @@ describe('NutritionPlanDetailPage', () => {
     test('displays error message on API failure', async () => {
         const planId = 'invalid-id';
         const errorMessage = `Không tìm thấy kế hoạch với ID: ${planId} hoặc lỗi tải dữ liệu.`;
-        planService.getPlanDetails.mockRejectedValue(new Error('API Error'));
+        // Mock một lỗi Axios với cấu trúc phù hợp
+        planService.getPlanDetails.mockRejectedValue({
+            response: {
+                data: { message: 'Plan not found' },
+                status: 404
+            },
+            message: 'Request failed with status code 404'
+        });
 
         renderWithRouter(planId);
 

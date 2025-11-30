@@ -35,7 +35,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.getAllUsers()).rejects.toThrow();
+            await expect(adminService.getAllUsers()).rejects.toThrow('Request failed with status code 500');
         });
 
         it('getUserDetails should fetch a single user successfully', async () => {
@@ -57,7 +57,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.getUserDetails('1')).rejects.toThrow();
+            await expect(adminService.getUserDetails('1')).rejects.toThrow('Request failed with status code 404');
         });
 
         it('toggleUserLockStatus should update the user lock status', async () => {
@@ -81,7 +81,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.toggleUserLockStatus('1', true)).rejects.toThrow();
+            await expect(adminService.toggleUserLockStatus('1', true)).rejects.toThrow('Request failed with status code 500');
         });
     });
 
@@ -106,7 +106,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.getAllFoods()).rejects.toThrow();
+            await expect(adminService.getAllFoods()).rejects.toThrow('Request failed with status code 500');
         });
 
         it('createFood should create a new food item', async () => {
@@ -131,7 +131,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.createFood({})).rejects.toThrow();
+            await expect(adminService.createFood({})).rejects.toThrow('Request failed with status code 400');
         });
 
         it('updateFood should update an existing food item', async () => {
@@ -156,7 +156,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.updateFood('f1', {})).rejects.toThrow();
+            await expect(adminService.updateFood('f1', {})).rejects.toThrow('Request failed with status code 500');
         });
 
         it('deleteFood should delete a food item', async () => {
@@ -179,7 +179,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.deleteFood('f1')).rejects.toThrow();
+            await expect(adminService.deleteFood('f1')).rejects.toThrow('Request failed with status code 500');
         });
     });
 
@@ -204,7 +204,7 @@ describe('adminService', () => {
                 })
             );
 
-            await expect(adminService.triggerAIRetraining()).rejects.toThrow();
+            await expect(adminService.triggerAIRetraining()).rejects.toThrow('Request failed with status code 503');
         });
     });
 });

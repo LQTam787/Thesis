@@ -1,7 +1,7 @@
 // src/pages/admin/UserManagementPage.jsx
 import React, { useState, useEffect } from 'react';
 import adminService from '../../services/adminService';
-import { Users, Lock, Unlock, UserCheck, UserX, Search } from 'lucide-react';
+import { Users, Lock, Unlock, UserCheck, UserX, Search, X } from 'lucide-react';
 
 function UserManagementPage() {
     const [users, setUsers] = useState([]);
@@ -65,18 +65,23 @@ function UserManagementPage() {
 
     // --- 4. Modal Chi tiết Người dùng ---
     const UserDetailModal = ({ user, onClose }) => (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div
+            className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="userDetailModalTitle"
+        >
             <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-2xl">
                 <div className="flex justify-between items-center border-b pb-3 mb-4">
-                    <h3 className="text-2xl font-bold text-green-700">Chi tiết Người dùng</h3>
-                    <button onClick={onClose} className="text-gray-400 hover:text-gray-600"><X className="w-6 h-6" /></button>
+                    <h3 id="userDetailModalTitle" className="text-2xl font-bold text-green-700">Chi tiết Người dùng</h3>
+                    <button onClick={onClose} aria-label="Close" className="text-gray-400 hover:text-gray-600"><X className="w-6 h-6" /></button>
                 </div>
 
-                <p className="mb-2"><strong>ID:</strong> {user.id}</p>
-                <p className="mb-2"><strong>Tên tài khoản:</strong> {user.username}</p>
-                <p className="mb-2"><strong>Email:</strong> {user.email}</p>
-                <p className="mb-2"><strong>Tên đầy đủ:</strong> {user.fullName}</p>
-                <p className="mb-2"><strong>Vai trò:</strong> {user.roles.join(', ')}</p>
+                <p className="mb-2"><strong>ID:</strong><span> {user.id}</span></p>
+                <p className="mb-2"><strong>Tên tài khoản:</strong><span> {user.username}</span></p>
+                <p className="mb-2"><strong>Email:</strong><span> {user.email}</span></p>
+                <p className="mb-2"><strong>Tên đầy đủ:</strong><span> {user.fullName}</span></p>
+                <p className="mb-2"><strong>Vai trò:</strong><span> {user.roles.join(', ')}</span></p>
                 <p className="mb-4"><strong>Trạng thái:</strong>
                     <span className={`font-semibold ml-2 ${user.isLocked ? 'text-red-600' : 'text-green-600'}`}>
             {user.isLocked ? 'Đã Khóa' : 'Hoạt động'}
