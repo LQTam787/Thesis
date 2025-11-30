@@ -29,23 +29,41 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 ## D. Công nghệ sử dụng
 
-| Hạng mục           | Công nghệ                             | Mục đích                                    |
-| :---------------- | :------------------------------------ | :------------------------------------------ |
-| **Framework**     | ReactJS                               | Xây dựng giao diện dựa trên Component       |
-| **Quản lý State** | Redux Toolkit                         | Quản lý trạng thái ứng dụng phức tạp       |
-| **Giao diện/Styling** | Tailwind CSS / Material UI / Bootstrap | Xây dựng UI nhanh chóng, đảm bảo Responsive |
-| **Biểu đồ Dữ liệu** | Chart.js / Recharts                   | Trực quan hóa tiến độ                       |
-| **Quản lý API**   | Axios                                 | Gọi API đến Backend Spring Boot và AI Service |
-| **Build Tool**    | Vite / Create React App               | Khởi tạo và tối ưu hóa dự án                |
-| **Thiết kế**      | PlantUML                              | Thiết kế biểu đồ UML                        |
+| Hạng mục | Công nghệ | Mục đích |
+| :--- | :--- | :--- |
+| **Framework** | React | Xây dựng giao diện người dùng dựa trên component. |
+| **Build Tool** | Vite | Khởi tạo và tối ưu hóa dự án. |
+| **Routing** | React Router | Xử lý điều hướng phía máy khách. |
+| **Quản lý State** | Redux Toolkit | Quản lý trạng thái ứng dụng toàn cục. |
+| **Styling** | Tailwind CSS | Xây dựng giao diện tùy chỉnh nhanh chóng. |
+| **Gọi API** | Axios | Thực hiện các yêu cầu HTTP đến backend. |
+| **Biểu đồ** | Recharts | Hiển thị dữ liệu trực quan. |
+| **Kiểm thử** | Vitest, React Testing Library | Viết và chạy unit test và integration test. |
 
-## E. Cấu trúc thư mục
+## E. Cấu trúc dự án
+
+Dự án tuân theo một cấu trúc dựa trên tính năng để tổ chức mã nguồn một cách hợp lý.
 
 ```
 .
 ├── FrontendAnalysis/         # Tài liệu phân tích hệ thống (biểu đồ lớp, tuần tự...)
 ├── FrontendDesign/           # Tài liệu thiết kế chi tiết (biểu đồ CSDL, triển khai...)
 ├── FrontendRequirements/     # Tài liệu yêu cầu nghiệp vụ và use case
+├── ImplementationFrontend/nutrition-app-frontend/
+│   ├── public/              # Chứa các tài sản tĩnh (static assets)
+│   ├── src/                 # Thư mục mã nguồn chính
+│   │   ├── assets/          # Hình ảnh, fonts và các tài sản khác
+│   │   ├── components/      # Các React component có thể tái sử dụng
+│   │   ├── context/         # React context providers
+│   │   ├── hooks/           # Các custom React hook
+│   │   ├── mocks/           # Mock server và handlers cho kiểm thử (MSW)
+│   │   ├── pages/           # Các component trang chính, được liên kết với các route
+│   │   ├── services/        # Các module để tương tác với API backend
+│   │   ├── store/           # Redux Toolkit store, slices và logic
+│   │   └── main.jsx         # Điểm vào của ứng dụng
+│   ├── .env.development     # Cấu hình biến môi trường cho môi trường phát triển
+│   ├── package.json         # Liệt kê các dependency và script của dự án
+│   └── vite.config.js       # Cấu hình cho Vite
 ├── FRONTEND_PLANNING.md      # Kế hoạch và định hướng tổng thể của dự án Frontend
 └── FRONTEND_TASK.md          # Danh sách các công việc cần thực hiện cho Frontend
 ```
@@ -61,14 +79,14 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 #### b. Biểu đồ Use Case (Use Case Diagrams)
 
-- 'Biểu đồ Use Case Tổng quan': Mô tả tổng quan các chức năng của hệ thống. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_tong_quan.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_tong_quan.png)
-- 'Biểu đồ Use Case Chi tiết - Xác thực': Biểu đồ chi tiết cho chức năng đăng ký, đăng nhập, đăng xuất. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_xac_thuc.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_xac_thuc.png)
-- 'Biểu đồ Use Case Chi tiết - Tư vấn chế độ dinh dưỡng': Biểu đồ chi tiết cho chức năng tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_tu_van_che_do_dinh_duong.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_tu_van_che_do_dinh_duong.png)
-- 'Biểu đồ Use Case Chi tiết - Lập kế hoạch dinh dưỡng': Biểu đồ chi tiết cho chức năng lập kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_lap_ke_hoach_dinh_duong.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_lap_ke_hoach_dinh_duong.png)
-- 'Biểu đồ Use Case Chi tiết - Theo dõi và đánh giá kế hoạch dinh dưỡng': Biểu đồ chi tiết cho chức năng theo dõi và đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_theo_doi_danh_gia.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_theo_doi_danh_gia.png)
-- 'Biểu đồ Use Case Chi tiết - Quản lý hồ sơ cá nhân': Biểu đồ chi tiết cho chức năng quản lý hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_quan_ly_ho_so_ca_nhan.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_quan_ly_ho_so_ca_nhan.png)
-- 'Biểu đồ Use Case Chi tiết - Chia sẻ kế hoạch và hoạt động dinh dưỡng': Biểu đồ chi tiết cho chức năng chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_chia_se_ke_hoach_hoat_dong.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_chia_se_ke_hoach_hoat_dong.png)
-- 'Biểu đồ Use Case Chi tiết - Quản lý thông tin (Admin)': Biểu đồ chi tiết cho chức năng quản trị viên. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_quan_ly_thong_tin_admin.png`](D:/Workspaces/vscode/Thesis/FrontendRequirements/UmlPictures/usecase_quan_ly_thong_tin_admin.png)
+- 'Biểu đồ Use Case Tổng quan': Mô tả tổng quan các chức năng của hệ thống. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_tong_quan.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_tong_quan.puml)
+- 'Biểu đồ Use Case Chi tiết - Xác thực': Biểu đồ chi tiết cho chức năng đăng ký, đăng nhập, đăng xuất. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_xac_thuc.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_xac_thuc.puml)
+- 'Biểu đồ Use Case Chi tiết - Tư vấn chế độ dinh dưỡng': Biểu đồ chi tiết cho chức năng tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_tu_van_che_do_dinh_duong.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_tu_van_che_do_dinh_duong.puml)
+- 'Biểu đồ Use Case Chi tiết - Lập kế hoạch dinh dưỡng': Biểu đồ chi tiết cho chức năng lập kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_lap_ke_hoach_dinh_duong.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_lap_ke_hoach_dinh_duong.puml)
+- 'Biểu đồ Use Case Chi tiết - Theo dõi và đánh giá kế hoạch dinh dưỡng': Biểu đồ chi tiết cho chức năng theo dõi và đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_theo_doi_danh_gia.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_theo_doi_danh_gia.puml)
+- 'Biểu đồ Use Case Chi tiết - Quản lý hồ sơ cá nhân': Biểu đồ chi tiết cho chức năng quản lý hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_quan_ly_ho_so_ca_nhan.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_quan_ly_ho_so_ca_nhan.puml)
+- 'Biểu đồ Use Case Chi tiết - Chia sẻ kế hoạch và hoạt động dinh dưỡng': Biểu đồ chi tiết cho chức năng chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_chia_se_ke_hoach_hoat_dong.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_chia_se_ke_hoach_hoat_dong.puml)
+- 'Biểu đồ Use Case Chi tiết - Quản lý thông tin (Admin)': Biểu đồ chi tiết cho chức năng quản trị viên. [`D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_quan_ly_thong_tin_admin.puml`](D:/Workspaces/vscode/Thesis/FrontendRequirements/Uml/usecase_quan_ly_thong_tin_admin.puml)
 
 ### 2. Tài liệu Phân tích (Analysis Documents)
 
@@ -79,97 +97,97 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 #### b. Biểu đồ lớp thực thể pha phân tích (Entity Class Diagrams - Analysis Phase)
 
-- 'Biểu đồ lớp thực thể pha phân tích': Trích xuất từ các kịch bản người dùng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Entity/UmlPictures/entity_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Entity/UmlPictures/entity_class_diagram.png)
+- 'Biểu đồ lớp thực thể pha phân tích': Trích xuất từ các kịch bản người dùng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Entity/Uml/entity_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Entity/Uml/entity_class_diagram.puml)
 
 #### c. Biểu đồ lớp phân tích (Analysis Class Diagrams)
 
-- 'Biểu đồ lớp phân tích - Xác thực': Biểu đồ lớp phân tích cho module Xác thực. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/xac_thuc_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/xac_thuc_analysis_class_diagram.png)
-- 'Biểu đồ lớp phân tích - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp phân tích cho module Tư vấn Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/tu_van_che_do_dinh_duong_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/tu_van_che_do_dinh_duong_analysis_class_diagram.png)
-- 'Biểu đồ lớp phân tích - Lập kế hoạch dinh dưỡng': Biểu đồ lớp phân tích cho module Lập kế hoạch Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/lap_ke_hoach_dinh_duong_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/lap_ke_hoach_dinh_duong_analysis_class_diagram.png)
-- 'Biểu đồ lớp phân tích - Theo dõi và đánh giá kế hoạch dinh dưỡng': Biểu đồ lớp phân tích cho module Theo dõi và Đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/theo_doi_danh_gia_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/theo_doi_danh_gia_analysis_class_diagram.png)
-- 'Biểu đồ lớp phân tích - Quản lý hồ sơ cá nhân': Biểu đồ lớp phân tích cho module Quản lý Hồ sơ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/quan_ly_ho_so_ca_nhan_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/quan_ly_ho_so_ca_nhan_analysis_class_diagram.png)
-- 'Biểu đồ lớp phân tích - Chia sẻ kế hoạch và hoạt động dinh dưỡng': Biểu đồ lớp phân tích cho module Chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/chia_se_ke_hoach_hoat_dong_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/chia_se_ke_hoach_hoat_dong_analysis_class_diagram.png)
-- 'Biểu đồ lớp phân tích - Quản lý thông tin đối tượng (Admin)': Biểu đồ lớp phân tích cho module Quản trị viên. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/quan_ly_thong_tin_admin_analysis_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/UmlPictures/quan_ly_thong_tin_admin_analysis_class_diagram.png)
+- 'Biểu đồ lớp phân tích - Xác thực': Biểu đồ lớp phân tích cho module Xác thực. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/xac_thuc_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/xac_thuc_analysis_class_diagram.puml)
+- 'Biểu đồ lớp phân tích - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp phân tích cho module Tư vấn Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/tu_van_che_do_dinh_duong_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/tu_van_che_do_dinh_duong_analysis_class_diagram.puml)
+- 'Biểu đồ lớp phân tích - Lập kế hoạch dinh dưỡng': Biểu đồ lớp phân tích cho module Lập kế hoạch Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/lap_ke_hoach_dinh_duong_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/lap_ke_hoach_dinh_duong_analysis_class_diagram.puml)
+- 'Biểu đồ lớp phân tích - Theo dõi và đánh giá kế hoạch dinh dưỡng': Biểu đồ lớp phân tích cho module Theo dõi và Đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/theo_doi_danh_gia_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/theo_doi_danh_gia_analysis_class_diagram.puml)
+- 'Biểu đồ lớp phân tích - Quản lý hồ sơ cá nhân': Biểu đồ lớp phân tích cho module Quản lý Hồ sơ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/quan_ly_ho_so_ca_nhan_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/quan_ly_ho_so_ca_nhan_analysis_class_diagram.puml)
+- 'Biểu đồ lớp phân tích - Chia sẻ kế hoạch và hoạt động dinh dưỡng': Biểu đồ lớp phân tích cho module Chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/chia_se_ke_hoach_hoat_dong_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/chia_se_ke_hoach_hoat_dong_analysis_class_diagram.puml)
+- 'Biểu đồ lớp phân tích - Quản lý thông tin đối tượng (Admin)': Biểu đồ lớp phân tích cho module Quản trị viên. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/quan_ly_thong_tin_admin_analysis_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Class/Uml/quan_ly_thong_tin_admin_analysis_class_diagram.puml)
 
 #### d. Biểu đồ trạng thái (State Diagrams)
 
-- 'Biểu đồ trạng thái - Xác thực': Biểu đồ trạng thái cho module Xác thực. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/xac_thuc_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/xac_thuc_analysis_state_diagram.png)
-- 'Biểu đồ trạng thái - Tư vấn chế độ dinh dưỡng': Biểu đồ trạng thái cho module Tư vấn Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/tu_van_che_do_dinh_duong_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/tu_van_che_do_dinh_duong_analysis_state_diagram.png)
-- 'Biểu đồ trạng thái - Lập kế hoạch dinh dưỡng': Biểu đồ trạng thái cho module Lập kế hoạch Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/lap_ke_hoach_dinh_duong_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/lap_ke_hoach_dinh_duong_analysis_state_diagram.png)
-- 'Biểu đồ trạng thái - Theo dõi và đánh giá kế hoạch dinh dưỡng': Biểu đồ trạng thái cho module Theo dõi và Đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/theo_doi_danh_gia_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/theo_doi_danh_gia_analysis_state_diagram.png)
-- 'Biểu đồ trạng thái - Quản lý hồ sơ cá nhân': Biểu đồ trạng thái cho module Quản lý Hồ sơ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/quan_ly_ho_so_ca_nhan_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/quan_ly_ho_so_ca_nhan_analysis_state_diagram.png)
-- 'Biểu đồ trạng thái - Chia sẻ kế hoạch và hoạt động dinh dưỡng': Biểu đồ trạng thái cho module Chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/chia_se_ke_hoach_hoat_dong_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/chia_se_ke_hoach_hoat_dong_analysis_state_diagram.png)
-- 'Biểu đồ trạng thái - Quản lý thông tin đối tượng (Admin)': Biểu đồ trạng thái cho module Quản trị viên. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/quan_ly_thong_tin_admin_analysis_state_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/UmlPictures/quan_ly_thong_tin_admin_analysis_state_diagram.png)
+- 'Biểu đồ trạng thái - Xác thực': Biểu đồ trạng thái cho module Xác thực. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/xac_thuc_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/xac_thuc_analysis_state_diagram.puml)
+- 'Biểu đồ trạng thái - Tư vấn chế độ dinh dưỡng': Biểu đồ trạng thái cho module Tư vấn Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/tu_van_che_do_dinh_duong_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/tu_van_che_do_dinh_duong_analysis_state_diagram.puml)
+- 'Biểu đồ trạng thái - Lập kế hoạch dinh dưỡng': Biểu đồ trạng thái cho module Lập kế hoạch Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/lap_ke_hoach_dinh_duong_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/lap_ke_hoach_dinh_duong_analysis_state_diagram.puml)
+- 'Biểu đồ trạng thái - Theo dõi và đánh giá kế hoạch dinh dưỡng': Biểu đồ trạng thái cho module Theo dõi và Đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/theo_doi_danh_gia_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/theo_doi_danh_gia_analysis_state_diagram.puml)
+- 'Biểu đồ trạng thái - Quản lý hồ sơ cá nhân': Biểu đồ trạng thái cho module Quản lý Hồ sơ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/quan_ly_ho_so_ca_nhan_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/quan_ly_ho_so_ca_nhan_analysis_state_diagram.puml)
+- 'Biểu đồ trạng thái - Chia sẻ kế hoạch và hoạt động dinh dưỡng': Biểu đồ trạng thái cho module Chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/chia_se_ke_hoach_hoat_dong_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/chia_se_ke_hoach_hoat_dong_analysis_state_diagram.puml)
+- 'Biểu đồ trạng thái - Quản lý thông tin đối tượng (Admin)': Biểu đồ trạng thái cho module Quản trị viên. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/quan_ly_thong_tin_admin_analysis_state_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/State/Uml/quan_ly_thong_tin_admin_analysis_state_diagram.puml)
 
 #### e. Biểu đồ tuần tự (Sequence Diagrams - Analysis Phase)
 
-- 'Biểu đồ tuần tự - Đăng ký': Biểu đồ tuần tự cho chức năng đăng ký. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/dang_ky_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/dang_ky_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Đăng nhập': Biểu đồ tuần tự cho chức năng đăng nhập. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/dang_nhap_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/dang_nhap_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Đăng xuất': Biểu đồ tuần tự cho chức năng đăng xuất. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/dang_xuat_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/dang_xuat_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Gửi thông tin tư vấn': Biểu đồ tuần tự cho chức năng gửi thông tin tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/gui_thong_tin_tu_van_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/gui_thong_tin_tu_van_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Yêu cầu chỉnh sửa thực đơn': Biểu đồ tuần tự cho chức năng yêu cầu chỉnh sửa thực đơn. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/yeu_cau_chinh_sua_thuc_don_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/yeu_cau_chinh_sua_thuc_don_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Chọn kiểu kế hoạch': Biểu đồ tuần tự cho chức năng chọn kiểu kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/chon_kieu_ke_hoach_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/chon_kieu_ke_hoach_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Lưu kế hoạch': Biểu đồ tuần tự cho chức năng lưu kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/luu_ke_hoach_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/luu_ke_hoach_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Nhập dữ liệu hàng ngày': Biểu đồ tuần tự cho chức năng nhập dữ liệu hàng ngày. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/nhap_du_lieu_hang_ngay_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/nhap_du_lieu_hang_ngay_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Lấy báo cáo tiến độ': Biểu đồ tuần tự cho chức năng lấy báo cáo tiến độ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/lay_bao_cao_tien_do_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/lay_bao_cao_tien_do_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Xem hồ sơ': Biểu đồ tuần tự cho chức năng xem hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/xem_ho_so_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/xem_ho_so_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Cập nhật sinh trắc học': Biểu đồ tuần tự cho chức năng cập nhật thông tin sinh trắc học. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/cap_nhat_sinh_trac_hoc_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/cap_nhat_sinh_trac_hoc_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Cập nhật mục tiêu sức khỏe': Biểu đồ tuần tự cho chức năng cập nhật mục tiêu sức khỏe. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/cap_nhat_muc_tieu_suc_khoe_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/cap_nhat_muc_tieu_suc_khoe_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Cập nhật sở thích ăn uống': Biểu đồ tuần tự cho chức năng cập nhật sở thích ăn uống. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/cap_nhat_so_thich_an_uong_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/cap_nhat_so_thich_an_uong_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Thay đổi chế độ chia sẻ': Biểu đồ tuần tự cho chức năng thay đổi chế độ chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/thay_doi_che_do_chia_se_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/thay_doi_che_do_chia_se_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Xem nội dung chia sẻ': Biểu đồ tuần tự cho chức năng xem nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/xem_noi_dung_chia_se_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/xem_noi_dung_chia_se_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Thích nội dung chia sẻ': Biểu đồ tuần tự cho chức năng thích nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/thich_noi_dung_chia_se_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/thich_noi_dung_chia_se_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Thêm bình luận': Biểu đồ tuần tự cho chức năng thêm bình luận. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/them_binh_luan_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/them_binh_luan_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Lưu nội dung chia sẻ': Biểu đồ tuần tự cho chức năng lưu nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/luu_noi_dung_chia_se_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/luu_noi_dung_chia_se_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Đề xuất người dùng/nhóm': Biểu đồ tuần tự cho chức năng đề xuất người dùng/nhóm. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/de_xuat_nguoi_dung_nhom_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/de_xuat_nguoi_dung_nhom_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Quản lý người dùng (Thêm)': Biểu đồ tuần tự cho chức năng quản lý người dùng (thêm). [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/quan_ly_nguoi_dung_them_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/quan_ly_nguoi_dung_them_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Quản lý món ăn (Thêm)': Biểu đồ tuần tự cho chức năng quản lý món ăn (thêm). [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/quan_ly_mon_an_them_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/quan_ly_mon_an_them_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Kích hoạt huấn luyện lại AI': Biểu đồ tuần tự cho chức năng kích hoạt huấn luyện lại AI. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/kich_hoat_huan_luyen_lai_ai_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/kich_hoat_huan_luyen_lai_ai_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Sửa đối tượng': Biểu đồ tuần tự cho chức năng sửa đối tượng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/sua_doi_tuong_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/sua_doi_tuong_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Xóa đối tượng': Biểu đồ tuần tự cho chức năng xóa đối tượng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/xoa_doi_tuong_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/UmlPictures/xoa_doi_tuong_sequence_diagram.png)
+- 'Biểu đồ tuần tự - Đăng ký': Biểu đồ tuần tự cho chức năng đăng ký. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/dang_ky_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/dang_ky_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Đăng nhập': Biểu đồ tuần tự cho chức năng đăng nhập. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/dang_nhap_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/dang_nhap_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Đăng xuất': Biểu đồ tuần tự cho chức năng đăng xuất. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/dang_xuat_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/dang_xuat_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Gửi thông tin tư vấn': Biểu đồ tuần tự cho chức năng gửi thông tin tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/gui_thong_tin_tu_van_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/gui_thong_tin_tu_van_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Yêu cầu chỉnh sửa thực đơn': Biểu đồ tuần tự cho chức năng yêu cầu chỉnh sửa thực đơn. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/yeu_cau_chinh_sua_thuc_don_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/yeu_cau_chinh_sua_thuc_don_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Chọn kiểu kế hoạch': Biểu đồ tuần tự cho chức năng chọn kiểu kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/chon_kieu_ke_hoach_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/chon_kieu_ke_hoach_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Lưu kế hoạch': Biểu đồ tuần tự cho chức năng lưu kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/luu_ke_hoach_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/luu_ke_hoach_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Nhập dữ liệu hàng ngày': Biểu đồ tuần tự cho chức năng nhập dữ liệu hàng ngày. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/nhap_du_lieu_hang_ngay_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/nhap_du_lieu_hang_ngay_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Lấy báo cáo tiến độ': Biểu đồ tuần tự cho chức năng lấy báo cáo tiến độ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/lay_bao_cao_tien_do_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/lay_bao_cao_tien_do_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Xem hồ sơ': Biểu đồ tuần tự cho chức năng xem hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/xem_ho_so_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/xem_ho_so_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Cập nhật sinh trắc học': Biểu đồ tuần tự cho chức năng cập nhật thông tin sinh trắc học. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/cap_nhat_sinh_trac_hoc_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/cap_nhat_sinh_trac_hoc_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Cập nhật mục tiêu sức khỏe': Biểu đồ tuần tự cho chức năng cập nhật mục tiêu sức khỏe. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/cap_nhat_muc_tieu_suc_khoe_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/cap_nhat_muc_tieu_suc_khoe_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Cập nhật sở thích ăn uống': Biểu đồ tuần tự cho chức năng cập nhật sở thích ăn uống. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/cap_nhat_so_thich_an_uong_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/cap_nhat_so_thich_an_uong_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Thay đổi chế độ chia sẻ': Biểu đồ tuần tự cho chức năng thay đổi chế độ chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/thay_doi_che_do_chia_se_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/thay_doi_che_do_chia_se_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Xem nội dung chia sẻ': Biểu đồ tuần tự cho chức năng xem nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/xem_noi_dung_chia_se_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/xem_noi_dung_chia_se_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Thích nội dung chia sẻ': Biểu đồ tuần tự cho chức năng thích nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/thich_noi_dung_chia_se_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/thich_noi_dung_chia_se_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Thêm bình luận': Biểu đồ tuần tự cho chức năng thêm bình luận. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/them_binh_luan_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/them_binh_luan_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Lưu nội dung chia sẻ': Biểu đồ tuần tự cho chức năng lưu nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/luu_noi_dung_chia_se_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/luu_noi_dung_chia_se_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Đề xuất người dùng/nhóm': Biểu đồ tuần tự cho chức năng đề xuất người dùng/nhóm. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/de_xuat_nguoi_dung_nhom_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/de_xuat_nguoi_dung_nhom_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Quản lý người dùng (Thêm)': Biểu đồ tuần tự cho chức năng quản lý người dùng (thêm). [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/quan_ly_nguoi_dung_them_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/quan_ly_nguoi_dung_them_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Quản lý món ăn (Thêm)': Biểu đồ tuần tự cho chức năng quản lý món ăn (thêm). [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/quan_ly_mon_an_them_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/quan_ly_mon_an_them_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Kích hoạt huấn luyện lại AI': Biểu đồ tuần tự cho chức năng kích hoạt huấn luyện lại AI. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/kich_hoat_huan_luyen_lai_ai_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/kich_hoat_huan_luyen_lai_ai_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Sửa đối tượng': Biểu đồ tuần tự cho chức năng sửa đối tượng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/sua_doi_tuong_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/sua_doi_tuong_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Xóa đối tượng': Biểu đồ tuần tự cho chức năng xóa đối tượng. [`D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/xoa_doi_tuong_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendAnalysis/Sequence/Uml/xoa_doi_tuong_sequence_diagram.puml)
 
 ### 3. Tài liệu Thiết kế (Design Documents)
 
 #### a. Biểu đồ lớp thực thể pha thiết kế (Entity Class Diagrams - Design Phase)
 
-- 'Biểu đồ lớp thực thể pha thiết kế': Trích xuất từ biểu đồ lớp thực thể pha phân tích. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Entity/UmlPictures/entity_class_diagram_design.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Entity/UmlPictures/entity_class_diagram_design.png)
+- 'Biểu đồ lớp thực thể pha thiết kế': Trích xuất từ biểu đồ lớp thực thể pha phân tích. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Entity/Uml/entity_class_diagram_design.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Entity/Uml/entity_class_diagram_design.puml)
 
 #### b. Biểu đồ quan hệ thực thể CSDL (Entity - Relationship Database Diagrams)
 
-- 'Biểu đồ lớp thực thể cho cơ sở dữ liệu': Biểu đồ thiết kế schema cơ sở dữ liệu. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Database/UmlPictures/database_schema_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Database/UmlPictures/database_schema_diagram.png)
+- 'Biểu đồ lớp thực thể cho cơ sở dữ liệu': Biểu đồ thiết kế schema cơ sở dữ liệu. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Database/Uml/database_schema_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Database/Uml/database_schema_diagram.puml)
 
 #### c. Biểu đồ lớp thiết kế (Design Class Diagrams)
 
-- 'Biểu đồ lớp thiết kế - Quản trị viên': Biểu đồ lớp thiết kế cho module quản lý thông tin (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/admin_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/admin_design_class_diagram.png)
-- 'Biểu đồ lớp thiết kế - Xác thực': Biểu đồ lớp thiết kế cho module Xác thực. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/xac_thuc_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/xac_thuc_design_class_diagram.png)
-- 'Biểu đồ lớp thiết kế - Chế độ dinh dưỡng': Biểu đồ lớp thiết kế cho module chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/che_do_dinh_duong_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/che_do_dinh_duong_design_class_diagram.png)
-- 'Biểu đồ lớp thực thể thiết kế - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp thực thể thiết kế cho module tư vấn chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/nutritional_consultation_entity_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/nutritional_consultation_entity_class_diagram.png)
-- 'Biểu đồ lớp giao diện thiết kế - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp giao diện thiết kế cho module tư vấn chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/nutritional_consultation_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/nutritional_consultation_design_class_diagram.png)
-- 'Biểu đồ lớp DAO thiết kế - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp DAO thiết kế cho module tư vấn chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/nutritional_consultation_dao_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/nutritional_consultation_dao_class_diagram.png)
-- 'Biểu đồ lớp thiết kế - Theo dõi và đánh giá': Biểu đồ lớp thiết kế cho module Theo dõi và Đánh giá Kế hoạch Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/theo_doi_danh_gia_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/theo_doi_danh_gia_design_class_diagram.png)
-- 'Biểu đồ lớp thiết kế - Quản lý hồ sơ cá nhân': Biểu đồ lớp thiết kế cho module Quản lý Hồ sơ Cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/profile_management_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/profile_management_design_class_diagram.png)
-- 'Biểu đồ lớp thiết kế - Chia sẻ kế hoạch và hoạt động': Biểu đồ lớp thiết kế cho module Chia sẻ Kế hoạch và Hoạt động Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/share_design_class_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/UmlPictures/share_design_class_diagram.png)
+- 'Biểu đồ lớp thiết kế - Quản trị viên': Biểu đồ lớp thiết kế cho module quản lý thông tin (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/admin_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/admin_design_class_diagram.puml)
+- 'Biểu đồ lớp thiết kế - Xác thực': Biểu đồ lớp thiết kế cho module Xác thực. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/xac_thuc_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/xac_thuc_design_class_diagram.puml)
+- 'Biểu đồ lớp thiết kế - Chế độ dinh dưỡng': Biểu đồ lớp thiết kế cho module chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/che_do_dinh_duong_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/che_do_dinh_duong_design_class_diagram.puml)
+- 'Biểu đồ lớp thực thể thiết kế - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp thực thể thiết kế cho module tư vấn chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/nutritional_consultation_entity_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/nutritional_consultation_entity_class_diagram.puml)
+- 'Biểu đồ lớp giao diện thiết kế - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp giao diện thiết kế cho module tư vấn chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/nutritional_consultation_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/nutritional_consultation_design_class_diagram.puml)
+- 'Biểu đồ lớp DAO thiết kế - Tư vấn chế độ dinh dưỡng': Biểu đồ lớp DAO thiết kế cho module tư vấn chế độ dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/nutritional_consultation_dao_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/nutritional_consultation_dao_class_diagram.puml)
+- 'Biểu đồ lớp thiết kế - Theo dõi và đánh giá': Biểu đồ lớp thiết kế cho module Theo dõi và Đánh giá Kế hoạch Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/theo_doi_danh_gia_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/theo_doi_danh_gia_design_class_diagram.puml)
+- 'Biểu đồ lớp thiết kế - Quản lý hồ sơ cá nhân': Biểu đồ lớp thiết kế cho module Quản lý Hồ sơ Cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/profile_management_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/profile_management_design_class_diagram.puml)
+- 'Biểu đồ lớp thiết kế - Chia sẻ kế hoạch và hoạt động': Biểu đồ lớp thiết kế cho module Chia sẻ Kế hoạch và Hoạt động Dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/share_design_class_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Uml/share_design_class_diagram.puml)
 
 #### d. Biểu đồ Triển khai (Deployment Diagrams)
 
-- 'Biểu đồ triển khai hệ thống': Biểu đồ hiển thị kiến trúc triển khai các thành phần của hệ thống. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Deployment/UmlPictures/deployment_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Deployment/UmlPictures/deployment_diagram.png)
+- 'Biểu đồ triển khai hệ thống': Biểu đồ hiển thị kiến trúc triển khai các thành phần của hệ thống. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Deployment/Uml/deployment_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Deployment/Uml/deployment_diagram.puml)
 
 #### e. Biểu đồ hoạt động (Activity Diagrams)
 
-- 'Biểu đồ hoạt động - Đăng nhập': Biểu đồ hoạt động cho chức năng Đăng nhập. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/login_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/login_activity_diagram.png)
-- 'Biểu đồ hoạt động - Đăng ký': Biểu đồ hoạt động cho chức năng Đăng ký. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/register_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/register_activity_diagram.png)
-- 'Biểu đồ hoạt động - Quản lý người dùng': Biểu đồ hoạt động cho chức năng Quản lý người dùng (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/user_management_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/user_management_activity_diagram.png)
-- 'Biểu đồ hoạt động - Quản lý nội dung chia sẻ': Biểu đồ hoạt động cho chức năng Quản lý nội dung chia sẻ (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/shared_content_management_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/shared_content_management_activity_diagram.png)
-- 'Biểu đồ hoạt động - Tư vấn dinh dưỡng': Biểu đồ hoạt động cho chức năng Tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/nutritional_consultation_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/nutritional_consultation_activity_diagram.png)
-- 'Biểu đồ hoạt động - Tìm kiếm món ăn': Biểu đồ hoạt động cho chức năng Tìm kiếm món ăn và thực phẩm. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/food_search_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/food_search_activity_diagram.png)
-- 'Biểu đồ hoạt động - Nhập nhu cầu dinh dưỡng': Biểu đồ hoạt động cho chức năng Nhập thông tin nhu cầu dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/nutritional_needs_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/nutritional_needs_activity_diagram.png)
-- 'Biểu đồ hoạt động - Tạo kế hoạch dinh dưỡng': Biểu đồ hoạt động cho chức năng Tạo kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/create_nutrition_plan_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/create_nutrition_plan_activity_diagram.png)
-- 'Biểu đồ hoạt động - Xem/Cập nhật kế hoạch dinh dưỡng': Biểu đồ hoạt động cho chức năng Xem và Cập nhật kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/view_update_nutrition_plan_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/view_update_nutrition_plan_activity_diagram.png)
-- 'Biểu đồ hoạt động - Xóa kế hoạch dinh dưỡng': Biểu đồ hoạt động cho chức năng Xóa kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/delete_nutrition_plan_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/delete_nutrition_plan_activity_diagram.png)
-- 'Biểu đồ hoạt động - Nhập dữ liệu hàng ngày': Biểu đồ hoạt động cho chức năng Nhập liệu dữ liệu hàng ngày. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/daily_log_input_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/daily_log_input_activity_diagram.png)
-- 'Biểu đồ hoạt động - Báo cáo tiến độ': Biểu đồ hoạt động cho chức năng Báo cáo tiến độ và đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/progress_report_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/progress_report_activity_diagram.png)
-- 'Biểu đồ hoạt động - Quản lý hồ sơ cá nhân': Biểu đồ hoạt động cho chức năng Quản lý hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/profile_management_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/profile_management_activity_diagram.png)
-- 'Biểu đồ hoạt động - Chia sẻ kế hoạch và hoạt động': Biểu đồ hoạt động cho chức năng Chia sẻ kế hoạch và hoạt động. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/share_plan_activity_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/UmlPictures/share_plan_activity_diagram.png)
+- 'Biểu đồ hoạt động - Đăng nhập': Biểu đồ hoạt động cho chức năng Đăng nhập. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/login_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/login_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Đăng ký': Biểu đồ hoạt động cho chức năng Đăng ký. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/register_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/register_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Quản lý người dùng': Biểu đồ hoạt động cho chức năng Quản lý người dùng (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/user_management_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/user_management_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Quản lý nội dung chia sẻ': Biểu đồ hoạt động cho chức năng Quản lý nội dung chia sẻ (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/shared_content_management_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/shared_content_management_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Tư vấn dinh dưỡng': Biểu đồ hoạt động cho chức năng Tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/nutritional_consultation_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/nutritional_consultation_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Tìm kiếm món ăn': Biểu đồ hoạt động cho chức năng Tìm kiếm món ăn và thực phẩm. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/food_search_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/food_search_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Nhập nhu cầu dinh dưỡng': Biểu đồ hoạt động cho chức năng Nhập thông tin nhu cầu dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/nutritional_needs_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/nutritional_needs_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Tạo kế hoạch dinh dưỡng': Biểu đồ hoạt động cho chức năng Tạo kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/create_nutrition_plan_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/create_nutrition_plan_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Xem/Cập nhật kế hoạch dinh dưỡng': Biểu đồ hoạt động cho chức năng Xem và Cập nhật kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/view_update_nutrition_plan_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/view_update_nutrition_plan_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Xóa kế hoạch dinh dưỡng': Biểu đồ hoạt động cho chức năng Xóa kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/delete_nutrition_plan_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/delete_nutrition_plan_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Nhập dữ liệu hàng ngày': Biểu đồ hoạt động cho chức năng Nhập liệu dữ liệu hàng ngày. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/daily_log_input_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/daily_log_input_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Báo cáo tiến độ': Biểu đồ hoạt động cho chức năng Báo cáo tiến độ và đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/progress_report_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/progress_report_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Quản lý hồ sơ cá nhân': Biểu đồ hoạt động cho chức năng Quản lý hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/profile_management_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/profile_management_activity_diagram.puml)
+- 'Biểu đồ hoạt động - Chia sẻ kế hoạch và hoạt động': Biểu đồ hoạt động cho chức năng Chia sẻ kế hoạch và hoạt động. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/share_plan_activity_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Activity/Uml/share_plan_activity_diagram.puml)
 
 #### f. Tài liệu kịch bản người dùng (Scenario Documents - Version 3)
 
@@ -178,20 +196,20 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 
 #### g. Biểu đồ tuần tự (Sequence Diagrams - Design Phase)
 
-- 'Biểu đồ tuần tự - Đăng ký': Biểu đồ tuần tự cho chức năng đăng ký. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/register_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/register_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Đăng nhập': Biểu đồ tuần tự cho chức năng đăng nhập. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/login_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/login_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Quản lý người dùng': Biểu đồ tuần tự cho chức năng Quản lý người dùng (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/user_management_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/user_management_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Quản lý nội dung chia sẻ': Biểu đồ tuần tự cho chức năng Quản lý nội dung chia sẻ (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/shared_content_management_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/shared_content_management_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Tư vấn dinh dưỡng': Biểu đồ tuần tự cho chức năng Tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/nutritional_consultation_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/nutritional_consultation_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Tìm kiếm món ăn': Biểu đồ tuần tự cho chức năng Tìm kiếm món ăn và thực phẩm. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/food_search_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/food_search_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Nhập nhu cầu dinh dưỡng': Biểu đồ tuần tự cho chức năng Nhập thông tin nhu cầu dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/nutritional_needs_input_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/nutritional_needs_input_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Tạo kế hoạch dinh dưỡng': Biểu đồ tuần tự cho chức năng Tạo kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/create_nutrition_plan_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/create_nutrition_plan_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Xem/Cập nhật kế hoạch dinh dưỡng': Biểu đồ tuần tự cho chức năng Xem và Cập nhật kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/view_update_nutrition_plan_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/view_update_nutrition_plan_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Xóa kế hoạch dinh dưỡng': Biểu đồ tuần tự cho chức năng Xóa kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/delete_nutrition_plan_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/delete_nutrition_plan_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Nhập dữ liệu hàng ngày': Biểu đồ tuần tự cho chức năng Nhập liệu dữ liệu hàng ngày. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/daily_log_input_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/daily_log_input_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Báo cáo tiến độ': Biểu đồ tuần tự cho chức năng Báo cáo tiến độ và đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/progress_report_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/progress_report_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Quản lý hồ sơ cá nhân': Biểu đồ tuần tự cho chức năng Quản lý hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/profile_management_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/profile_management_sequence_diagram.png)
-- 'Biểu đồ tuần tự - Chia sẻ kế hoạch và hoạt động': Biểu đồ tuần tự cho chức năng Chia sẻ kế hoạch và hoạt động. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/share_plan_activity_sequence_diagram.png`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/UmlPictures/share_plan_activity_sequence_diagram.png)
+- 'Biểu đồ tuần tự - Đăng ký': Biểu đồ tuần tự cho chức năng đăng ký. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/register_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/register_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Đăng nhập': Biểu đồ tuần tự cho chức năng đăng nhập. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/login_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/login_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Quản lý người dùng': Biểu đồ tuần tự cho chức năng Quản lý người dùng (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/user_management_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/user_management_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Quản lý nội dung chia sẻ': Biểu đồ tuần tự cho chức năng Quản lý nội dung chia sẻ (Admin). [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/shared_content_management_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/shared_content_management_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Tư vấn dinh dưỡng': Biểu đồ tuần tự cho chức năng Tư vấn dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/nutritional_consultation_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/nutritional_consultation_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Tìm kiếm món ăn': Biểu đồ tuần tự cho chức năng Tìm kiếm món ăn và thực phẩm. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/food_search_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/food_search_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Nhập nhu cầu dinh dưỡng': Biểu đồ tuần tự cho chức năng Nhập thông tin nhu cầu dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/nutritional_needs_input_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/nutritional_needs_input_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Tạo kế hoạch dinh dưỡng': Biểu đồ tuần tự cho chức năng Tạo kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/create_nutrition_plan_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/create_nutrition_plan_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Xem/Cập nhật kế hoạch dinh dưỡng': Biểu đồ tuần tự cho chức năng Xem và Cập nhật kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/view_update_nutrition_plan_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/view_update_nutrition_plan_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Xóa kế hoạch dinh dưỡng': Biểu đồ tuần tự cho chức năng Xóa kế hoạch dinh dưỡng. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/delete_nutrition_plan_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/delete_nutrition_plan_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Nhập dữ liệu hàng ngày': Biểu đồ tuần tự cho chức năng Nhập liệu dữ liệu hàng ngày. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/daily_log_input_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/daily_log_input_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Báo cáo tiến độ': Biểu đồ tuần tự cho chức năng Báo cáo tiến độ và đánh giá. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/progress_report_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/progress_report_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Quản lý hồ sơ cá nhân': Biểu đồ tuần tự cho chức năng Quản lý hồ sơ cá nhân. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/profile_management_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/profile_management_sequence_diagram.puml)
+- 'Biểu đồ tuần tự - Chia sẻ kế hoạch và hoạt động': Biểu đồ tuần tự cho chức năng Chia sẻ kế hoạch và hoạt động. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/share_plan_activity_sequence_diagram.puml`](D:/Workspaces/vscode/Thesis/FrontendDesign/Dynamic/Sequence/Uml/share_plan_activity_sequence_diagram.puml)
 
 #### h. Giao diện Tĩnh (Static Interfaces)
 
@@ -211,14 +229,92 @@ Hệ thống frontend được thiết kế theo kiến trúc dựa trên Compon
 - 'Giao diện chia sẻ kế hoạch và hoạt động': Trang chia sẻ kế hoạch và hoạt động. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/SharePlanActivityPage.html`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/SharePlanActivityPage.html)
 - 'Giao diện xem nội dung chia sẻ': Trang xem nội dung chia sẻ. [`D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/ViewSharedContentPage.html`](D:/Workspaces/vscode/Thesis/FrontendDesign/Static/Html/ViewSharedContentPage.html)
 
-## G. Hướng dẫn cài đặt và chạy
+## G. Hướng dẫn Cài đặt và Chạy
 
-(Chưa cập nhật)
+### 1. Yêu cầu
+- Node.js (phiên bản 18.x trở lên)
+- npm
+
+### 2. Cài đặt
+1.  Di chuyển đến thư mục gốc của dự án frontend:
+    ```bash
+    cd ImplementationFrontend/nutrition-app-frontend
+    ```
+2.  Cài đặt các dependency:
+    ```bash
+    npm install
+    ```
+
+### 3. Cấu hình Biến Môi trường
+1.  Tạo một tệp `.env.development` trong thư mục gốc của frontend (`ImplementationFrontend/nutrition-app-frontend`).
+2.  Thêm các URL của API backend và AI service vào tệp:
+    ```env
+    # .env.development
+
+    # --- Cấu hình cho API Backend Chính ---
+    # Thay đổi cổng (port) nếu Backend của bạn chạy ở một cổng khác.
+    VITE_BACKEND_API_URL=http://localhost:8080/api
+
+    # --- Cấu hình cho AI Service (Tư vấn Dinh dưỡng và Thị giác Máy tính) ---
+    # Thay đổi cổng (port) nếu AI Service của bạn chạy ở một cổng khác.
+    VITE_AI_SERVICE_API_URL=http://localhost:5000/api
+    ```
+    *Lưu ý: Vite yêu cầu tiền tố `VITE_` cho các biến môi trường được sử dụng ở phía client.*
+
+### 4. Chạy Ứng dụng
+Để khởi động máy chủ phát triển, chạy lệnh sau:
+```bash
+npm run dev
+```
+Ứng dụng sẽ có sẵn tại `http://localhost:5173` (hoặc một cổng khác nếu 5173 đang được sử dụng).
+
+### 5. Các Scripts khác
+- **Build cho Production**: `npm run build`
+- **Lint mã nguồn**: `npm run lint`
+- **Xem bản build production**: `npm run preview`
+- **Chạy kiểm thử**: `npm test`
+- **Chạy kiểm thử với coverage**: `npm run test:coverage`
+- **Chạy kiểm thử ở chế độ watch**: `npm run test:watch`
 
 ## H. Tài liệu API
 
-(Chưa cập nhật)
+Frontend giao tiếp với hai dịch vụ backend chính:
 
-## K. Kiểm thử (Testing)
+### 1. Main Backend API (`VITE_BACKEND_API_URL`)
+-   **URL Mặc định**: `http://localhost:8080/api`
+-   **Chức năng**: Chịu trách nhiệm xử lý logic nghiệp vụ cốt lõi của ứng dụng, bao gồm:
+    -   Quản lý xác thực và tài khoản người dùng (Đăng ký, Đăng nhập, JWT).
+    -   Lưu trữ và truy xuất dữ liệu (thông tin người dùng, bữa ăn, thực phẩm, kế hoạch dinh dưỡng).
+    -   Quản lý các tính năng cộng đồng như chia sẻ, thích và bình luận.
 
-(Chưa cập nhật)
+### 2. AI Service API (`VITE_AI_SERVICE_API_URL`)
+-   **URL Mặc định**: `http://localhost:5000/api`
+-   **Chức năng**: Cung cấp các tính năng dựa trên trí tuệ nhân tạo:
+    -   **Tư vấn Dinh dưỡng**: Xử lý các cuộc hội thoại với AI để đưa ra lời khuyên dinh dưỡng.
+    -   **Thị giác Máy tính (Computer Vision)**: Phân tích hình ảnh món ăn do người dùng tải lên để nhận dạng và trích xuất thông tin dinh dưỡng.
+
+## I. Kiểm thử (Testing)
+
+Kiểm thử là một phần quan trọng của dự án để đảm bảo chất lượng và độ ổn định của mã nguồn. Dự án sử dụng bộ công cụ hiện đại để thực hiện kiểm thử đơn vị (unit testing) và kiểm thử tích hợp (integration testing) cho các component React.
+
+### 1. Công nghệ sử dụng
+
+-   **Test Runner**: [Vitest](https://vitest.dev/) - Một framework kiểm thử thế hệ mới, nhanh và tương thích hoàn toàn với Vite.
+-   **Thư viện Kiểm thử Component**: [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Cung cấp các công cụ để kiểm thử component React theo cách mà người dùng cuối tương tác với chúng.
+-   **API Mocking**: [Mock Service Worker (MSW)](https://mswjs.io/) - Cho phép chặn các yêu cầu mạng ở cấp độ mạng, giúp mô phỏng API backend một cách đáng tin cậy trong quá trình kiểm thử mà không cần máy chủ thực.
+-   **Môi trường Test**: [JSDOM](https://github.com/jsdom/jsdom) - Mô phỏng môi trường DOM của trình duyệt để chạy các bài kiểm thử trong Node.js.
+
+### 2. Triết lý Kiểm thử
+
+Chúng tôi tuân theo triết lý rằng các bài kiểm thử nên càng giống với cách người dùng sử dụng ứng dụng càng tốt. Thay vì kiểm thử chi tiết triển khai (implementation details) của component, chúng tôi tập trung vào:
+
+-   **Hành vi người dùng**: Kiểm tra xem component có hiển thị đúng thông tin và phản hồi chính xác với các tương tác của người dùng (như nhấp chuột, nhập liệu) hay không.
+-   **Tích hợp**: Đảm bảo các component hoạt động tốt với nhau và với các dịch vụ bên ngoài (được giả lập bởi MSW).
+
+### 3. Vị trí các tệp Kiểm thử
+
+Các tệp kiểm thử thường được đặt trong thư mục `__tests__` bên trong thư mục của component hoặc tính năng tương ứng, hoặc có đuôi là `.test.jsx` hoặc `.spec.jsx`.
+
+### 4. Cách chạy Kiểm thử
+
+Các lệnh để chạy kiểm thử đã được định nghĩa trong `package.json` và được liệt kê trong phần **Hướng dẫn Cài đặt và Chạy**.

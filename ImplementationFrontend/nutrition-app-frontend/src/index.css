@@ -1,0 +1,7 @@
+/* src/index.css */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Bạn có thể thêm CSS tùy chỉnh tại đây */
