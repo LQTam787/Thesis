@@ -233,7 +233,7 @@ Dự án tuân theo một cấu trúc dựa trên tính năng để tổ chức 
 
 ### 1. Yêu cầu
 - Node.js (phiên bản 18.x trở lên)
-- npm, yarn, hoặc pnpm
+- npm
 
 ### 2. Cài đặt
 1.  Di chuyển đến thư mục gốc của dự án frontend:
@@ -247,9 +247,17 @@ Dự án tuân theo một cấu trúc dựa trên tính năng để tổ chức 
 
 ### 3. Cấu hình Biến Môi trường
 1.  Tạo một tệp `.env.development` trong thư mục gốc của frontend (`ImplementationFrontend/nutrition-app-frontend`).
-2.  Thêm URL của API backend vào tệp:
-    ```
-    VITE_API_BASE_URL="http://localhost:8080/api"
+2.  Thêm các URL của API backend và AI service vào tệp:
+    ```env
+    # .env.development
+
+    # --- Cấu hình cho API Backend Chính ---
+    # Thay đổi cổng (port) nếu Backend của bạn chạy ở một cổng khác.
+    VITE_BACKEND_API_URL=http://localhost:8080/api
+
+    # --- Cấu hình cho AI Service (Tư vấn Dinh dưỡng và Thị giác Máy tính) ---
+    # Thay đổi cổng (port) nếu AI Service của bạn chạy ở một cổng khác.
+    VITE_AI_SERVICE_API_URL=http://localhost:5000/api
     ```
     *Lưu ý: Vite yêu cầu tiền tố `VITE_` cho các biến môi trường được sử dụng ở phía client.*
 
@@ -260,32 +268,53 @@ npm run dev
 ```
 Ứng dụng sẽ có sẵn tại `http://localhost:5173` (hoặc một cổng khác nếu 5173 đang được sử dụng).
 
-### 5. Chạy Kiểm thử
-Dự án sử dụng Vitest để kiểm thử. Bạn có thể chạy các bài kiểm thử bằng các lệnh sau:
-- Chạy tất cả các bài kiểm thử một lần:
-  ```bash
-  npm test
-  ```
-- Chạy kiểm thử và xem phạm vi bao phủ (coverage):
-  ```bash
-  npm run test:coverage
-  ```
-- Chạy kiểm thử ở chế độ theo dõi (watch mode) để phát triển:
-  ```bash
-  npm run test:watch
-  ```
-
-### 6. Build cho Production
-Để tạo một bản build tối ưu hóa cho production, chạy:
-```bash
-npm run build
-```
-Các tệp đã build sẽ được đặt trong thư mục `dist/`.
+### 5. Các Scripts khác
+- **Build cho Production**: `npm run build`
+- **Lint mã nguồn**: `npm run lint`
+- **Xem bản build production**: `npm run preview`
+- **Chạy kiểm thử**: `npm test`
+- **Chạy kiểm thử với coverage**: `npm run test:coverage`
+- **Chạy kiểm thử ở chế độ watch**: `npm run test:watch`
 
 ## H. Tài liệu API
 
-(Chưa cập nhật)
+Frontend giao tiếp với hai dịch vụ backend chính:
+
+### 1. Main Backend API (`VITE_BACKEND_API_URL`)
+-   **URL Mặc định**: `http://localhost:8080/api`
+-   **Chức năng**: Chịu trách nhiệm xử lý logic nghiệp vụ cốt lõi của ứng dụng, bao gồm:
+    -   Quản lý xác thực và tài khoản người dùng (Đăng ký, Đăng nhập, JWT).
+    -   Lưu trữ và truy xuất dữ liệu (thông tin người dùng, bữa ăn, thực phẩm, kế hoạch dinh dưỡng).
+    -   Quản lý các tính năng cộng đồng như chia sẻ, thích và bình luận.
+
+### 2. AI Service API (`VITE_AI_SERVICE_API_URL`)
+-   **URL Mặc định**: `http://localhost:5000/api`
+-   **Chức năng**: Cung cấp các tính năng dựa trên trí tuệ nhân tạo:
+    -   **Tư vấn Dinh dưỡng**: Xử lý các cuộc hội thoại với AI để đưa ra lời khuyên dinh dưỡng.
+    -   **Thị giác Máy tính (Computer Vision)**: Phân tích hình ảnh món ăn do người dùng tải lên để nhận dạng và trích xuất thông tin dinh dưỡng.
 
 ## I. Kiểm thử (Testing)
 
-(Chưa cập nhật)
+Kiểm thử là một phần quan trọng của dự án để đảm bảo chất lượng và độ ổn định của mã nguồn. Dự án sử dụng bộ công cụ hiện đại để thực hiện kiểm thử đơn vị (unit testing) và kiểm thử tích hợp (integration testing) cho các component React.
+
+### 1. Công nghệ sử dụng
+
+-   **Test Runner**: [Vitest](https://vitest.dev/) - Một framework kiểm thử thế hệ mới, nhanh và tương thích hoàn toàn với Vite.
+-   **Thư viện Kiểm thử Component**: [React Testing Library](https://testing-library.com/docs/react-testing-library/intro/) - Cung cấp các công cụ để kiểm thử component React theo cách mà người dùng cuối tương tác với chúng.
+-   **API Mocking**: [Mock Service Worker (MSW)](https://mswjs.io/) - Cho phép chặn các yêu cầu mạng ở cấp độ mạng, giúp mô phỏng API backend một cách đáng tin cậy trong quá trình kiểm thử mà không cần máy chủ thực.
+-   **Môi trường Test**: [JSDOM](https://github.com/jsdom/jsdom) - Mô phỏng môi trường DOM của trình duyệt để chạy các bài kiểm thử trong Node.js.
+
+### 2. Triết lý Kiểm thử
+
+Chúng tôi tuân theo triết lý rằng các bài kiểm thử nên càng giống với cách người dùng sử dụng ứng dụng càng tốt. Thay vì kiểm thử chi tiết triển khai (implementation details) của component, chúng tôi tập trung vào:
+
+-   **Hành vi người dùng**: Kiểm tra xem component có hiển thị đúng thông tin và phản hồi chính xác với các tương tác của người dùng (như nhấp chuột, nhập liệu) hay không.
+-   **Tích hợp**: Đảm bảo các component hoạt động tốt với nhau và với các dịch vụ bên ngoài (được giả lập bởi MSW).
+
+### 3. Vị trí các tệp Kiểm thử
+
+Các tệp kiểm thử thường được đặt trong thư mục `__tests__` bên trong thư mục của component hoặc tính năng tương ứng, hoặc có đuôi là `.test.jsx` hoặc `.spec.jsx`.
+
+### 4. Cách chạy Kiểm thử
+
+Các lệnh để chạy kiểm thử đã được định nghĩa trong `package.json` và được liệt kê trong phần **Hướng dẫn Cài đặt và Chạy**.

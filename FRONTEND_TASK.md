@@ -125,7 +125,7 @@
 
 ### **VI. Giai đoạn Hoàn thiện (Finalization)**
 
-* [ ] **Tối ưu hóa hiệu suất**: Tối ưu hóa các React Component và việc gọi API.
-* [ ] **Cập nhật FRONTEND_README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API sau khi triển khai.
-* [ ] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.
-* [ ] **Tạo Icon/Favicon cho ứng dụng**.
+* [x] **Tối ưu hóa hiệu suất**: Tối ưu hóa các React Component và việc gọi API.
+* [x] **Cập nhật FRONTEND_README.md**: Bổ sung hướng dẫn cài đặt, chạy dự án và mô tả API sau khi triển khai.
+* [x] **Dọn dẹp mã nguồn (Code Cleanup)**: Refactor và tối ưu hóa code.
+* [x] **Tạo Icon/Favicon cho ứng dụng**.
