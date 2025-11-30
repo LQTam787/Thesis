@@ -111,15 +111,15 @@
     * [x] **Components**: Kiểm tra các component độc lập (`RecipeDetail`, `SharePostForm`) render đúng và xử lý sự kiện.
     * [x] **Redux Slices**: Kiểm tra các reducer của `authSlice` cập nhật state chính xác.
     * [x] **Services**: Kiểm tra các hàm service (`authService`, `planService`) gọi đúng API (sử dụng mock) và xử lý dữ liệu trả về.
-* [ ] **Integration Tests**:
+* [x] **Integration Tests**:
     * [x] **Luồng Xác thực**: Kiểm tra luồng đăng nhập/đăng xuất hoàn chỉnh, bao gồm cả cập nhật Redux state và điều hướng.
     * [x] **Luồng Phân quyền**: Kiểm tra `PrivateRoute` và `AdminRoute` bảo vệ route và điều hướng chính xác dựa trên vai trò người dùng.
     * [x] **Luồng Nghiệp vụ chính**: Kiểm tra các trang chính (`DashboardPage`, `DailyLogInputPage`, `NutritionPlanPage`) hoạt động đúng khi tích hợp với API mock.
-* [ ] **Kiểm thử khả năng đáp ứng (Responsiveness Testing)**: Đảm bảo giao diện hoạt động tốt trên thiết bị di động (Mobile-First) và máy tính để bàn.
+* [x] **Kiểm thử khả năng đáp ứng (Responsiveness Testing)**: Đảm bảo giao diện hoạt động tốt trên thiết bị di động (Mobile-First) và máy tính để bàn.
 
 #### **D. Tích hợp vào Quy trình (CI/CD)**
-* [ ] **Cập nhật `package.json`**: Thêm các scripts `test`, `test:watch`, và `test:coverage`.
-* [ ] **Chạy và xác thực báo cáo Coverage**: Đảm bảo các bài test chạy thành công và tạo ra báo cáo độ bao phủ của mã nguồn.
+* [x] **Cập nhật `package.json`**: Thêm các scripts `test`, `test:watch`, và `test:coverage`.
+* [x] **Chạy và xác thực báo cáo Coverage**: Đảm bảo các bài test chạy thành công và tạo ra báo cáo độ bao phủ của mã nguồn.
 
 ---
 
