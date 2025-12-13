@@ -5,11 +5,11 @@ import { store } from '../store/store';
 import { logout } from '../store/authSlice';
 
 // Lấy BASE_URL từ biến môi trường
-// Đảm bảo bạn đã cấu hình biến này trong file .env (ví dụ: VITE_API_BASE_URL="http://localhost:8080/api")
-const VITE_API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const VITE_BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8080';
+const VITE_AI_SERVICE_API_URL = import.meta.env.VITE_AI_SERVICE_API_URL || 'http://localhost:5000';
 
 const api = axios.create({
-    baseURL: VITE_API_BASE_URL,
+    baseURL: VITE_BACKEND_API_URL,
     headers: {
         'Content-Type': 'application/json',
     },
@@ -46,5 +46,12 @@ api.interceptors.response.use(
         return Promise.reject(error);
     }
 );
+
+export const aiApi = axios.create({
+    baseURL: VITE_AI_SERVICE_API_URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+});
 
 export default api;

@@ -29,14 +29,14 @@ Hệ thống được thiết kế theo kiến trúc đa lớp để đảm bả
 
 ## D. Công nghệ sử dụng
 
-| Hạng mục      | Công nghệ                                                              |
-|---------------|------------------------------------------------------------------------|
-| **Backend**   | Java 17, Spring Boot, Spring Security (JWT), Maven                     |
-| **AI/ML**     | Python, Flask, TensorFlow, Scikit-learn, Pandas                        |
-| **Cơ sở dữ liệu** | MySQL, Spring Data JPA (Hibernate)                                 |
-| **Thiết kế**  | PlantUML                                                               |
-| **Kiểm thử**  | JUnit 5, Mockito (Backend) & Pytest (AI)                               |
-| **Tài liệu API** | Swagger (OpenAPI)                                                   |
+| Hạng mục          | Công nghệ                                          |
+|-------------------|----------------------------------------------------|
+| **Backend**       | Java 17, Spring Boot, Spring Security (JWT), Maven |
+| **AI/ML**         | Python, Flask, TensorFlow, Scikit-learn, Pandas    |
+| **Cơ sở dữ liệu** | MySQL, Spring Data JPA (Hibernate)                 |
+| **Thiết kế**      | PlantUML                                           |
+| **Kiểm thử**      | JUnit 5, Mockito (Backend) & Pytest (AI)           |
+| **Tài liệu API**  | Swagger (OpenAPI)                                  |
 
 ## E. Cấu trúc thư mục
 
@@ -201,35 +201,35 @@ gh repo clone LQTam787/Thesis
 ### 1. Backend (Spring Boot)
 
 a.  **Yêu cầu**:
-    - Java JDK 17 hoặc mới hơn.
-    - Maven 3.6 hoặc mới hơn.
-    - Một instance MySQL đang chạy.
+- Java JDK 17 hoặc mới hơn.
+- Maven 3.6 hoặc mới hơn.
+- Một instance MySQL đang chạy.
 
 b.  **Cấu hình**:
-    - Mở tệp `Implementation/nutrition-ai-backend/src/main/resources/application.properties`.
-    - Cập nhật các thuộc tính `spring.datasource.url`, `spring.datasource.username`, và `spring.datasource.password` để trỏ đến cơ sở dữ liệu MySQL của bạn.
+- Mở tệp `Implementation/nutrition-ai-backend/src/main/resources/application.properties`.
+- Cập nhật các thuộc tính `spring.datasource.url`, `spring.datasource.username`, và `spring.datasource.password` để trỏ đến cơ sở dữ liệu MySQL của bạn.
 
 c.  **Chạy ứng dụng**:
-    - Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
-    - Chạy lệnh sau: `mvn spring-boot:run`.
-    - Backend sẽ khởi động và chạy tại `http://localhost:8080`.
+- Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
+- Chạy lệnh sau: `mvn spring-boot:run`.
+- Backend sẽ khởi động và chạy tại `http://localhost:8080`.
 
 ### 2. AI/ML (Python, TensorFlow)
 
 a.  **Yêu cầu**:
-    - Python 3.8 hoặc mới hơn.
+- Python 3.8 hoặc mới hơn.
 
 b.  **Cấu hình và Cài đặt**:
-    - Điều hướng đến thư mục `ImplementationAi`.
-    - Tạo môi trường ảo: `python -m venv venv`.
-    - Kích hoạt môi trường ảo (trên Windows): `.\venv\Scripts\activate`.
-    - Kích hoạt môi trường ảo (trên Linux/macOS): `source venv/bin/activate`.
-    - Cài đặt các thư viện cần thiết: `pip install -r requirements.txt`.
+- Điều hướng đến thư mục `ImplementationAi`.
+- Tạo môi trường ảo: `python -m venv venv`.
+- Kích hoạt môi trường ảo (trên Windows): `.\venv\Scripts\activate`.
+- Kích hoạt môi trường ảo (trên Linux/macOS): `source venv/bin/activate`.
+- Cài đặt các thư viện cần thiết: `pip install -r requirements.txt`.
 
 c.  **Chạy ứng dụng AI**:
-    - Điều hướng đến thư mục `ImplementationAi/src`.
-    - Chạy lệnh sau: `python app.py`.
-    - AI Service sẽ khởi động và chạy tại `http://localhost:5000`.
+- Điều hướng đến thư mục `ImplementationAi/src`.
+- Chạy lệnh sau: `python app.py`.
+- AI Service sẽ khởi động và chạy tại `http://localhost:5000`.
 
 ### 3. Quản lý Dữ liệu AI/ML
 
@@ -253,14 +253,14 @@ Sau khi khởi chạy, tài liệu API có thể được truy cập tại:
 ### 1. Backend (Spring Boot)
 
 **Chạy Unit Tests**:
-    - Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
-    - Sử dụng JUnit 5 và Mockito để viết các bài kiểm thử đơn vị.
-    - Chạy lệnh sau: `mvn test`.
-    - Maven sẽ tự động tìm và chạy tất cả các Unit Tests trong thư mục `src/test/java`.
+- Điều hướng đến thư mục `Implementation/nutrition-ai-backend`.
+- Sử dụng JUnit 5 và Mockito để viết các bài kiểm thử đơn vị.
+- Chạy lệnh sau: `mvn test`.
+- Maven sẽ tự động tìm và chạy tất cả các Unit Tests trong thư mục `src/test/java`.
 
 ### 2. AI/ML (Python)
 
 **Chạy Unit Tests**:
-    - Điều hướng đến thư mục `ImplementationAi`.
-    - Chạy lệnh sau: `python -m pytest`.
-    - Pytest sẽ tự động tìm và chạy tất cả các tệp kiểm thử bắt đầu bằng `test_`.
+- Điều hướng đến thư mục `ImplementationAi`.
+- Chạy lệnh sau: `python -m pytest`.
+- Pytest sẽ tự động tìm và chạy tất cả các tệp kiểm thử bắt đầu bằng `test_`.

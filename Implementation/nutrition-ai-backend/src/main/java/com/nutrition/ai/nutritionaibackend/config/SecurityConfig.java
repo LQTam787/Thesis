@@ -16,6 +16,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import java.util.Arrays;
 
 /**
  * Lớp cấu hình bảo mật chính cho ứng dụng Spring.
@@ -77,6 +81,37 @@ public class SecurityConfig {
     }
 
     /**
+     * Bean CorsConfigurationSource.
+     * Cấu hình CORS để cho phép yêu cầu từ frontend (http://localhost:5173) tới backend.
+     * Điều này giải quyết lỗi CORS preflight request từ trình duyệt.
+     *
+     * @return CorsConfigurationSource với các cấu hình CORS cho tất cả các endpoint.
+     */
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // Cho phép yêu cầu từ frontend development
+        configuration.setAllowedOrigins(Arrays.asList(
+                "http://localhost:5173",  // Vite development server
+                "http://localhost:3000",  // Alternative development port
+                "http://localhost:5174"   // Alternative Vite port
+        ));
+        // Cho phép tất cả các HTTP method (GET, POST, PUT, DELETE, OPTIONS, v.v.)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        // Cho phép tất cả các header
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        // Cho phép gửi credentials (cookie, authorization header) trong cross-origin requests
+        configuration.setAllowCredentials(true);
+        // Thời gian cache cho preflight request (tính bằng giây)
+        configuration.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        // Áp dụng cấu hình CORS cho tất cả các endpoint
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
+    /**
      * Định nghĩa SecurityFilterChain (Chuỗi Bộ lọc Bảo mật).
      * Đây là nơi cấu hình các quy tắc bảo mật cho HTTP request.
      *
@@ -86,6 +121,9 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        // 0. Cấu hình CORS: Cho phép yêu cầu cross-origin từ frontend
+        http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+
         // 1. Tắt CSRF (Thích hợp cho ứng dụng RESTful API stateless)
         http.csrf(csrf -> csrf.disable())
                 // 2. Xử lý Exception: Sử dụng AuthEntryPointJwt để xử lý lỗi xác thực (401 Unauthorized)
