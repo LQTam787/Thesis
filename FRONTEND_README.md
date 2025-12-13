@@ -253,11 +253,11 @@ Dự án tuân theo một cấu trúc dựa trên tính năng để tổ chức 
 
     # --- Cấu hình cho API Backend Chính ---
     # Thay đổi cổng (port) nếu Backend của bạn chạy ở một cổng khác.
-    VITE_BACKEND_API_URL=http://localhost:8080
+    VITE_BACKEND_API_URL=http://localhost:8080/api
 
     # --- Cấu hình cho AI Service (Tư vấn Dinh dưỡng và Thị giác Máy tính) ---
     # Thay đổi cổng (port) nếu AI Service của bạn chạy ở một cổng khác.
-    VITE_AI_SERVICE_API_URL=http://localhost:5000
+    VITE_AI_SERVICE_API_URL=http://localhost:5000/api
     ```
     *Lưu ý: Vite yêu cầu tiền tố `VITE_` cho các biến môi trường được sử dụng ở phía client.*
 

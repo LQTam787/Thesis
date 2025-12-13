@@ -5,8 +5,8 @@ import { store } from '../store/store';
 import { logout } from '../store/authSlice';
 
 // Lấy BASE_URL từ biến môi trường
-const VITE_BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8080';
-const VITE_AI_SERVICE_API_URL = import.meta.env.VITE_AI_SERVICE_API_URL || 'http://localhost:5000';
+const VITE_BACKEND_API_URL = import.meta.env.VITE_BACKEND_API_URL || 'http://localhost:8080/api';
+const VITE_AI_SERVICE_API_URL = import.meta.env.VITE_AI_SERVICE_API_URL || 'http://localhost:5000/api';
 
 const api = axios.create({
     baseURL: VITE_BACKEND_API_URL,

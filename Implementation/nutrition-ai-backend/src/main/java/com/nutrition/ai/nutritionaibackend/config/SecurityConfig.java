@@ -133,7 +133,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // 4. Ủy quyền yêu cầu HTTP (Authorization)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/auth/**", "/api/test/**").permitAll();
+                    auth.requestMatchers("/**", "/api/auth/**", "/api/test/**").permitAll();
                     auth.requestMatchers("/api/admin/**").hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 });
