@@ -162,8 +162,9 @@ public class AuthController {
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             // Xử lý lỗi xác thực
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("Error: Invalid username or password");
+                    .body(e.getMessage());
         }
     }
 }

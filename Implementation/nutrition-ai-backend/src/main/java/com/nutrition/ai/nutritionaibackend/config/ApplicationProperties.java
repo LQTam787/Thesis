@@ -1,22 +1,24 @@
 package com.nutrition.ai.nutritionaibackend.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /**
  * Lớp cấu hình để liên kết các thuộc tính tùy chỉnh từ application.properties.
- * Điều này giúp cung cấp quyền truy cập an toàn kiểu vào các thuộc tính ứng dụng.
- * Nguyên lý hoạt động: Spring Boot tự động tìm và điền các thuộc tính
- * dựa trên tên lớp và các prefix được chỉ định.
+ * Lớp này hoạt động như một facade, cung cấp quyền truy cập vào các nhóm thuộc tính con.
  */
 @Configuration
-// Lớp cha này không có prefix cụ thể nhưng chứa các lớp con có prefix.
-@ConfigurationProperties
+@EnableConfigurationProperties({ApplicationProperties.Jwt.class, ApplicationProperties.AiService.class})
 public class ApplicationProperties {
 
-    // Khởi tạo các đối tượng con để chứa các nhóm thuộc tính
-    private final Jwt jwt = new Jwt();
-    private final AiService aiService = new AiService();
+    private final Jwt jwt;
+    private final AiService aiService;
+
+    public ApplicationProperties(Jwt jwt, AiService aiService) {
+        this.jwt = jwt;
+        this.aiService = aiService;
+    }
 
     // Getter cho cấu hình JWT
     public Jwt getJwt() {
