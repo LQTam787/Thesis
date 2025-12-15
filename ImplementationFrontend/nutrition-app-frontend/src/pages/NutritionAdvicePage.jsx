@@ -91,7 +91,7 @@ function NutritionAdvicePage() {
 
 
     return (
-        <div className="flex flex-col h-screen bg-gray-50">
+        <>
             <header className="p-4 bg-white shadow-md border-b">
                 <h1 className="text-xl font-bold text-green-700">Trò chuyện với AI Dinh Dưỡng</h1>
             </header>
@@ -169,7 +169,7 @@ function NutritionAdvicePage() {
                     </button>
                 </form>
             </div>
-        </div>
+        </>
     );
 }
 

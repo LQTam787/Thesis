@@ -1,139 +1,30 @@
 import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { Link, Outlet } from 'react-router-dom'; // Import Link và Outlet từ react-router-dom
-import authService from '../services/authService';
+import { useSelector } from 'react-redux';
 
 function DashboardPage() {
     const user = useSelector((state) => state.auth.user);
-    const dispatch = useDispatch(); // Khởi tạo dispatch nếu cần dùng cho logout
-
-    const handleLogout = () => {
-        authService.performLogout(dispatch); // Truyền dispatch nếu performLogout cần nó
-    };
 
     return (
-        <div className="flex min-h-screen bg-gray-100">
-            {/* Sidebar */}
-            <aside className="w-64 bg-green-800 text-white shadow-lg flex flex-col">
-                <div className="p-6 border-b border-green-700">
-                    <h2 className="text-3xl font-extrabold text-white">Nutrition App</h2>
+        <>
+            <header className="flex justify-between items-center mb-10 bg-white p-6 rounded-xl shadow-md">
+                <h1 className="text-4xl font-extrabold text-green-700">
+                    Chào mừng, {user ? user.username : 'Người dùng'}!
+                </h1>
+                <div className="text-lg text-gray-700">
+                    <span className="font-semibold">Role:</span> {user ? user.role || 'USER' : 'Không rõ'}
                 </div>
-                <nav className="flex-grow p-4">
-                    <ul>
-                        <li className="mb-2">
-                            <Link
-                                to="/dashboard"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                                Dashboard
-                            </Link>
-                        </li>
-                        <li className="mb-2">
-                            <Link
-                                to="/advice"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 0 012 2v10m-6 0a2 2 0 002 2h2a2 0 002-2m0 0V5a2 2 0 012-2h2a2 0 012 2v14a2 2 0 01-2 2h-2a2 0 01-2-2z"></path></svg>
-                                Tư vấn Dinh dưỡng
-                            </Link>
-                        </li>
-                        <li className="mb-2">
-                            <Link
-                                to="/log"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                Theo dõi Nhật ký
-                            </Link>
-                        </li>
-                        <li className="mb-2">
-                            <Link
-                                to="/report"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-4 0v-2a2 2 0 012-2h2a2 2 0 012 2v2m-6 0H6a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2h-4m-6 0h6"></path></svg>
-                                Xem báo cáo Nhật ký
-                            </Link>
-                        </li>
-                        <li className="mb-2">
-                            <Link
-                                to="/plans"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-                                Lập Kế hoạch
-                            </Link>
-                        </li>
-                        <li className="mb-2">
-                            <Link
-                                to="/profile"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                                Hồ sơ
-                            </Link>
-                        </li>
-                        <li className="mb-2">
-                            <Link
-                                to="/community"
-                                className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                            >
-                                <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.146-1.286-.423-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.146-1.286.423-1.857m0 0a5.002 5.002 0 019.154 0m-4.577-4.577a4 4 0 11-5.656 0 4 4 0 015.656 0z"></path></svg>
-                                Cộng đồng
-                            </Link>
-                        </li>
-                        {user && user.role === 'ADMIN' && (
-                            <li className="mb-2">
-                                <Link
-                                    to="/admin/users"
-                                    className="flex items-center p-3 rounded-lg text-lg font-medium hover:bg-green-700 transition duration-200"
-                                >
-                                    <svg className="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.146-1.286-.423-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.146-1.286.423-1.857m0 0a5.002 5.002 0 019.154 0m-4.577-4.577a4 4 0 11-5.656 0 4 4 0 015.656 0z"></path></svg>
-                                    Quản lý Người dùng
-                                </Link>
-                            </li>
-                        )}
-                    </ul>
-                </nav>
-                <div className="p-4 border-t border-green-700">
-                    <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center justify-center bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300"
-                    >
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
-                        Đăng Xuất
-                    </button>
+            </header>
+
+            <section className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Tổng quan Hệ thống</h2>
+                <p className="text-gray-600 mb-4">
+                    Đây là trang Dashboard, nơi bạn có thể truy cập các chức năng chính của hệ thống thông qua sidebar bên trái.
+                </p>
+                <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200 text-sm text-green-800">
+                    Trạng thái: Đã đăng nhập thành công.
                 </div>
-            </aside>
-
-            {/* Main Content */}
-            <main className="flex-1 p-8">
-                <header className="flex justify-between items-center mb-10 bg-white p-6 rounded-xl shadow-md">
-                    <h1 className="text-4xl font-extrabold text-green-700">
-                        Chào mừng, {user ? user.username : 'Người dùng'}!
-                    </h1>
-                    <div className="text-lg text-gray-700">
-                        <span className="font-semibold">Role:</span> {user ? user.role || 'USER' : 'Không rõ'}
-                    </div>
-                </header>
-
-                <section className="bg-white p-6 rounded-xl shadow-lg border border-gray-200">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-4">Tổng quan Hệ thống</h2>
-                    <p className="text-gray-600 mb-4">
-                        Đây là trang Dashboard, nơi bạn có thể truy cập các chức năng chính của hệ thống thông qua sidebar bên trái.
-                    </p>
-                    <div className="mt-4 p-3 bg-green-50 rounded-lg border border-green-200 text-sm text-green-800">
-                        Trạng thái: Đã đăng nhập thành công.
-                    </div>
-                </section>
-
-                {/* Outlet để render các component con dựa trên route */}
-                <div className="mt-8">
-                    <Outlet />
-                </div>
-            </main>
-        </div>
+            </section>
+        </>
     );
 }
 

@@ -39,7 +39,7 @@ function ProgressReportPage() {
 
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+        <>
             <header className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800 flex items-center">
                     <Activity className="w-7 h-7 mr-3 text-green-600" />
@@ -97,7 +97,7 @@ function ProgressReportPage() {
             )}
 
             {/* Các báo cáo hoặc biểu đồ khác (ví dụ: Macro-nutrients chart) sẽ được thêm vào đây */}
-        </div>
+        </>
     );
 }
 

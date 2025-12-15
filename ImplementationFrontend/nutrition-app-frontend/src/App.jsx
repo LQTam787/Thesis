@@ -3,65 +3,33 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
-import DashboardPage from './pages/DashboardPage'; // Tạo file này (tạm thời)
+import DashboardPage from './pages/DashboardPage';
 import PrivateRoute from './components/PrivateRoute';
 import { useDispatch } from 'react-redux';
-import { logout, setCredentials, setLoading } from './store/authSlice';
-import authService from './services/authService';
+import { setCredentials, setLoading } from './store/authSlice';
 import NutritionAdvicePage from './pages/NutritionAdvicePage';
 import NutritionPlanPage from './pages/NutritionPlanPage';
 import NutritionPlanDetailPage from './pages/NutritionPlanDetailPage';
-import RecipeDetail from './components/RecipeDetail'; // Lưu ý: RecipeDetail là component, không phải page
+import RecipeDetail from './components/RecipeDetail';
 import DailyLogInputPage from './pages/DailyLogInputPage';
 import ProgressReportPage from './pages/ProgressReportPage';
 import CommunityFeedPage from './pages/CommunityFeedPage';
 import ProfileManagementPage from './pages/ProfileManagementPage';
 import AdminRoute from './components/AdminRoute';
 import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import UserManagementPage from './pages/admin/UserManagementPage'; // Import Admin Page
+import UserManagementPage from './pages/admin/UserManagementPage';
 import FoodDataManagementPage from './pages/admin/FoodDataManagementPage';
 import AITrainingTriggerPage from './pages/admin/AITrainingTriggerPage';
-
-// Component Tạm thời cho Dashboard
-const TempDashboard = () => {
-    const dispatch = useDispatch();
-
-    // Hàm Đăng xuất
-    const handleLogout = () => {
-        authService.performLogout();
-    };
-
-    return (
-        <div className="p-8">
-            <h1 className="text-4xl font-bold text-green-600 mb-4">Trang Quản lý (Dashboard)</h1>
-            <p className="mb-4">Bạn đã đăng nhập thành công!</p>
-            <button
-                onClick={handleLogout}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-            >
-                Đăng Xuất
-            </button>
-        </div>
-    );
-};
-// Tạm thời tạo file src/pages/DashboardPage.jsx với nội dung trên (hoặc giữ nguyên TempDashboard)
-
+import MainLayout from './layouts/MainLayout';
 
 function App() {
-    // Logic khởi tạo: Kiểm tra token khi ứng dụng khởi động
     const dispatch = useDispatch();
 
     React.useEffect(() => {
         const token = localStorage.getItem('token');
-
         if (token) {
-            // Trong ứng dụng thực tế, bạn sẽ cần gọi API để xác thực token này
-            // và lấy thông tin người dùng (vd: dispatch(checkTokenAndFetchUser(token)))
-            // Tạm thời, chúng ta sẽ giả định token hợp lệ và đánh dấu đã đăng nhập
             dispatch(setCredentials({ token, user: { username: 'user_temp', role: 'USER' } }));
         }
-
-        // Kết thúc trạng thái tải
         dispatch(setLoading(false));
     }, [dispatch]);
 
@@ -72,65 +40,31 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
 
-                {/*/!* Private Routes (Cần đăng nhập) đã được mở khóa*!/*/}
-                {/*<Route path="/dashboard" element={<DashboardPage />} />*/}
-                {/*/!* THÊM ROUTE NÀY *!/*/}
-                {/*<Route path="/advice" element={<NutritionAdvicePage />} />*/}
-                {/*/!* Thêm các route cần bảo vệ khác tại đây *!/*/}
-                {/*<Route path="/plans" element={<NutritionPlanPage />} />*/}
-                {/*<Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />*/}
-                {/*<Route path="/recipes/:recipeId" element={<RecipeDetail />} />*/}
-                {/*/!* THÊM CÁC ROUTE THEO DÕI NÀY *!/*/}
-                {/*<Route path="/log" element={<DailyLogInputPage />} />*/}
-                {/*<Route path="/report" element={<ProgressReportPage />} />*/}
-                {/*/!* THÊM ROUTE CỘNG ĐỒNG NÀY *!/*/}
-                {/*<Route path="/community" element={<CommunityFeedPage />} />*/}
-                {/*/!* THÊM ROUTE HỒ SƠ NÀY *!/*/}
-                {/*<Route path="/profile" element={<ProfileManagementPage />} />*/}
-                {/*<Route path="/" element={<Navigate to="/dashboard" replace />} />*/}
-
-
-                {/*/!* --- ADMIN Routes (Cần vai trò ADMIN) đã được mở khóa --- *!/*/}
-                {/*<Route path="/admin/dashboard" element={<AdminDashboardPage />} />*/}
-                {/*<Route path="/admin/users" element={<UserManagementPage />} />*/}
-                {/*/!* THÊM ROUTE QUẢN LÝ THỰC PHẨM NÀY *!/*/}
-                {/*<Route path="/admin/foods" element={<FoodDataManagementPage />} />*/}
-                {/*/!* Các route Admin khác sẽ được thêm tại đây *!/*/}
-                {/*/!* THÊM ROUTE QUẢN LÝ AI NÀY *!/*/}
-                {/*<Route path="/admin/ai-retrain" element={<AITrainingTriggerPage />} />*/}
-
-
-                {/* Private Routes (Cần đăng nhập) */}
+                {/* Private Routes with MainLayout */}
                 <Route element={<PrivateRoute />}>
-                    <Route path="/dashboard" element={<DashboardPage />} />
-                    {/* THÊM ROUTE NÀY */}
-                    <Route path="/advice" element={<NutritionAdvicePage />} />
-                    {/* Thêm các route cần bảo vệ khác tại đây */}
-                    <Route path="/plans" element={<NutritionPlanPage />} />
-                    <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />
-                    <Route path="/recipes/:recipeId" element={<RecipeDetail />} />
-                    {/* THÊM CÁC ROUTE THEO DÕI NÀY */}
-                    <Route path="/log" element={<DailyLogInputPage />} />
-                    <Route path="/report" element={<ProgressReportPage />} />
-                    {/* THÊM ROUTE CỘNG ĐỒNG NÀY */}
-                    <Route path="/community" element={<CommunityFeedPage />} />
-                    {/* THÊM ROUTE HỒ SƠ NÀY */}
-                    <Route path="/profile" element={<ProfileManagementPage />} />
-                    <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    <Route element={<MainLayout />}>
+                        <Route path="/dashboard" element={<DashboardPage />} />
+                        <Route path="/advice" element={<NutritionAdvicePage />} />
+                        <Route path="/plans" element={<NutritionPlanPage />} />
+                        <Route path="/plans/:planId" element={<NutritionPlanDetailPage />} />
+                        <Route path="/recipes/:recipeId" element={<RecipeDetail />} />
+                        <Route path="/log" element={<DailyLogInputPage />} />
+                        <Route path="/report" element={<ProgressReportPage />} />
+                        <Route path="/community" element={<CommunityFeedPage />} />
+                        <Route path="/profile" element={<ProfileManagementPage />} />
+                        <Route path="/" element={<Navigate to="/dashboard" replace />} />
+                    </Route>
                 </Route>
 
-                {/* --- ADMIN Routes (Cần vai trò ADMIN) --- */}
+                {/* Admin Routes */}
                 <Route element={<AdminRoute />}>
                     <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
                     <Route path="/admin/users" element={<UserManagementPage />} />
-                    {/* THÊM ROUTE QUẢN LÝ THỰC PHẨM NÀY */}
                     <Route path="/admin/foods" element={<FoodDataManagementPage />} />
-                    {/* Các route Admin khác sẽ được thêm tại đây */}
-                    {/* THÊM ROUTE QUẢN LÝ AI NÀY */}
                     <Route path="/admin/ai-retrain" element={<AITrainingTriggerPage />} />
                 </Route>
 
-                {/* Catch-all route cho trang 404 hoặc chuyển hướng */}
+                {/* Catch-all route */}
                 <Route path="*" element={<Navigate to="/dashboard" replace />} />
             </Routes>
         </BrowserRouter>

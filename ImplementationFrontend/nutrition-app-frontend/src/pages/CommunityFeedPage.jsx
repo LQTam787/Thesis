@@ -128,7 +128,7 @@ function CommunityFeedPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6 md:p-10">
+        <>
             <header className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-800 flex items-center">
                     <Share2 className="w-7 h-7 mr-3 text-green-600" />
@@ -175,7 +175,7 @@ function CommunityFeedPage() {
                     )}
                 </div>
             )}
-        </div>
+        </>
     );
 }
 
